@@ -1,0 +1,2644 @@
+<response>
+  <version>2</version>
+  <code>200</code>
+  <currentTime>1706381427840</currentTime>
+  <text>OK</text>
+  <data class="listWithReferences">
+    <references>
+      <agencies>
+        <agency>
+          <id>MTA NYCT</id>
+          <name>MTA New York City Transit</name>
+          <url>http://www.mta.info</url>
+          <timezone>America/New_York</timezone>
+          <lang>en</lang>
+          <phone>718-330-1234</phone>
+          <privateService>false</privateService>
+        </agency>
+      </agencies>
+    </references>
+    <list>
+      <route>
+        <id>MTA NYCT_M34+</id>
+        <shortName>M34-SBS</shortName>
+        <longName>East Side - Javits Center</longName>
+        <description>Select Bus Service via 34th St Crosstown</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_D90</id>
+        <shortName>D90</shortName>
+        <longName>D Shuttle Bus - Mosholu Pkwy #4 - 205 St</longName>
+        <description>via Crand Concourse</description>
+        <type>711</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B52</id>
+        <shortName>B52</shortName>
+        <longName>Downtown Brooklyn - Ridgewood</longName>
+        <description>via Gates Av / Greene Av / Atlantic Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q24</id>
+        <shortName>Q24</shortName>
+        <longName>Broadway Junction - Jamaica</longName>
+        <description>via Atlantic Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S66</id>
+        <shortName>S66</shortName>
+        <longName>St. George - Port Richmond</longName>
+        <description>via Victory Blvd / Jewett Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q27</id>
+        <shortName>Q27</shortName>
+        <longName>Cambria Heights - Flushing</longName>
+        <description>via Springfield Blvd / Rocky Hill Rd / 46th Av / Kissena Blvd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q26</id>
+        <shortName>Q26</shortName>
+        <longName>Fresh Meadows - Flushing (Part-time)</longName>
+        <description>via Hollis Court Blvd / 46th Av / Parsons Blvd</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q28</id>
+        <shortName>Q28</shortName>
+        <longName>Bayside - Flushing</longName>
+        <description>via Northern Blvd / 32nd Av / Corporal Kennedy St</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B46+</id>
+        <shortName>B46-SBS</shortName>
+        <longName>Kings Plaza - Williamsburg</longName>
+        <description>Select Bus Service via Utica Av - Malcolm X Blvd</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S61</id>
+        <shortName>S61</shortName>
+        <longName>St. George - Staten Island Mall</longName>
+        <description>via Victory Blvd / Bradley Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM15</id>
+        <shortName>SIM15</shortName>
+        <longName>Eltingville - Lower Manhattan Express</longName>
+        <description>via Richmond Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S62</id>
+        <shortName>S62</shortName>
+        <longName>St. George - Travis</longName>
+        <description>via Victory Blvd</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B44</id>
+        <shortName>B44</shortName>
+        <longName>Sheepshead Bay - Williamsburg</longName>
+        <description>via Nostrand Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B43</id>
+        <shortName>B43</shortName>
+        <longName>Greenpoint - Lefferts Gardens</longName>
+        <description>via Manhattan Av / Graham Av / Tompkins Av / Throop Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM10</id>
+        <shortName>SIM10</shortName>
+        <longName>Eltingville - Midtown Manhattan Express</longName>
+        <description>via Hylan Bl</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B46</id>
+        <shortName>B46</shortName>
+        <longName>Kings Plaza - Williamsburg</longName>
+        <description>via Utica Av - Malcolm X Blvd</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM11</id>
+        <shortName>SIM11</shortName>
+        <longName>New Dorp - Midtown Manhattan Express</longName>
+        <description>via Hylan Bl / Madison Av / Lexington Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B45</id>
+        <shortName>B45</shortName>
+        <longName>Downtown Brooklyn - Crown Heights</longName>
+        <description>via St Johns Place / Washington Av / Atlantic Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B48</id>
+        <shortName>B48</shortName>
+        <longName>Lefferts Gardens - Greenpoint</longName>
+        <description>via Lorimer St / Franklin &amp; Classon Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B47</id>
+        <shortName>B47</shortName>
+        <longName>Kings Plaza - Bedford-Stuyvesant</longName>
+        <description>via Broadway / Ralph Av / Avenue U</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM9</id>
+        <shortName>SIM9</shortName>
+        <longName>Eltingville - Greenwich Village Express</longName>
+        <description>via F Capodanno Blvd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B49</id>
+        <shortName>B49</shortName>
+        <longName>Manhattan Beach - Bedford-Stuyvesant</longName>
+        <description>via Ocean Av / Bedford &amp; Rogers Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM8</id>
+        <shortName>SIM8</shortName>
+        <longName>Huguenot - Midtown Manhattan Express</longName>
+        <description>via Richmond Av / Woodrow Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM7</id>
+        <shortName>SIM7</shortName>
+        <longName>Eltingville - Greenwich Village Express</longName>
+        <description>via Hylan Bl / Richmond Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM6</id>
+        <shortName>SIM6</shortName>
+        <longName>Eltingville - Midtown Manhattan Express</longName>
+        <description>via F Capodanno / Giffords La</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B60</id>
+        <shortName>B60</shortName>
+        <longName>Williamsburg - Canarsie</longName>
+        <description>via Wilson Av / Rockaway Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM5</id>
+        <shortName>SIM5</shortName>
+        <longName>Eltingville - Lower Manhattan Express</longName>
+        <description>via F Capodanno / Giffords La</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM4</id>
+        <shortName>SIM4</shortName>
+        <longName>Eltingville - Lower Manhattan Express</longName>
+        <description>via Richmond Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B62</id>
+        <shortName>B62</shortName>
+        <longName>Downtown Brooklyn - Long Island City</longName>
+        <description>via Bklyn Navy Yard / Manhattan Av / Jackson Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM1C</id>
+        <shortName>SIM1C</shortName>
+        <longName>Eltingville - Manhattan Express</longName>
+        <description>via Hylan Bl / Richmond Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM3</id>
+        <shortName>SIM3</shortName>
+        <longName>Pt. Richmond - Midtown Manhattan Express</longName>
+        <description>via Watchogue Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B61</id>
+        <shortName>B61</shortName>
+        <longName>Park Slope - Downtown Brooklyn</longName>
+        <description>via Van Brunt St / Columbia St / 9th St</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM2</id>
+        <shortName>SIM2</shortName>
+        <longName>Tottenville - Lower Manhattan Express</longName>
+        <description>via Huguenot Av / Hylan Bl</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B64</id>
+        <shortName>B64</shortName>
+        <longName>Bay Ridge - Coney Island</longName>
+        <description>via Bay Ridge Av / Bath Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM1</id>
+        <shortName>SIM1</shortName>
+        <longName>Eltingville - Lower Manhattan Express</longName>
+        <description>via Hylan Bl / Richmond Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B63</id>
+        <shortName>B63</shortName>
+        <longName>Bay Ridge - Cobble Hill</longName>
+        <description>via 5th Av / Atlantic Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S76</id>
+        <shortName>S76</shortName>
+        <longName>St. George - Oakwood</longName>
+        <description>via Richmond Rd / New Dorp Ln</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q36</id>
+        <shortName>Q36</shortName>
+        <longName>Floral Park or Little Neck - Jamaica</longName>
+        <description>via Jamaica Av / Hillside Av / Little Neck Pkwy</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S78</id>
+        <shortName>S78</shortName>
+        <longName>St. George - Bricktown Mall</longName>
+        <description>via Hylan Blvd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S79+</id>
+        <shortName>S79-SBS</shortName>
+        <longName>Staten Island Mall - Bay Ridge</longName>
+        <description>Select Bus Service via Verrazano-Narrows Bridge / Hylan Blvd</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX12+</id>
+        <shortName>Bx12-SBS</shortName>
+        <longName>Bay Plaza - Inwood</longName>
+        <description>Select Bus Service via Pelham Pkwy / Fordham Rd</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q30</id>
+        <shortName>Q30</shortName>
+        <longName>Little Neck or Queensborough Community College - Jamaica</longName>
+        <description>via Horace Harding Expwy / Utopia Pkwy / Homelawn St</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM24</id>
+        <shortName>SIM24</shortName>
+        <longName>Prince&apos;s Bay - Midtown Manhattan Express</longName>
+        <description>via Huguenot Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM25</id>
+        <shortName>SIM25</shortName>
+        <longName>Tottenville - Midtown Manhattan Express</longName>
+        <description>via Rossville Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q32</id>
+        <shortName>Q32</shortName>
+        <longName>Jackson Heights - Penn Station</longName>
+        <description>via Roosevelt Av / Queens Blvd / Fifth Av / Madison Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S74</id>
+        <shortName>S74</shortName>
+        <longName>St. George - Bricktown Mall</longName>
+        <description>via Richmond Rd / Arthur Kill Rd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM26</id>
+        <shortName>SIM26</shortName>
+        <longName>Tottenville - Midtown Manhattan Express</longName>
+        <description>via Bloomingdale Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q31</id>
+        <shortName>Q31</shortName>
+        <longName>Bayside - Jamaica</longName>
+        <description>via Bell Blvd / Utopia Pkwy / Homelawn St</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B54</id>
+        <shortName>B54</shortName>
+        <longName>Downtown Brooklyn - Ridgewood</longName>
+        <description>via Myrtle Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B57</id>
+        <shortName>B57</shortName>
+        <longName>Gowanus - Maspeth</longName>
+        <description>via Flushing Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM22</id>
+        <shortName>SIM22</shortName>
+        <longName>Eltingville - Midtown Manhattan Express</longName>
+        <description>via Arthur Kill Rd / Richmond Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_L90</id>
+        <shortName>L90</shortName>
+        <longName>L Shuttle Bus - Lorimer St - Myrtle Wyckoff Avs</longName>
+        <description>via Wyckoff Av / Metropolitan Av</description>
+        <type>711</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM23</id>
+        <shortName>SIM23</shortName>
+        <longName>Annadale - Midtown Manhattan Express</longName>
+        <description>via Arden Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_L92</id>
+        <shortName>L92</shortName>
+        <longName>L Shuttle Bus - Abingdon Sq - FDR Drive</longName>
+        <description>via 14 St</description>
+        <type>711</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX2</id>
+        <shortName>Bx2</shortName>
+        <longName>Kingsbridge Heights - Mott Haven</longName>
+        <description>via Grand Concourse / E 149th St</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX1</id>
+        <shortName>Bx1</shortName>
+        <longName>Riverdale - Mott Haven</longName>
+        <description>via Grand Concourse / E 138th St</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B70</id>
+        <shortName>B70</shortName>
+        <longName>Dyker Heights - Sunset Park</longName>
+        <description>via 92nd St / 3rd Av / 8th Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX4</id>
+        <shortName>Bx4</shortName>
+        <longName>Westchester Sq - The Hub</longName>
+        <description>via Westchester Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X28</id>
+        <shortName>X28</shortName>
+        <longName>Sea Gate / Bensonhurst - Manhattan Express</longName>
+        <description>via Surf Av / Cropsey Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX3</id>
+        <shortName>Bx3</shortName>
+        <longName>Riverdale - George Washington Bridge</longName>
+        <description>via Sedgwick Av / University Av / W 181st St</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X27</id>
+        <shortName>X27</shortName>
+        <longName>Bay Ridge - Manhattan Express</longName>
+        <description>via Shore Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX6</id>
+        <shortName>Bx6</shortName>
+        <longName>Hunts Point - Riverside Dr</longName>
+        <description>via E 161st St / E 163rd St / W 155 St</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX5</id>
+        <shortName>Bx5</shortName>
+        <longName>Pelham Bay - Gladstone Sq</longName>
+        <description>via Bruckner Blvd  / Story Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B74</id>
+        <shortName>B74</shortName>
+        <longName>Sea Gate - Stillwell Av</longName>
+        <description>via Mermaid Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S86</id>
+        <shortName>S86</shortName>
+        <longName>St. George - Oakwood LTD</longName>
+        <description>via Richmond Rd / New Dorp Ln (S76 Limited)</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S89</id>
+        <shortName>S89</shortName>
+        <longName>Eltingville - Bayonne LTD</longName>
+        <description>via Richmond Av (S59 Limited)</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q46</id>
+        <shortName>Q46</shortName>
+        <longName>Glen Oaks - Kew Gardens</longName>
+        <description>via Union Turnpike</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q48</id>
+        <shortName>Q48</shortName>
+        <longName>Flushing - LaGuardia Airport</longName>
+        <description>via Roosevelt Av / 108th St / Ditmars Blvd</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S81</id>
+        <shortName>S81</shortName>
+        <longName>St. George - Grant City LTD</longName>
+        <description>via Bay St / Father Capodanno Blvd (S51 Limited)</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M116</id>
+        <shortName>M116</shortName>
+        <longName>West Side - East Harlem</longName>
+        <description>via 116th St Crosstown</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q15A</id>
+        <shortName>Q15A</shortName>
+        <longName>Flushing - Beechhurst / Whitestone</longName>
+        <description>via 150th St / Whitestone</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q43</id>
+        <shortName>Q43</shortName>
+        <longName>Floral Park - Jamaica</longName>
+        <description>via Sutphin Blvd / Hillside Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q42</id>
+        <shortName>Q42</shortName>
+        <longName>Addeslieigh Park - Jamaica</longName>
+        <description>via 174 St / Liberty Av / Sayres Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S84</id>
+        <shortName>S84</shortName>
+        <longName>St. George - Bricktown Mall LTD</longName>
+        <description>via Richmond Rd / Arthur Kill Rd (S74 Limited)</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B65</id>
+        <shortName>B65</shortName>
+        <longName>Downtown Brooklyn - Crown Heights</longName>
+        <description>via Bergen St &amp; Dean St</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B68</id>
+        <shortName>B68</shortName>
+        <longName>Coney Island - Windsor Terrace</longName>
+        <description>via Coney Island Av / Brighton Beach Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B67</id>
+        <shortName>B67</shortName>
+        <longName>Brooklyn Navy Yard - Kensington</longName>
+        <description>via Flatbush Av / 7th Av / McDonald Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B69</id>
+        <shortName>B69</shortName>
+        <longName>Downtown Brooklyn - Kensington</longName>
+        <description>via Vanderbilt Av / 7th Av / McDonald Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M23+</id>
+        <shortName>M23-SBS</shortName>
+        <longName>Chelsea Piers - East Side</longName>
+        <description>Select Bus Service via 23rd St Crosstown</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B82</id>
+        <shortName>B82</shortName>
+        <longName>Coney Island - Spring Creek Towers</longName>
+        <description>via Bay Pkwy / Kings Hwy / Flatlands Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X37</id>
+        <shortName>X37</shortName>
+        <longName>Bay Ridge - Midtown Manhattan Express</longName>
+        <description>via Shore Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B84</id>
+        <shortName>B84</shortName>
+        <longName>Spring Creek-New Lots</longName>
+        <description>via Ashford Street/Flatlands Avenue</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B83</id>
+        <shortName>B83</shortName>
+        <longName>Spring Creek - Broadway Junction</longName>
+        <description>via Van Siclen Av / Pennsylvania Av / Gateway Dr</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X38</id>
+        <shortName>X38</shortName>
+        <longName>Sea Gate / Bensonhurst - Midtown Manhattan Express</longName>
+        <description>via Surf Av / Cropsey Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q56</id>
+        <shortName>Q56</shortName>
+        <longName>Broadway Junction - Jamaica</longName>
+        <description>via Jamaica Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S98</id>
+        <shortName>S98</shortName>
+        <longName>St. George - Mariners Harbor LTD</longName>
+        <description>via Forest Av (S48 Limited)</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM33C</id>
+        <shortName>SIM33C</shortName>
+        <longName>Mariners Harbor - Greenwich Village Express</longName>
+        <description>via N Gannon Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q55</id>
+        <shortName>Q55</shortName>
+        <longName>Ridgewood - Richmond Hill</longName>
+        <description>via Myrtle Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q58</id>
+        <shortName>Q58</shortName>
+        <longName>Ridgewood - Flushing</longName>
+        <description>via Fresh Pond Rd / Corona Av / College Pt Blvd</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q59</id>
+        <shortName>Q59</shortName>
+        <longName>Williamsburg - Rego Park</longName>
+        <description>via Grand St / Grand Av / Queens Blvd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S90</id>
+        <shortName>S90</shortName>
+        <longName>St. George - Amazon</longName>
+        <description>via Richmond Terrace (S40 Limited)</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S92</id>
+        <shortName>S92</shortName>
+        <longName>St. George - Travis LTD</longName>
+        <description>via Victory Blvd (S62 Limited)</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S91</id>
+        <shortName>S91</shortName>
+        <longName>St. George - Staten Island Mall LTD</longName>
+        <description>via Victory Blvd / Bradley Av (S61 Limited)</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S94</id>
+        <shortName>S94</shortName>
+        <longName>St. George - Staten Island Mall LTD</longName>
+        <description>via Richmond Av (S44 Limited)</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M106</id>
+        <shortName>M106</shortName>
+        <longName>East Harlem - West Side</longName>
+        <description>via 96th St / E 106th St Crosstown</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S93</id>
+        <shortName>S93</shortName>
+        <longName>College of Staten Island - Bay Ridge LTD</longName>
+        <description>via Verrazano-Narrows / Victory</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q54</id>
+        <shortName>Q54</shortName>
+        <longName>Williamsburg - Jamaica</longName>
+        <description>via Jamaica Av / Metropolitan Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S96</id>
+        <shortName>S96</shortName>
+        <longName>St. George - West Shore Plaza LTD</longName>
+        <description>via Castleton Av (S46 Limited)</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX8</id>
+        <shortName>Bx8</shortName>
+        <longName>Williamsbridge - Locust Point</longName>
+        <description>via Bronxwood Av / Williamsbridge Rd / Crosby Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M101</id>
+        <shortName>M101</shortName>
+        <longName>East Village - Fort George</longName>
+        <description>via Third Av / Lexington Av / Amsterdam Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX7</id>
+        <shortName>Bx7</shortName>
+        <longName>Riverdale - Washington Heights</longName>
+        <description>via Riverdale Av / Broadway</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M102</id>
+        <shortName>M102</shortName>
+        <longName>Harlem - East Village</longName>
+        <description>via 3rd Av / Lexington Av / Lenox Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M103</id>
+        <shortName>M103</shortName>
+        <longName>East Harlem - City Hall</longName>
+        <description>via 3rd Av / Lexington Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX9</id>
+        <shortName>Bx9</shortName>
+        <longName>Riverdale - West Farms Sq</longName>
+        <description>via Broadway / Kingsbridge Rd / Southern Blvd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M104</id>
+        <shortName>M104</shortName>
+        <longName>West Harlem - Times Square</longName>
+        <description>via Broadway / 8th Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M100</id>
+        <shortName>M100</shortName>
+        <longName>Inwood - Harlem</longName>
+        <description>via Broadway / Amsterdam Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX13</id>
+        <shortName>Bx13</shortName>
+        <longName>George Washington Bridge - Bronx Terminal Market</longName>
+        <description>via W 181st St / Ogden Av / River Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B90</id>
+        <shortName>B90</shortName>
+        <longName>F Shuttle Bus - Church Av - Stillwell Av</longName>
+        <description>via McDonald Av</description>
+        <type>711</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX12</id>
+        <shortName>Bx12</shortName>
+        <longName>Pelham Bay - Inwood</longName>
+        <description>via Pelham Pkwy / Fordham Rd</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX11</id>
+        <shortName>Bx11</shortName>
+        <longName>George Washington Bridge - Parkchester</longName>
+        <description>via E 170th St /  E 174th St</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX10</id>
+        <shortName>Bx10</shortName>
+        <longName>Riverdale - Norwood</longName>
+        <description>via H. Hudson Pkwy / W 231st St / Jerome Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B96</id>
+        <shortName>B96</shortName>
+        <longName>2 Shuttle Bus - Flatbush Ave - Franklin Ave</longName>
+        <description>via Nostrand Av/New York Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX19</id>
+        <shortName>Bx19</shortName>
+        <longName>NY Botanical Garden - Riverbank Park</longName>
+        <description>via Southern Bl / E 149th St</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX17</id>
+        <shortName>Bx17</shortName>
+        <longName>Fordham Plaza - Port Morris</longName>
+        <description>via Crotona Av / Prospect Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX16</id>
+        <shortName>Bx16</shortName>
+        <longName>Pelham - Norwood</longName>
+        <description>via E 233rd St / Nereid Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX15</id>
+        <shortName>Bx15</shortName>
+        <longName>Fordham Plaza - The Hub</longName>
+        <description>via 3rd Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M14A+</id>
+        <shortName>M14A-SBS</shortName>
+        <longName>Lower East Side - Abingdon Sq</longName>
+        <description>Select Bus Service via 14th St / Av A</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B82+</id>
+        <shortName>B82-SBS</shortName>
+        <longName>Coney Island -spring Creek Towers</longName>
+        <description>select Bus service via Bay Pkwy / Kings Hwy / Flatlands Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q77</id>
+        <shortName>Q77</shortName>
+        <longName>Laurelton - Jamaica</longName>
+        <description>via Springfield / Francis Lewis / Hillside Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q76</id>
+        <shortName>Q76</shortName>
+        <longName>College Point - Jamaica</longName>
+        <description>via Francis Lewis Blvd / Hillside Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B98</id>
+        <shortName>B98</shortName>
+        <longName>2 Shuttle Bus - Bedford/Nostrand Av - Court Sq</longName>
+        <description>via Jackson Av/Union Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_J90</id>
+        <shortName>J90</shortName>
+        <longName>J Shuttle Bus - Crescent St - Jamaica Van Wyck Station</longName>
+        <description>via Jamaica Av</description>
+        <type>711</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M125</id>
+        <shortName>M125</shortName>
+        <longName>Manhattanville - The Hub</longName>
+        <description>via 125th St / Willis Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX35</id>
+        <shortName>Bx35</shortName>
+        <longName>George Washington Bridge-West Farms Road</longName>
+        <description>via E 167th / W 181st St</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X68</id>
+        <shortName>X68</shortName>
+        <longName>Floral Park - Midtown Manhattan Express</longName>
+        <description>via Hillside Av / Queens Bl</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX34</id>
+        <shortName>Bx34</shortName>
+        <longName>Woodlawn - Fordham Center</longName>
+        <description>via Katonah Av / Bainbridge Av / Valentine Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX33</id>
+        <shortName>Bx33</shortName>
+        <longName>Port Morris - Harlem</longName>
+        <description>via E 138th St / W 135th St</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX32</id>
+        <shortName>Bx32</shortName>
+        <longName>Kingsbridge VA Hospital - Mott Haven</longName>
+        <description>via Morris Av / Jerome Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX31</id>
+        <shortName>Bx31</shortName>
+        <longName>Woodlawn - Westchester Sq</longName>
+        <description>via E 233 St / Eastchester Rd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX30</id>
+        <shortName>Bx30</shortName>
+        <longName>Co-op City Section 5 - Pelham Parkway</longName>
+        <description>via Boston Rd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q88</id>
+        <shortName>Q88</shortName>
+        <longName>Elmhurst - Queens Village</longName>
+        <description>via Horace Harding Expwy / 73rd Av / Springfield Blvd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX39</id>
+        <shortName>Bx39</shortName>
+        <longName>Wakefield - Clasons Pt</longName>
+        <description>via White Plains Rd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X64</id>
+        <shortName>X64</shortName>
+        <longName>Cambria Heights - Midtown Manhattan Express</longName>
+        <description>via Linden Bl / Farmers Bl / Liberty Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX38</id>
+        <shortName>Bx38</shortName>
+        <longName>Co-op City Bay Plaza - Norwood</longName>
+        <description>via E Gun Hill Rd / Co-op City Blvd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_X63</id>
+        <shortName>X63</shortName>
+        <longName>Rosedale - Midtown Manhattan Express</longName>
+        <description>via Merrick Bl / Francis Lewis Bl</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX36</id>
+        <shortName>Bx36</shortName>
+        <longName>Soundview - George Washington Bridge</longName>
+        <description>via E Tremont Av / White Plains Rd</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q83</id>
+        <shortName>Q83</shortName>
+        <longName>Cambria Heights - Jamaica</longName>
+        <description>via Murdock Av / Liberty Av (Local and Limited-stop Service) Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q85</id>
+        <shortName>Q85</shortName>
+        <longName>Rosedale or Green Acres Shopping Mall - Jamaica</longName>
+        <description>via Merrick Blvd / Conduit Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q84</id>
+        <shortName>Q84</shortName>
+        <longName>Laurelton - Jamaica</longName>
+        <description>via Merrick Blvd / 120th Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX24</id>
+        <shortName>Bx24</shortName>
+        <longName>Country Club - Hutchinson Metro Center</longName>
+        <description>via Westchester Av / Country Club Loop</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX22</id>
+        <shortName>Bx22</shortName>
+        <longName>Bedford Park - Castle Hill</longName>
+        <description>via Castle Hill Av / Fordham Rd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX21</id>
+        <shortName>Bx21</shortName>
+        <longName>Westchester Sq - Mott Haven</longName>
+        <description>via Morris Park Av / Boston Rd</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX20</id>
+        <shortName>Bx20</shortName>
+        <longName>Riverdale - Inwood</longName>
+        <description>via Broadway / Henry Hudson Pkwy</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M15+</id>
+        <shortName>M15-SBS</shortName>
+        <longName>East Harlem - South Ferry</longName>
+        <description>Select Bus Service via 1st Av / 2nd Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M15</id>
+        <shortName>M15</shortName>
+        <longName>East Harlem - South Ferry</longName>
+        <description>via 1st Av / 2nd Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX29</id>
+        <shortName>Bx29</shortName>
+        <longName>City Island - Pelham Bay</longName>
+        <description>via City Island Rd / City Island Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX28</id>
+        <shortName>Bx28</shortName>
+        <longName>Co-op City Section 5 - Fordham Center</longName>
+        <description>via E Gun Hill Rd / Bartow Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX27</id>
+        <shortName>Bx27</shortName>
+        <longName>Clasons Pt - Gladstone Sq</longName>
+        <description>via Westchester Av / Soundview Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX26</id>
+        <shortName>Bx26</shortName>
+        <longName>Co-op City Section 5 - Bedford Park</longName>
+        <description>via Allerton Av / Co-op City Blvd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX25</id>
+        <shortName>Bx25</shortName>
+        <longName>Co-op City Bay Plaza - Bedford Park</longName>
+        <description>via Allerton Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q92</id>
+        <shortName>Q92</shortName>
+        <longName>7 Shuttle Bus - Times Square - Hudson Yards</longName>
+        <description>via 42 St</description>
+        <type>711</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M10</id>
+        <shortName>M10</shortName>
+        <longName>Harlem - Columbus Circle</longName>
+        <description>via Central Park West / Frederick Douglass Blvd</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q94</id>
+        <shortName>Q94</shortName>
+        <longName>F Shuttle Bus - Roosevelt Island - Queens Plaza</longName>
+        <description>via Jackson Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q93</id>
+        <shortName>Q93</shortName>
+        <longName>7 Shuttle Bus - Queensboro Plz - Vernon Bl-Jackson Av</longName>
+        <description>via Jackson Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q96</id>
+        <shortName>Q96</shortName>
+        <longName>E Shuttle Bus - 21 St/Queensbridge - Court Sq</longName>
+        <description>via Jackson Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M12</id>
+        <shortName>M12</shortName>
+        <longName>Midtown West - West Village</longName>
+        <description>via 11 Av / 12 Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M11</id>
+        <shortName>M11</shortName>
+        <longName>Riverbank Park &amp; Harlem - West Village</longName>
+        <description>via 9th - Columbus Av / 10th - Amsterdam Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q95</id>
+        <shortName>Q95</shortName>
+        <longName>F Shuttle Bus - 21 St/Queensbridge  - Queens Plaza</longName>
+        <description>via Jackson Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q90</id>
+        <shortName>Q90</shortName>
+        <longName>Q Shuttle Bus - Barclays Ctr - Prospect Park</longName>
+        <description>via Flatbush Av</description>
+        <type>711</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M86+</id>
+        <shortName>M86-SBS</shortName>
+        <longName>Yorkville - West Side</longName>
+        <description>Select Bus Service via 86th St Crosstown</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M21</id>
+        <shortName>M21</shortName>
+        <longName>Lower East Side - West Village</longName>
+        <description>via Houston St Crosstown</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M20</id>
+        <shortName>M20</shortName>
+        <longName>Lincoln Center - South Ferry</longName>
+        <description>via 7th Av / 8th Av / Battery Park City</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX41+</id>
+        <shortName>Bx41-SBS</shortName>
+        <longName>Williamsbridge - The Hub</longName>
+        <description>Select Bus Service via Webster Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX4A</id>
+        <shortName>Bx4A</shortName>
+        <longName>Westchester Sq - Gladstone Sq</longName>
+        <description>via Metropolitan Av / Westchester Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M22</id>
+        <shortName>M22</shortName>
+        <longName>Lower East Side - Battery Park City</longName>
+        <description>via Madison St / Chambers St</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM8X</id>
+        <shortName>SIM8X</shortName>
+        <longName>S.I. Mall - Midtown Manhattan Express</longName>
+        <description>via Park and Ride / 42 St</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX46</id>
+        <shortName>Bx46</shortName>
+        <longName>Prospect Av - Westchester Av / Hunts Point Market</longName>
+        <description>via Barretto PK</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX42</id>
+        <shortName>Bx42</shortName>
+        <longName>Throgs Neck - River Park Towers</longName>
+        <description>via E Tremont Av / E 180th St / Burnside Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX41</id>
+        <shortName>Bx41</shortName>
+        <longName>Williamsbridge - The Hub</longName>
+        <description>via Webster Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX40</id>
+        <shortName>Bx40</shortName>
+        <longName>Throgs Neck - River Park Towers</longName>
+        <description>via E Tremont Av / E 180th St / Burnside Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M31</id>
+        <shortName>M31</shortName>
+        <longName>Yorkville - Clinton</longName>
+        <description>via  York Av / 57th St</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M35</id>
+        <shortName>M35</shortName>
+        <longName>Ward&apos;s Island - East Harlem</longName>
+        <description>via Randall&apos;s Island / RFK Bridge</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M14D+</id>
+        <shortName>M14D-SBS</shortName>
+        <longName>Lower East Side - Chelsea Piers</longName>
+        <description>Select Bus Service via 14th St / Av D</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M60+</id>
+        <shortName>M60-SBS</shortName>
+        <longName>West Side - LaGuardia Airport</longName>
+        <description>Select Bus Service via 125th St / Astoria Blvd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX18A</id>
+        <shortName>Bx18A</shortName>
+        <longName>Morris Heights/High Bridge Circulator</longName>
+        <description>via 168 St / Undercliff Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX18B</id>
+        <shortName>Bx18B</shortName>
+        <longName>Morris Heights/High Bridge Circulator</longName>
+        <description>via 168 St / Sedgwick Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q44+</id>
+        <shortName>Q44-SBS</shortName>
+        <longName>Bronx Zoo - Jamaica</longName>
+        <description>Select Bus Service via Main St / Cross Bronx Svc Rd (Q20 Limited)</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M7</id>
+        <shortName>M7</shortName>
+        <longName>Harlem - 14th Street</longName>
+        <description>via Columbus / Amsterdam / 6 &amp; 7 Av / Bway</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M8</id>
+        <shortName>M8</shortName>
+        <longName>West Village - East Village</longName>
+        <description>via 8 &amp; 9 St Crosstown</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M42</id>
+        <shortName>M42</shortName>
+        <longName>United Nations - W 42 St Pier</longName>
+        <description>via 42nd St Crosstown</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M9</id>
+        <shortName>M9</shortName>
+        <longName>Battery Park City - Kips Bay</longName>
+        <description>via Avenue C / E Broadway</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M1</id>
+        <shortName>M1</shortName>
+        <longName>Harlem - East Village</longName>
+        <description>via 5th Av / Madison Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M2</id>
+        <shortName>M2</shortName>
+        <longName>Washington Heights - East Village</longName>
+        <description>via 5th Av / Madison Av / AC Powell Blvd</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M3</id>
+        <shortName>M3</shortName>
+        <longName>Fort George - East Village</longName>
+        <description>via 5th Av / Madison Av / St Nicholas Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M4</id>
+        <shortName>M4</shortName>
+        <longName>The Cloisters - 32 St</longName>
+        <description>via 5th Av / Madison Av / Broadway / Ft.Washington Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M5</id>
+        <shortName>M5</shortName>
+        <longName>George Washington Bridge - 31 St &amp; 6 Av</longName>
+        <description>via 5th Av / Av of Americas / Riverside Dr</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M55</id>
+        <shortName>M55</shortName>
+        <longName>W 44 St  - South Ferry</longName>
+        <description>via 5 Av &amp; 6 Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M57</id>
+        <shortName>M57</shortName>
+        <longName>East Side - West Side</longName>
+        <description>via 57th St Crosstown</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_BX6+</id>
+        <shortName>Bx6-SBS</shortName>
+        <longName>Hunts Point - Riverside Dr</longName>
+        <description>Select Bus Service via E 161st St / E 163rd St / W 155 St</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M50</id>
+        <shortName>M50</shortName>
+        <longName>W 42 St Pier - East Side</longName>
+        <description>via 49th St / 50th St Crosstown</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM4C</id>
+        <shortName>SIM4C</shortName>
+        <longName>Huguenot - Manhattan Express</longName>
+        <description>via Richmond Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M66</id>
+        <shortName>M66</shortName>
+        <longName>East Side - Lincoln Center</longName>
+        <description>via 65th &amp; 68th St (East) / 67th &amp; 66th St (West)</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM4X</id>
+        <shortName>SIM4X</shortName>
+        <longName>S.I. Mall - Lower Manhattan Express</longName>
+        <description>via Park and Ride / Church St</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B20</id>
+        <shortName>B20</shortName>
+        <longName>Ridgewood - Spring Creek</longName>
+        <description>via Pennsylvania Av / Decatur St</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q1</id>
+        <shortName>Q1</shortName>
+        <longName>Queens Village / Bellerose - Jamaica</longName>
+        <description>via Springfield Blvd / Braddock Av / Hillside Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q20B</id>
+        <shortName>Q20B</shortName>
+        <longName>College Point - Jamaica</longName>
+        <description>via 14 Av / Main St</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q20A</id>
+        <shortName>Q20A</shortName>
+        <longName>College Point - Jamaica</longName>
+        <description>via 20 Av / Main St</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B11</id>
+        <shortName>B11</shortName>
+        <longName>Sunset Park - Midwood</longName>
+        <description>via 49th &amp; 50th St / Avenue J</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B13</id>
+        <shortName>B13</shortName>
+        <longName>Spring Creek - Wyckoff Hospital</longName>
+        <description>via Crescent St / Jamaica Av / Wyckoff Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B12</id>
+        <shortName>B12</shortName>
+        <longName>Lefferts Gardens - East New York</longName>
+        <description>via Clarkson Av / Empire Blvd / East New York Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B15</id>
+        <shortName>B15</shortName>
+        <longName>Bedford Stuyvesant - JFK Airport</longName>
+        <description>via Marcus Garvey Blvd / New Lots Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B14</id>
+        <shortName>B14</shortName>
+        <longName>Spring Creek - Crown Heights</longName>
+        <description>via Sutter Av / Pitkin Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B17</id>
+        <shortName>B17</shortName>
+        <longName>Canarsie - Crown Heights</longName>
+        <description>via Remsen Av / Seaview Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M72</id>
+        <shortName>M72</shortName>
+        <longName>East Side - West Side</longName>
+        <description>via 72nd St Crosstown</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B16</id>
+        <shortName>B16</shortName>
+        <longName>Bay Ridge - Lefferts Gardens</longName>
+        <description>via Ft Hamilton Pkwy / 13th &amp; 14th Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B31</id>
+        <shortName>B31</shortName>
+        <longName>Gerritsen Beach - Kings Hwy Station</longName>
+        <description>via Gerritsen Av / Avenue R</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S42</id>
+        <shortName>S42</shortName>
+        <longName>St. George - Clyde Place</longName>
+        <description>via St Marks Pl / Jersey St</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S44</id>
+        <shortName>S44</shortName>
+        <longName>St. George - Staten Island Mall</longName>
+        <description>via Richmond Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S46</id>
+        <shortName>S46</shortName>
+        <longName>St. George - West Shore Plaza</longName>
+        <description>via Castleton Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S48</id>
+        <shortName>S48</shortName>
+        <longName>St. George - Mariners Harbor</longName>
+        <description>via Forest Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM35</id>
+        <shortName>SIM35</shortName>
+        <longName>Port Richmond - Lower Manhattan Express</longName>
+        <description>via Clove Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S40</id>
+        <shortName>S40</shortName>
+        <longName>St. George - Amazon</longName>
+        <description>via Richmond Terrace</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q2</id>
+        <shortName>Q2</shortName>
+        <longName>Queens Village - Jamaica</longName>
+        <description>via Hollis Av / Hillside Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM31</id>
+        <shortName>SIM31</shortName>
+        <longName>Eltingville - Midtown Manhattan Express</longName>
+        <description>via Forest Hill Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q3</id>
+        <shortName>Q3</shortName>
+        <longName>Jamaica - JFK Airport</longName>
+        <description>via Farmers Blvd / Hillside Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM32</id>
+        <shortName>SIM32</shortName>
+        <longName>Travis - Lower Manhattan Express</longName>
+        <description>via N Gannon Av / Victory Bl</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B24</id>
+        <shortName>B24</shortName>
+        <longName>Williamsburg - Greenpoint</longName>
+        <description>via Greenpoint Av &amp; 48th St / Meeker Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M34A+</id>
+        <shortName>M34A-SBS</shortName>
+        <longName>Waterside - Port Authority Terminal</longName>
+        <description>Select Bus Service via 34th St Crosstown</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q4</id>
+        <shortName>Q4</shortName>
+        <longName>Cambria Heights - Jamaica</longName>
+        <description>via Linden Blvd / Merrick Blvd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM33</id>
+        <shortName>SIM33</shortName>
+        <longName>Mariners Harbor - Manhattan Express</longName>
+        <description>via N Gannon Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q5</id>
+        <shortName>Q5</shortName>
+        <longName>Rosedale or Green Acres Mall - Jamaica</longName>
+        <description>via Merrick Blvd / Hook Creek Blvd / Sunrise Highway</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM34</id>
+        <shortName>SIM34</shortName>
+        <longName>Mariners Harbor - Lower Manhattan Express</longName>
+        <description>via Watchogue Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B26</id>
+        <shortName>B26</shortName>
+        <longName>Downtown Brooklyn - Ridgewood</longName>
+        <description>via Halsey St / Fulton St</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B25</id>
+        <shortName>B25</shortName>
+        <longName>Dwntn Bklyn &amp; DUMBO - Broadway Junction</longName>
+        <description>via Fulton St</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B44+</id>
+        <shortName>B44-SBS</shortName>
+        <longName>Sheepshead Bay - Williamsburg</longName>
+        <description>Select Bus Service via Nostrand Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM30</id>
+        <shortName>SIM30</shortName>
+        <longName>Sunnyside - Midtown Manhattan Express</longName>
+        <description>via Forest Av</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B42</id>
+        <shortName>B42</shortName>
+        <longName>Canarsie Pier - Rockaway Parkway Station</longName>
+        <description>via Rockaway Pkwy</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B41</id>
+        <shortName>B41</shortName>
+        <longName>Kings Plaza - Downtown Brooklyn</longName>
+        <description>via Flatbush Av / Livingston St</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M79+</id>
+        <shortName>M79-SBS</shortName>
+        <longName>Yorkville - West Side</longName>
+        <description>Select Bus Service via 79th St Crosstown</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B3</id>
+        <shortName>B3</shortName>
+        <longName>Bensonhurst - Bergen Beach</longName>
+        <description>via Avenue U</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q12</id>
+        <shortName>Q12</shortName>
+        <longName>Little Neck - Flushing</longName>
+        <description>via Sanford Av / Northern Blvd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S54</id>
+        <shortName>S54</shortName>
+        <longName>West New Brighton - Eltingville</longName>
+        <description>via Manor Rd</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B4</id>
+        <shortName>B4</shortName>
+        <longName>Bay Ridge - Sheepshead Bay</longName>
+        <description>via Bay Ridge Pkwy / 86th St / Avenue Z</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S53</id>
+        <shortName>S53</shortName>
+        <longName>Port Richmond - Bay Ridge</longName>
+        <description>via Verrazano-Narrows Bridge / Clove Rd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S56</id>
+        <shortName>S56</shortName>
+        <longName>Huguenot - Staten Island Mall</longName>
+        <description>via Richmond Av / Arthur Kill Rd / Foster Rd</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_SIM3C</id>
+        <shortName>SIM3C</shortName>
+        <longName>Pt. Richmond - Manhattan Express</longName>
+        <description>via Watchogue Rd</description>
+        <type>3</type>
+        <color>00933C</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B6</id>
+        <shortName>B6</shortName>
+        <longName>Bath Beach - East New York</longName>
+        <description>via Bay Pkwy / Avenue J / Flatlands Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q13</id>
+        <shortName>Q13</shortName>
+        <longName>Fort Totten - Flushing</longName>
+        <description>via Northern Blvd / Bell Blvd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S55</id>
+        <shortName>S55</shortName>
+        <longName>Rossville - Staten Island Mall</longName>
+        <description>via Bloomingdale Rd / Annadale Rd / Richmond Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B7</id>
+        <shortName>B7</shortName>
+        <longName>Midwood - Bedford-Stuyvesant</longName>
+        <description>via Kings Hwy / Saratoga Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q16</id>
+        <shortName>Q16</shortName>
+        <longName>Fort Totten - Flushing</longName>
+        <description>via Bayside Av / Francis Lewis Blvd / Utopia Parkway</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B8</id>
+        <shortName>B8</shortName>
+        <longName>Dyker Heights - East Flatbush</longName>
+        <description>via 18th Av / Foster Av / Avenue D</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q15</id>
+        <shortName>Q15</shortName>
+        <longName>Flushing - Beechhurst</longName>
+        <description>via 150th St / 154th St</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S57</id>
+        <shortName>S57</shortName>
+        <longName>Port Richmond - New Dorp</longName>
+        <description>via Rockland Av / Brielle Av / Bradley Av</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B9</id>
+        <shortName>B9</shortName>
+        <longName>Bay Ridge - Kings Plaza</longName>
+        <description>via 60th St / Avenue M</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q17</id>
+        <shortName>Q17</shortName>
+        <longName>Flushing - Jamaica</longName>
+        <description>via Kissena Blvd / Horace Harding Expwy / 188th St / Hillside Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S59</id>
+        <shortName>S59</shortName>
+        <longName>Port Richmond - Tottenville</longName>
+        <description>via Richmond Av</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M96</id>
+        <shortName>M96</shortName>
+        <longName>East Side - West Side</longName>
+        <description>via 96th St Crosstown</description>
+        <type>3</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M98</id>
+        <shortName>M98</shortName>
+        <longName>Washington Heights - Upper East Side LTD</longName>
+        <description>via Harlem River Dr / Lexington / 3rd</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B1</id>
+        <shortName>B1</shortName>
+        <longName>Bay Ridge - Manhattan Beach</longName>
+        <description>via 86th St / Ocean Pkwy</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S52</id>
+        <shortName>S52</shortName>
+        <longName>St. George - Staten Island Univ. Hospital</longName>
+        <description>via Tompkins Av / Cebra Av / Jersey St</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B2</id>
+        <shortName>B2</shortName>
+        <longName>Kings Hwy Station - Kings Plaza</longName>
+        <description>via Avenue R / Avenue S</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_S51</id>
+        <shortName>S51</shortName>
+        <longName>St. George - Grant City</longName>
+        <description>via Bay St / Father Capodanno Blvd</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q107</id>
+        <shortName>Q107</shortName>
+        <longName>7 Shuttle Bus - 74 St/Roosevelt Av - Queens Plaza</longName>
+        <description>via Queens Blvd/Roosevelt Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_Q108</id>
+        <shortName>Q108</shortName>
+        <longName>N Shuttle Bus - 39 Av - Queens Plaza</longName>
+        <description>via Jackson Av</description>
+        <type>711</type>
+        <color>6CBE45</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B32</id>
+        <shortName>B32</shortName>
+        <longName>Williamsburg - Long Island City</longName>
+        <description>via Kent Av / Wythe Av</description>
+        <type>3</type>
+        <color>006CB7</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_M90</id>
+        <shortName>M90</shortName>
+        <longName>M Shuttle Bus - Metropolitan Av - Myrtle Av</longName>
+        <description>via Myrtle Av</description>
+        <type>711</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B35</id>
+        <shortName>B35</shortName>
+        <longName>Brownsville - Sunset Park</longName>
+        <description>via Church Av / 39th St</description>
+        <type>3</type>
+        <color>EE352E</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B37</id>
+        <shortName>B37</shortName>
+        <longName>Downtown Brooklyn - Bay Ridge</longName>
+        <description>via 3rd Av</description>
+        <type>3</type>
+        <color>B933AD</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B36</id>
+        <shortName>B36</shortName>
+        <longName>Sheepshead Bay - Coney Island</longName>
+        <description>via Avenue Z / Surf Av</description>
+        <type>3</type>
+        <color>FAA61A</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B39</id>
+        <shortName>B39</shortName>
+        <longName>Williamsburg Bridge Plaza - Lower East Side</longName>
+        <description>via Williamsburg Bridge / Delancey St</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+      <route>
+        <id>MTA NYCT_B38</id>
+        <shortName>B38</shortName>
+        <longName>Ridgewood - Downtown Brooklyn</longName>
+        <description>via DeKalb &amp; Lafayette Av</description>
+        <type>3</type>
+        <color>00AEEF</color>
+        <textColor>FFFFFF</textColor>
+        <agencyId>MTA NYCT</agencyId>
+      </route>
+    </list>
+    <limitExceeded>false</limitExceeded>
+  </data>
+</response>

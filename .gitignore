@@ -1,0 +1,5 @@
+
+archives/*
+__pycache__
+venv
+
