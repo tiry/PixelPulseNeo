@@ -11,22 +11,18 @@ function CommandList() {
         ApiService.getCommands().then(setCommands);
     }, []);
 
-    const handleDownload = (url) => {
-        ApiService.downloadScreenshot(url);
-    };
-
     return (
        <List>
             {commands.map((command, index) => (
                 <ListItem key={index}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={8}>
+                        <Grid item xs={12} md={4}>
                             <ListItemText primary={command.name} secondary={command.description} />
                             <Button variant="contained" color="primary">
                                 Execute Now
                             </Button>
                         </Grid>
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={8}>
                             {command.screenshots && command.screenshots.map((screenshot, idx) => (
                                 <Card key={idx} style={{ maxWidth: 345, margin: '10px' }}>
                                     <CardMedia
@@ -35,9 +31,6 @@ function CommandList() {
                                         image={`${BASE_URL}/screenshots/${command.name}/${screenshot}`}
                                         alt={`Screenshot ${idx + 1}`}
                                     />
-                                    <CardContent>
-                                        <p>Screenshot {idx + 1}</p>
-                                    </CardContent>
                                 </Card>
                             ))}
                         </Grid>

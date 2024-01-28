@@ -31,6 +31,7 @@ API server
 
     pip install flask
     pip install flask-restx
+    pip install flask-cors
 
 ### dev / experiment requirements
 
@@ -74,9 +75,30 @@ Start the scheduler:
 
 ## API Server
 
-WIP see `api.py`
+For now simply run
+
+    python api.py 
+
+Server by default will run on localhost:5000
+
+<img src="pictures/openapi.png" width="500px"/>
+
+Get Swagger-UI from : http://localhost:5000/
+
+Get OpenAPI definition from: http://localhost:5000/swagger.json
+
 
 ## Mobile Progressive WebApp
 
-WIP
+To run UI
+
+    cd pixel-pulse-neo-client
+    npm start
+
+For more details see [README.md](pixel-pulse-neo-client/README.md)
+
+
+<img src="pictures/UI.png" width="200px"/>
+
+
 

@@ -68,7 +68,8 @@ class CommandExecutor:
             schedule_file = self.schedule_file
         
         # Create backup directory if it doesn't exist
-        backup_dir = os.path.dirname(schedule_file) + "/backups"
+        backup_dir = os.path.dirname(os.path.realpath(__file__)) + "/backups"
+        print(f"backup dir = {backup_dir}")
         if not os.path.exists(backup_dir):
             os.makedirs(backup_dir)
 
@@ -89,7 +90,7 @@ class CommandExecutor:
 
         # Save new schedule
         with open(schedule_file, 'w') as file:
-            json.dump(self.schedule, file)
+            json.dump(self.schedule, file, indent=1)
 
 
     def run_schedule(self):

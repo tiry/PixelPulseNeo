@@ -123,8 +123,9 @@ class Schedule(Resource):
         exist before updating the schedule.
         """
         new_schedule = request.json
+        print(new_schedule)
         for item in new_schedule:
-            command_name = item['name']
+            command_name = item['command_name']
             if executor.get_command(command_name) is None:
                 return jsonify({"error": f"Command '{command_name}' not found"}), 400
         
