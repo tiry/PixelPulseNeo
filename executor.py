@@ -5,18 +5,18 @@ import json
 import importlib
 import os
 import argparse
+from datetime import datetime
+import shutil
 
 class CommandExecutor:
 
     def __init__(self, scheduler_enabled=True, schedule_file='schedule.json'):
         self.commands = self.load_commands()
-        #print(f"loaded commands = {self.commands}")
-
         self.schedule_file = schedule_file
         self.schedule = []
         self.scheduler_enabled=scheduler_enabled
         if scheduler_enabled :
-            self.schedule = self.load_schedule(self.schedule_file)
+            self.load_schedule()
             print(f"loaded schedule = {self.schedule}")
 
         self.command_queue = queue.Queue()
@@ -40,13 +40,57 @@ class CommandExecutor:
                 commands[command_instance.name] = command_instance
         return commands
 
-    def load_schedule(self, schedule_file):
+    def list_commands(self):
+        return self.commands.keys()
+    
+    def get_commands(self):
+        return self.commands.copy()
+    
+    def get_command(self, name):
+        return self.commands[name]
+
+    def load_schedule(self, schedule_file=None):
+        if not schedule_file:
+            schedule_file = self.schedule_file
+        schedule = None
         try:
             with open(schedule_file, 'r') as file:
-                return json.load(file)
+                schedule= json.load(file)
         except Exception as e:
             print(f"Error loading schedule: {str(e)}")
-            return []
+            schedule =  []
+        self.schedule=schedule
+        return schedule
+    
+
+    def save_schedule(self, schedule_file=None):
+        if not schedule_file:
+            schedule_file = self.schedule_file
+        
+        # Create backup directory if it doesn't exist
+        backup_dir = os.path.dirname(schedule_file) + "/backups"
+        if not os.path.exists(backup_dir):
+            os.makedirs(backup_dir)
+
+        # Get current timestamp for backup file name
+        now = datetime.now().strftime("%Y%m%d%H%M%S")
+
+        # Construct backup file path
+        backup_file = backup_dir + "/schedule_" + now + ".bak"
+
+        # Copy current schedule file to backup
+        shutil.copy(schedule_file, backup_file)
+
+        # Delete old backups, keeping last 5
+        backup_files = sorted(os.listdir(backup_dir))
+        if len(backup_files) > 5:
+            for old_file in backup_files[:-5]:
+                os.remove(backup_dir + "/" + old_file)
+
+        # Save new schedule
+        with open(schedule_file, 'w') as file:
+            json.dump(self.schedule, file)
+
 
     def run_schedule(self):
         while not self.stop_current.is_set():
@@ -97,10 +141,7 @@ class CommandExecutor:
         self.schedule_thread.join()
 
 
-
-
 if __name__ == "__main__":
-
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--scheduler", help="start scheduler", action="store_true")
@@ -110,9 +151,6 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--commands", nargs="+", help="list of commands to execute")
     
     args = parser.parse_args()
-    
-    #print(args.scheduler)
-    #print(args.commands)
     
     executor = CommandExecutor(scheduler_enabled=args.scheduler)
 
@@ -130,9 +168,5 @@ if __name__ == "__main__":
                 executor.execute_now(cmds[0], int(cmds[1]))
             else:
                 executor.execute_now(cmds[0], int(args.duration))
-
-    #executor.execute_now("time", 5)
-    #executor.execute_now("meteo", 5)
-
     
     

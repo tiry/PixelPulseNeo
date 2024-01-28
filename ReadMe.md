@@ -3,9 +3,9 @@
 
 This project aims at managing display on a set of 64x64 LED Matrix.
 
-<IMG src="pictures/screencast01.gif"/>
-
 The goal is to be able to display information coming from various sources (Weather, Transportation) on a 3x64x64 LED Matrix display from a RaspBerry Pi 3B+.
+
+<IMG src="pictures/screencast01.gif"/>
 
 # Setup
 
@@ -21,9 +21,16 @@ Activate virtual env
 
 ### base requirements
 
+Command system
+
     pip install underground
-    pip install flask
     pip install numpy
+    pip install feedparser
+
+API server
+
+    pip install flask
+    pip install flask-restx
 
 ### dev / experiment requirements
 

@@ -1,5 +1,8 @@
 from commands.base import PictureScrollBaseCmd, get_icons_dir, get_total_matrix_width, get_total_matrix_height
-from commands.mta import route, bus
+#from commands.mta.route import route, bus
+import commands.mta.route as route
+import commands.mta.bus as bus
+
 from PIL import Image
 from PIL import ImageDraw
 

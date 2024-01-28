@@ -1,5 +1,5 @@
-
 archives/*
 __pycache__
+__pycache__/
 venv
-
+*.pyc

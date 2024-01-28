@@ -36,12 +36,21 @@ def getMatrixOptions():
     options.hardware_mapping = 'regular'
     return options
 
+def get_screenshots_dir(name=None):
+    current_directory = os.path.dirname(os.path.realpath(__file__))  
+    relative_path = os.path.join(current_directory, "screenshots/") 
+    absolute_path = os.path.abspath(relative_path) 
+    if name:
+        return f"{absolute_path}/{name}"
+    return absolute_path
+
 def get_icons_dir(name=None):
     current_directory = os.path.dirname(os.path.realpath(__file__))  
     relative_path = os.path.join(current_directory, "../icons/") 
     absolute_path = os.path.abspath(relative_path) 
     if name:
         return f"{absolute_path}/{name}"
+    return absolute_path
     
 def get_fonts_dir(name=None):
     current_directory = dir_path = os.path.dirname(os.path.realpath(__file__))  
@@ -107,6 +116,25 @@ class BaseCommand:
 
     def render(self, parameters):
         raise NotImplementedError
+    
+    def getScreenShots(self):
+        
+        result=[]
+        base_dir = get_screenshots_dir()
+        print(f"base_dir = {base_dir}")
+        print(f"=> = {os.listdir(base_dir)}")
+        
+        for file in os.listdir(base_dir):
+            if file.startswith(self.name):
+                result.append(file)
+        return result    
+
+    def getScreenShot(self, name):
+
+        base_dir = get_screenshots_dir()
+        file = f"{base_dir}/{name}"
+        return open(file, 'rb')
+
 
 class MatrixBaseCmd(BaseCommand):
 

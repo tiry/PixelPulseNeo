@@ -1,5 +1,5 @@
 from underground import SubwayFeed
-from mta.stops import stopResolverSingleton
+from commands.mta.stops import stopResolverSingleton
 import os
 import sys
 
