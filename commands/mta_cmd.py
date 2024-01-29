@@ -19,7 +19,7 @@ PAUSED_FRAMES = 60*3
 class MtaCmd(PictureScrollBaseCmd):
 
     def __init__(self):
-        super().__init__("mta", "Displays next train station")
+        super().__init__("mta", "Displays next trains and bus arrival time for a given location")
         self.scroll=True
         self.refresh=False
         self.speedX=0

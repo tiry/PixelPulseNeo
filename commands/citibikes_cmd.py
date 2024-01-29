@@ -1,17 +1,14 @@
 from commands.citibikes import api
 from commands.base import PictureScrollBaseCmd, get_icons_dir, get_total_matrix_height, get_total_matrix_width
-from commands.mta import route
 from PIL import Image
 from PIL import ImageDraw
-
 
 class CitibikesCmd(PictureScrollBaseCmd):
     
     def __init__(self):
-        super().__init__("citibikes", "Displays information about Citibike Stations")
+        super().__init__("citibikes", "Displays information about the closest Citibike Station")
         self.scroll=False
         self.refresh=False
-
 
     def update(self, parameters):
         citibike_info=api.getStationInfo(["Columbia", "Carroll"])

@@ -133,7 +133,14 @@ class BaseCommand:
 
         base_dir = get_screenshots_dir()
         file = f"{base_dir}/{name}"
+        return file
+    
+    def getScreenShotBlob(self, name):
+
+        base_dir = get_screenshots_dir()
+        file = f"{base_dir}/{name}"
         return open(file, 'rb')
+    
 
 
 class MatrixBaseCmd(BaseCommand):

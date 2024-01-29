@@ -25,10 +25,11 @@ executor = CommandExecutor(scheduler_enabled=False)
 
 
 app = Flask(__name__)
+
 CORS(app)  # This enables CORS for all routes
 
-api = Api(app, version='1.0', title='PixelPulseNeoServer', description='REST API to interact with PixelPulseNeoServer')
 # doc='/api/docs'
+api = Api(app, version='1.0', title='PixelPulseNeoServer', description='REST API to interact with PixelPulseNeoServer')
 
 @api.route('/commands')
 class Commands(Resource):
@@ -42,15 +43,7 @@ class Commands(Resource):
         - `description`: A description of what the command does  
         - `screenshots`: Screenshot URLs demonstrating the visual effect of the command
         """
-        commands = executor.get_commands()
-        result = []
-        for name in commands:
-            cmd = commands[name]
-            result.append({
-                "name": cmd.name,
-                "description": cmd.description,
-                "screenshots": cmd.getScreenShots()
-            })
+        result = executor.get_commands()
         return jsonify(result)
 
 @api.route('/screenshots/<command_name>/<screenshot_name>')
@@ -67,8 +60,8 @@ class Screenshot(Resource):
         if command is None:
             return jsonify({"error": "Command not found"}), 404
         
-        screenshot = command.getScreenShot(screenshot_name)
-        if screenshot is None:
+        screenshot_path = executor.get_command_screenshot(command_name, screenshot_name)
+        if screenshot_path is None:
             return jsonify({"error": "Screenshot not found"}), 404
 
         _, ext = os.path.splitext(screenshot_name)
@@ -79,22 +72,32 @@ class Screenshot(Resource):
         else:
             mimetype = 'application/octet-stream'
         
-        return send_file(screenshot, mimetype=mimetype)
+        if os.path.exists(screenshot_path):
+            return send_file(open(screenshot_path, "rb"), mimetype=mimetype)
+        else:
+            return jsonify({"error": "Screenshot not found"}), 404
 
-@api.route('/command/<name>')
+@api.route('/command/<command_name>')
 class Command(Resource):
 
-    def post(self, name):
+    @api.doc(params={
+        'duration': {'description': 'Duration of the command', 'type': 'integer', 'required': False}})
+    def post(self, command_name):
         """Executes the command with the given name.
 
         Returns a JSON dictionary with the following fields:
 
         - `result`: A message indicating the result of the command execution
         """
+        print("XXX Execute")
+        # Access the duration query parameter with a default value if it's not provided
+        duration = request.args.get('duration', default=10, type=int)
         try:
-            executor.execute_now(name)
-            return jsonify({"result": f"Command '{name}' executed"})
+            executor.execute_now(command_name, duration)
+            return jsonify({"result": f"Command '{command_name}' executed"})
         except Exception as e:
+            print(f"Error during command execution for {command_name}")
+            print(e)      
             return jsonify({"error": str(e)}), 500
 
 @api.route('/schedule')
@@ -110,10 +113,10 @@ class Schedule(Resource):
         - `interval`: The interval in seconds between runs of this command
         """
 
-        if len(executor.schedule)==0:
+        if len(executor.get_schedule())==0:
             executor.load_schedule()
 
-        return jsonify(executor.schedule)
+        return jsonify(executor.get_schedule())
 
     def post(self):
         """Updates the executor's schedule.
@@ -129,7 +132,7 @@ class Schedule(Resource):
             if executor.get_command(command_name) is None:
                 return jsonify({"error": f"Command '{command_name}' not found"}), 400
         
-        executor.schedule = new_schedule
+        executor.set_schedule(new_schedule)
         executor.save_schedule()
         return jsonify({"result": "Schedule updated"})
 

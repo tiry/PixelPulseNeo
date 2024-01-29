@@ -7,8 +7,46 @@ import os
 import argparse
 from datetime import datetime
 import shutil
+import socket
+import subprocess
+import time
 
-class CommandExecutor:
+BUFFER_SIZE = 1024*10
+
+class BaseCommandExecutor:
+
+    def __init__(self):
+        pass
+
+    def list_commands(self):
+        pass
+    
+    def get_commands(self):
+        pass
+    
+    def get_command(self, name):
+        pass
+
+    def get_command_screenshot(self, name, screenshot_name):
+        pass
+
+    def load_schedule(self, schedule_file=None):
+        pass
+
+    def get_schedule(self):
+        pass
+
+    def set_schedule(self, schedule):
+        pass
+
+    def run_command(self, command):
+        pass
+
+    def run_schedule(self):
+        pass
+
+
+class CommandExecutor(BaseCommandExecutor):
 
     def __init__(self, scheduler_enabled=True, schedule_file='schedule.json'):
         self.commands = self.load_commands()
@@ -44,10 +82,32 @@ class CommandExecutor:
         return self.commands.keys()
     
     def get_commands(self):
-        return self.commands.copy()
+        result = []
+        for name in self.commands:
+            cmd = self.commands[name]
+            result.append({
+                "name": cmd.name,
+                "description": cmd.description,
+                "screenshots": cmd.getScreenShots()
+            })
+        return result
     
     def get_command(self, name):
-        return self.commands[name]
+        cmd = self.commands.get(name, None)
+        if cmd:
+            return {
+                "name": cmd.name,
+                "description": cmd.description,
+                "screenshots": cmd.getScreenShots()
+            }
+        return None
+
+    def get_command_screenshot(self, name, screenshot_name):
+        cmd = self.commands.get(name, None)
+        if cmd:
+            return cmd.getScreenShot(screenshot_name)
+        return None
+
 
     def load_schedule(self, schedule_file=None):
         if not schedule_file:
@@ -62,6 +122,11 @@ class CommandExecutor:
         self.schedule=schedule
         return schedule
     
+    def get_schedule(self):
+        return self.schedule
+
+    def set_schedule(self, schedule):
+        self.schedule = schedule
 
     def save_schedule(self, schedule_file=None):
         if not schedule_file:
@@ -142,11 +207,113 @@ class CommandExecutor:
         self.schedule_thread.join()
 
 
+    def serve(self):
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.bind(('localhost', 6000))
+        server_socket.listen(1)
+
+        user = "normal user"
+        if os.getuid() == 0:
+            user = "root"
+        print(f"IPC Server running as {user} and waiting for commands...")
+
+        while True:
+            client_socket, addr = server_socket.accept()
+            while True:
+                json_str = client_socket.recv(BUFFER_SIZE).decode()
+                command, args, kwargs = json.loads(json_str)
+                response_wrapper = {
+                    "success" : False,
+                    "error": None,
+                    "response" : None
+                }
+                try:
+                    if command == "exit":
+                        print("Server shuting down")
+                        client_socket.close()
+                        self.stop()
+                        break
+                    elif command =="list_commands":
+                        response = self.list_commands()
+                        response_wrapper["success"]=True
+                        response_wrapper["response"] = response
+                    elif command =="get_commands":
+                        response = self.get_commands()
+                        response_wrapper["success"]=True
+                        response_wrapper["response"] = response
+                    else:
+                        response_wrapper["error"]=f"Command {command} not found"
+                except Exception as e:
+                    response_wrapper["success"]=False
+                    response_wrapper["error"] = str(e)
+                    print(e)
+                
+                json_response = json.dumps(response_wrapper)
+                client_socket.send(json_response.encode())
+
+
+
+class IPCExecutor(BaseCommandExecutor):
+
+    def __init__(self):
+        
+        self.start_process()
+        self.connect()
+
+    def start_process(self):
+
+        # Start as root using subprocess
+        subprocess.Popen(['sudo', 'python3', 'executor.py -s'])
+        time.sleep(1)  # Wait for the server to start
+
+    def connect(self):
+        # connect 
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect(('localhost', 6000))
+        self.client = client_socket
+
+    def disconnect(self):
+        if self.client:
+            self.client.close()
+
+    def send_command(self,command, args, kwargs):
+
+        p = [command,args, kwargs]
+        json_call = json.dumps(p)
+        self.client.send(json_call.encode())
+        response = self.client.recv(BUFFER_SIZE).decode()
+        json_response = json.loads(response)
+
+        return json_response
+
+
+    def list_commands(self):
+        pass
+    
+    def get_commands(self):
+        pass
+    
+    def get_command(self, name):
+        pass
+
+    def load_schedule(self, schedule_file=None):
+        pass
+
+    def run_command(self, command):
+        pass
+
+    def run_schedule(self):
+        pass
+
+
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--scheduler", help="start scheduler", action="store_true")
     parser.add_argument("-l", "--list", help="list commands", action="store_true")
+    parser.add_argument("-s", "--listen", help="start IPC Server", action="store_true")
+    
    
     parser.add_argument("-d", "--duration", help="default command duration", default=5)
     parser.add_argument("-c", "--commands", nargs="+", help="list of commands to execute")

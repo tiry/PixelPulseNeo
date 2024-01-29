@@ -1,97 +1,146 @@
 from commands.base import PictureScrollBaseCmd, get_icons_dir, get_total_matrix_width, get_total_matrix_height
-import feedparser
+from commands.news import feed
 from PIL import Image
 from PIL import ImageDraw
-from io import BytesIO
-from urllib.request import urlopen
-from unidecode import unidecode
+
+class FeedWrapper():
+
+    def __init__(self, feed):
+        self.feed = feed
+        self.ids = [ entry.id for entry in feed.entries]
+        self.current_id=self.ids[0]
+        self.rendered_item_img = None
+        self.rendered_item_id = None
+    
+    def __getitem__(self, key):
+        if key=="entries":
+            return self.feed
+        return super().__getitem__(key)
+    
+    def get_current_id(self):
+        return self.current_id
+    
+    def get_current_entry(self):
+        for entry in self.feed.entries:
+            if entry.id == self.current_id:
+                return entry 
+
+    def next(self):
+
+        print("Next")
+        next_idx = self.ids.index(self.current_id)+1
+
+        if (next_idx>=len(self.ids)):
+            self.current_id = self.ids[0]
+        else:
+            self.current_id = self.ids[next_idx]
+
+        return self.current_id
+    
+    def set_rendered_img(self, img, id):
+        self.rendered_item_img = img
+        self.rendered_item_id = id
+        assert id == self.current_id
+
+    def set_scrolling_boundaries(self, text_width):
+
+        print(f"set boundary to {text_width}")
+
+        self.scrolling_position=get_total_matrix_width()
+        self.max_scrolling_position = - text_width
+
+    def get_next_scrolling_position(self):
+
+        if self.scrolling_position is None:
+            return None
+
+        self.scrolling_position -=1.5
+        if self.scrolling_position < self.max_scrolling_position:
+            print("Reset position")
+            self.scrolling_position=get_total_matrix_width()
+            return None
+
+        return int(self.scrolling_position)    
+
+
+    def get_rendered_img(self):
+        if self.rendered_item_id == self.current_id:
+            if self.rendered_item_img:
+                return self.rendered_item_img
+        return None
+            
+
+
+
+        
 
 class NewsCmd(PictureScrollBaseCmd):
+
     def __init__(self):
         super().__init__("news", "Displays News from RSS feeds")
-        self.scroll=True
-        self.refresh=False
+        self.scroll=False
+        self.refresh=True
         self.speedX=0
-        self.speedY=-1
+        self.speedY=0
+        #self.src_url = "https://www.france24.com/en/rss"
+        self.src_url = "https://www.lemonde.fr/international/rss_full.xml"
 
 
     def update(self, parameters):
-        url = "https://www.france24.com/en/rss"
-        feed = feedparser.parse(url)
-
-        for entry in feed.entries:
-            print("Entry Title:", entry.title)
-            print("Entry Link:", entry.link)
-            print("Entry Summary:", entry.summary)
-            print("Thumbs: " , entry.media_thumbnail)
-            print("Tags:", entry.tags)
-            
-            #print(entry.keys())
-        #    print(feed)
-        self.feed = feed
+        self.feed = FeedWrapper(feed.get(self.src_url))
         super().update(parameters)
 
-    def format_multilines(self, summary, font, width):
+    def render_news_item(self):
 
-        layout = []
-        current_line = []
-        last_width = 0 
-        for word in summary.split():
-            current_line.append(word)
-            _,_, text_width, text_height =  font.getbbox(unidecode(" ".join(current_line)))
-            if text_width > width:
-                # remove last added
-                current_line.pop(-1)
-                layout.append((" ".join(current_line),int( (width-last_width)/2)))
-                current_line = [word]
-            else: 
-                last_width = text_width
-        return layout
-    
-    def render_news_item(self, entry):
+        img = self.feed.get_rendered_img()
+        font = self.getFont("6x12.pil")
+        if not img:
+            entry = self.feed.get_current_entry()
+            width = get_total_matrix_width()
+            height = get_total_matrix_height() 
+            
+            # pre-render background
 
-        width = get_total_matrix_width()
-        height = get_total_matrix_height() 
+            img = Image.new('RGB', (width, height), color=(0 ,0, 0))  
+            img_url = entry.media_thumbnail[0]["url"]
+            icon = feed.getImage(img_url)
+            
+            icon_width, icon_height = icon.size
+            target_icon_height = 50
+            icon_width = int(icon_width / (icon_height/target_icon_height))
+            icon = icon.resize((icon_width, target_icon_height), Image.LANCZOS)
+            img.paste(icon, (0, 0))
+            
+            # XXX render tags + time
 
-        img = Image.new('RGB', (width, height), color=(0 ,0, 0))  
-        
-        font7 = self.getFont("6x12.pil")
-        draw = ImageDraw.Draw(img) 
+            # compute scrolling size 
+            _,_, text_width, text_height =  font.getbbox(entry.summary)
+            self.feed.set_scrolling_boundaries(text_width)
 
-        
-        img_url = entry.media_thumbnail[0]["url"]
-        icon = Image.open(urlopen(img_url)).convert('RGB')
+            # cache the background image 
+            self.feed.set_rendered_img(img, entry.id)
 
-        draw.text((0  , 50), unidecode(entry.summary), font=font7)
+        # copy the image before updating
+        img = img.copy()
 
-        width, height = icon.size
-        target_height = 50
-        width = int(width / (height/target_height))
-        icon = icon.resize((width, target_height), Image.LANCZOS)
-        img.paste(icon, (0, 0))
+        # render text
+        entry = self.feed.get_current_entry()
+        draw = ImageDraw.Draw(img)         
+        dx = self.feed.get_next_scrolling_position()
+        if dx is None:
+            # end of scroll => go to the next news
+            self.feed.next()
+        else:    
+            draw.text((dx  , 50), entry.summary, font=font)
 
         return img
 
+    
     def generate_image(self, parameters):
-        
-        entries = self.feed.entries
-        nb_items = len(entries)
-        if nb_items > 10:
-            nb_items = 10
-            entries = entries[:10]
-
-        width = get_total_matrix_width()
-        height = get_total_matrix_height() * nb_items
-
-        img = Image.new('RGB', (width, height), color=(0 ,0, 0))  
-        
-        idx=0
-        for entry in self.feed.entries:
-            img.paste(self.render_news_item(entry), (0, idx*64))
-            idx+=1
-
+        img = self.render_news_item()
         return img
     
+
 
 
     
