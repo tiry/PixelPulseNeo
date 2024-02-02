@@ -12,11 +12,12 @@ BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 RESET = '\033[0m'
 
-def configure_log(logger, color=BLUE, name="Nino"):
+def configure_log(logger, color=None, name=None):
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
-    formatter = logging.Formatter(f'{color} {name} > %(message)s {RESET}')
-    console.setFormatter(formatter)
+    if color!=None and name !=None:
+        formatter = logging.Formatter(f'{color} {name} > %(message)s {RESET}')
+        console.setFormatter(formatter)
     logger.setLevel(logging.DEBUG)
     logger.addHandler(console)
 

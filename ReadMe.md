@@ -115,6 +115,7 @@ Command system
     pip install underground
     pip install numpy
     pip install feedparser
+    pip install pydantic
 
 API server
 

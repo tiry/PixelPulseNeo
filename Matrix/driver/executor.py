@@ -9,29 +9,32 @@ from datetime import datetime
 import shutil
 import time
 
-from Matrix.driver.base_executor import BaseCommandExecutor, BUFFER_SIZE
+from Matrix.models.Commands import CommandEntry, Schedule
+from Matrix.driver.base_executor import Schedule, BaseCommandExecutor,  BUFFER_SIZE
 from Matrix.driver.ipc_server import IPCServer
 
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
 
-    def __init__(self, scheduler_enabled=True, schedule_file='schedule.json'):
+    def __init__(self, schedule_file='schedule.json'):
+
         self.commands = self.load_commands()
+        
         self.schedule_file = schedule_file
         self.schedule = []
-        self.scheduler_enabled=scheduler_enabled
-        if scheduler_enabled :
+        if schedule_file!=None:
             self.load_schedule()
             print(f"loaded schedule = {self.schedule}")
 
-        self.command_queue = queue.Queue()
+        self.command_queue = []
         self.current_thread = None
+
         self.stop_current = threading.Event()
         self.schedule_thread = None
-        if len(self.schedule)>0:
-            print(f"starting schedule thread")
-            self.schedule_thread = threading.Thread(target=self.run_schedule, args=())
-            self.schedule_thread.start()
+        
+        print(f"starting schedule thread")
+        self.schedule_thread = threading.Thread(target=self.run_schedule, args=())
+        self.schedule_thread.start()
 
     def load_commands(self):
         commands = {}
@@ -85,11 +88,19 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         schedule = None
         try:
             with open(schedule_file, 'r') as file:
-                schedule= json.load(file)
+                raw_schedule= json.load(file)
+            
+            schedule = []
+            for d in raw_schedule:
+                entry = CommandEntry(d["command"],d["duration"], d.get("args", []), d.get("nargs", {}))
+                schedule.append(entry)
+
+
         except Exception as e:
             print(f"Error loading schedule: {str(e)}")
             schedule =  []
         self.schedule=schedule
+        self.schedule_file=schedule_file
         return schedule
     
     def get_schedule(self):
@@ -130,6 +141,11 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
 
     def run_schedule(self):
         while not self.stop_current.is_set():
+            if len(self.command_queue)==0:
+                # no more tasks
+                # load from background tasks
+                self.command_queue.extend()
+
             for entry in self.schedule:    
                 self.stop_current.set()
                 if self.current_thread and self.current_thread.is_alive():
