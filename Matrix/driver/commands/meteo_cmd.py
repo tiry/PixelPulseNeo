@@ -29,10 +29,10 @@ class MeteoCmd(PictureScrollBaseCmd):
         self.refresh=True
         self.background=None
 
-    def update(self, parameters):
+    def update(self, args=[], kwargs={}):
         self.weather = getTodayWeather()
         #print(f"weather = {self.weather}")
-        super().update(parameters)
+        super().update(args=[], kwargs={})
 
     def getWeatherBackground(self):
         
@@ -74,7 +74,7 @@ class MeteoCmd(PictureScrollBaseCmd):
         return self.background.copy()
 
 
-    def generate_image(self, parameters):
+    def generate_image(self, args=[], kwargs={}):
         
         # get background
         img = self.getWeatherBackground()

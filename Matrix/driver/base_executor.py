@@ -17,7 +17,7 @@ class Base:
 
 
 logger = logging.getLogger(__name__)
-configure_log(logger)
+configure_log(logger, level = logging.INFO)
 
 class Scheduler(Base):
 
@@ -101,7 +101,10 @@ class Scheduler(Base):
         self.current_stack = schedule
 
     def append_next(self, command_entry:CommandEntry):
+        logger.debug("append command next")
         self.current_stack.commands.insert(0, command_entry)
+        logger.debug(f"stack = => {self.current_stack.commands}")
+        
          
     def append(self, command_entry:CommandEntry, before = None):
         if before:
@@ -116,7 +119,7 @@ class Scheduler(Base):
                 #logger.info(f"Reload Stack from schedule {cname}")
                 self.load_playlist(cname)
             else:
-                logger.info("Empty stack and no default schedule => None Command returned")
+                #logger.info("Empty stack and no default schedule => None Command returned")
                 return None
         return self.current_stack.commands.pop(0)
 

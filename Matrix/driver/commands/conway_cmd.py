@@ -51,12 +51,12 @@ class ConwayCmd(PictureScrollBaseCmd):
         self.background=None
         self.tailLength=len(getPalette())
 
-    def update(self, parameters):
+    def update(self,args=[], kwargs={}):
 
         model = randomGrid(get_total_matrix_width(), get_total_matrix_height())
         print(model)
         self.models = [model]
-        super().update(parameters)
+        super().update(args, kwargs)
         
     def renderArray(self, model, img, color=(255,255,255)):
         width, height=model.shape
@@ -71,7 +71,7 @@ class ConwayCmd(PictureScrollBaseCmd):
         if len(self.models)>self.tailLength:
             self.models.pop(0)
 
-    def generate_image(self, parameters):
+    def generate_image(self, args=[], kwargs={}):
         
         width, height=self.models[-1].shape
         img = Image.new('RGB', (width, height), color=(0 ,0, 0))  

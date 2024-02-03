@@ -3,6 +3,7 @@ from Matrix.driver.commands.news import feed
 from PIL import Image
 from PIL import ImageDraw
 
+# XXX move me
 class FeedWrapper():
 
     def __init__(self, feed):
@@ -70,10 +71,6 @@ class FeedWrapper():
         return None
             
 
-
-
-        
-
 class NewsCmd(PictureScrollBaseCmd):
 
     def __init__(self):
@@ -86,9 +83,9 @@ class NewsCmd(PictureScrollBaseCmd):
         self.src_url = "https://www.lemonde.fr/international/rss_full.xml"
 
 
-    def update(self, parameters):
+    def update(self, args=[], kwargs={}):
         self.feed = FeedWrapper(feed.get(self.src_url))
-        super().update(parameters)
+        super().update(args,kwargs)
 
     def render_news_item(self):
 
@@ -136,7 +133,7 @@ class NewsCmd(PictureScrollBaseCmd):
         return img
 
     
-    def generate_image(self, parameters):
+    def generate_image(self, args=[], kwargs={}):
         img = self.render_news_item()
         return img
     

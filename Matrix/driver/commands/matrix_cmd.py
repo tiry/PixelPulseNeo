@@ -8,7 +8,7 @@ class MatrixCmd(PictureScrollBaseCmd):
     def __init__(self):
         super().__init__("matrix", "Displays Picture on Matrix")
     
-    def generate_image(self, parameters):
+    def generate_image(self, args=[], kwargs={}):
         W=64*8
         H=64
         image = Image.new("RGB", (W, H)) 

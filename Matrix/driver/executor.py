@@ -8,45 +8,57 @@ import argparse
 from datetime import datetime
 import shutil
 import time
-
+import traceback
 from Matrix.models.Commands import CommandEntry, Schedule
-from Matrix.driver.base_executor import Schedule, BaseCommandExecutor,  BUFFER_SIZE
+from Matrix.driver.base_executor import Scheduler, BaseCommandExecutor,  BUFFER_SIZE
 from Matrix.driver.ipc_server import IPCServer
+from Matrix.models.Commands import CommandExecutionLog
+
+MAX_AUDIT_SIZE=100
+BUSY_WAIT = 0.1
+
+
+from Matrix.driver.utilz import configure_log, CYAN
+import logging
+
+logger = logging.getLogger(__name__)
+configure_log(logger, CYAN, "CmdExec")
 
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
 
     def __init__(self, schedule_file='schedule.json'):
 
+        # load commands
         self.commands = self.load_commands()
+
+        # init scheduler and load playlists
+        self.scheduler = Scheduler(schedule_file=schedule_file)
         
-        self.schedule_file = schedule_file
-        self.schedule = []
-        if schedule_file!=None:
-            self.load_schedule()
-            print(f"loaded schedule = {self.schedule}")
-
-        self.command_queue = []
-        self.current_thread = None
-
         self.stop_current = threading.Event()
+        self.stop_scheduler = threading.Event()
         self.schedule_thread = None
-        
         print(f"starting schedule thread")
-        self.schedule_thread = threading.Thread(target=self.run_schedule, args=())
+        self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
         self.schedule_thread.start()
+
+        self.audit_log = []
 
     def load_commands(self):
         commands = {}
         current_directory = self.get_current_directory()
         for file in os.listdir(f'{current_directory}/commands'):
             if file.endswith('_cmd.py') and file != 'base.py':
-                module_name = file[:-3]
-                module = importlib.import_module(f'Matrix.driver.commands.{module_name}')
-                class_name = f"{file[:-7].capitalize()}Cmd"
-                command_class = getattr(module, class_name)
-                command_instance = command_class()
-                commands[command_instance.name] = command_instance
+                try:
+                    module_name = file[:-3]
+                    module = importlib.import_module(f'Matrix.driver.commands.{module_name}')
+                    class_name = f"{file[:-7].capitalize()}Cmd"
+                    command_class = getattr(module, class_name)
+                    command_instance = command_class()
+                    commands[command_instance.name] = command_instance
+                except Exception as e:
+                    logger.error(f"ERROR >> Unable to load command {command_class}]")
+                    logger.error(traceback.format_exc())
         return commands
 
     def list_commands(self):
@@ -78,133 +90,64 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         if cmd:
             return cmd.getScreenShot(screenshot_name)
         return None
-
-
-    def load_schedule(self, schedule_file=None):
-        if not schedule_file:
-            schedule_file = self.schedule_file
-        if not os.path.exists(schedule_file):
-            schedule_file = self.get_current_directory() + "/" + schedule_file
-        schedule = None
-        try:
-            with open(schedule_file, 'r') as file:
-                raw_schedule= json.load(file)
-            
-            schedule = []
-            for d in raw_schedule:
-                entry = CommandEntry(d["command"],d["duration"], d.get("args", []), d.get("nargs", {}))
-                schedule.append(entry)
-
-
-        except Exception as e:
-            print(f"Error loading schedule: {str(e)}")
-            schedule =  []
-        self.schedule=schedule
-        self.schedule_file=schedule_file
-        return schedule
     
     def get_schedule(self):
-        return self.schedule
+        return self.scheduler.get_current_stack()
 
     def set_schedule(self, schedule):
-        self.schedule = schedule
+        # XXX
+        self.scheduler
 
     def save_schedule(self, schedule_file=None):
-        if not schedule_file:
-            schedule_file = self.schedule_file
-        
-        # Create backup directory if it doesn't exist
-        backup_dir = self.get_current_directory() + "/backups"
-        print(f"backup dir = {backup_dir}")
-        if not os.path.exists(backup_dir):
-            os.makedirs(backup_dir)
+        self.scheduler.save(schedule_file=schedule_file)
 
-        # Get current timestamp for backup file name
-        now = datetime.now().strftime("%Y%m%d%H%M%S")
-
-        # Construct backup file path
-        backup_file = backup_dir + "/schedule_" + now + ".bak"
-
-        # Copy current schedule file to backup
-        shutil.copy(schedule_file, backup_file)
-
-        # Delete old backups, keeping last 5
-        backup_files = sorted(os.listdir(backup_dir))
-        if len(backup_files) > 5:
-            for old_file in backup_files[:-5]:
-                os.remove(backup_dir + "/" + old_file)
-
-        # Save new schedule
-        with open(schedule_file, 'w') as file:
-            json.dump(self.schedule, file, indent=1)
-
-
-    def run_schedule(self):
-        while not self.stop_current.is_set():
-            if len(self.command_queue)==0:
-                # no more tasks
-                # load from background tasks
-                self.command_queue.extend()
-
-            for entry in self.schedule:    
-                self.stop_current.set()
-                if self.current_thread and self.current_thread.is_alive():
-                    self.current_thread.join()
-                self.execute_command(entry["command_name"], entry["duration"])
-            self.stop_current.set()
-            if self.current_thread and self.current_thread.is_alive():
-                self.current_thread.join()
-            self.stop_current.clear()
-
-    def execute_command(self, command_name, duration):
-        self.stop_current.clear()
-        command = self.commands.get(command_name)
-        self.results = []
-        if command:
-            print(f"exec command on {self}")
-            self.current_thread = threading.Thread(target=self.run_command, args=(command,))
-            self.current_thread.start()
-            time.sleep(1)
-            self.current_thread.join(timeout=duration)
-            self.stop_current.set()        
-            print(f"command exec result {self.results}")
-            
-        else:
-            print(f"Command {command_name} not found")
-
-    def run_command(self, command):
-        try:
-            print(f"run command on {self}")
-            res = command.execute(self.stop_current)
-            print(f"run_command  executed with result {res}")
-            self.results.append(res)
-            print(f"run_command stored result => {self.results}")
-            
-            if hasattr(command, "__last_render"):
-                print(f" attribiute __last_render set")
+    def _scheduler_loop(self):
+        while not self.stop_scheduler.is_set():
+            command_entry  = self.scheduler.fetch_next_command()
+            if command_entry:
+                self._run_command(command_entry)
             else:
-                print(f"  __last_render NOT FOUND")
+                time.sleep(BUSY_WAIT)
+
+    def _add_log(self, log_entry):
+        print(f"LOG> {log_entry}")
+        self.audit_log.append(log_entry)
+        if len(self.audit_log)>MAX_AUDIT_SIZE:
+            self.audit_log.remove(0)
+
+    def get_audit_log(self):
+        return self.audit_log
+
+    def _run_command(self, command_entry):
+        try:
+            self.stop_current.clear()
+            executable_command = self.commands.get(command_entry.command_name)
+
+            t0 = time.time()
+            res, err = executable_command.execute(self.stop_current, command_entry.duration, command_entry.args, command_entry.kwargs )
+            print(f"run_command executed with result = {res} and error = {err}")
+            error = None
+            if err:
+                error = str(err)
+
+            log_entry = CommandExecutionLog(command=command_entry.copy(deep=True), result=str(res), effective_duration=time.time()-t0, error=error)
+            self._add_log(log_entry)
+
         except Exception as e:
-            print(f"Error executing {command.name}: {str(e)}")
+            print(f"Error executing {command_entry.command_name}: {str(e)}")
+            print(traceback.format_exc())
+            log_entry = CommandExecutionLog(command=command_entry.copy(deep=True), result=None, effective_duration=time.time()-t0, error=str(e))
+            self._add_log(log_entry)
 
-    def execute_now(self, command_name, duration ):
-        self.stop_current.set()
-        if self.current_thread and self.current_thread.is_alive():
-            self.current_thread.join()
-        if self.schedule_thread:
-            self.schedule_thread.join()
 
-        res = self.execute_command(command_name, duration)
-        self.resume_schedule()
-        return res
-
-    def resume_schedule(self):
-        if not self.scheduler_enabled: return
-        self.schedule = self.load_schedule(self.schedule_file)
-        if len(self.schedule)>0:
-            self.schedule_thread.start()
+    def execute_now(self, command_name, duration , args = [], kwargs = {}, interrupt=False):
+        self.scheduler.append_next(CommandEntry(command_name=command_name, duration=duration, args=args, kwargs=kwargs))
+        if interrupt:
+            self.stop_current.set()
 
     def stop(self):
+        time.sleep(0.1)
+        self.stop_scheduler.set()
         self.schedule_thread.join()
 
     def execute_ipc_request(self, command, args, kwargs):

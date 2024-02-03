@@ -10,13 +10,13 @@ class CitibikesCmd(PictureScrollBaseCmd):
         self.scroll=False
         self.refresh=False
 
-    def update(self, parameters):
+    def update(self, args=[], kwargs={}):
         citibike_info=api.getStationInfo(["Columbia", "Carroll"])
         self.citibike_info=citibike_info[0]
         print(f" Citi Bike info {self.citibike_info}")        
-        super().update(parameters)
+        super().update(args,kwargs)
     
-    def generate_image(self, parameters):
+    def generate_image(self, args,kwargs):
         
         width = get_total_matrix_width()
         height = get_total_matrix_height()

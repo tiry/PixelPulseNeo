@@ -5,12 +5,19 @@ from PIL import ImageFont
 from PIL import ImageChops
 import os
 import traceback
+from Matrix.driver.utilz import configure_log, DARKCYAN
+import logging
+
+logger = logging.getLogger(__name__)
+configure_log(logger, DARKCYAN, "Command", logging.INFO)
 
 from RGBMatrixEmulator import RGBMatrix, RGBMatrixOptions, graphics
 
 MATRIX_CHAINED = 3 
 MATRIX_WIDTH = 64
 MATRIX_HEIGHT = 64
+
+DEFAULT_REFRESH = 1/60.0
 
 def get_matrix_width():
     return MATRIX_WIDTH
@@ -83,48 +90,44 @@ def trimImage(im, center=True):
 
 class BaseCommand:
 
-    def __init__(self, name, description, parameters=None):
+    def __init__(self, name, description):
         
-        self.refresh_timer=1/60.0
-
+        self.refresh_timer=DEFAULT_REFRESH
         self.name = name
         self.description = description
-        self.parameters = parameters or {}
 
-        print(f"Load command with name {name}")
+        logger.debug(f"Load command with name {name}")
 
-    def execute(self, stop_event, render=True):
-        
+    def execute(self, stop_event, timeout=10, args=[], kwargs={}, render=True):
+        t0=time.time()
         try:
-            print(f"#######################\n Execute command '{self.name}'\n")
-            self.update(self.parameters)
-
+            print(f"#######################\n Execute command '{self.name}' {args} {kwargs}\n")
+            self.update(args, kwargs)
             if render:
-                while not stop_event.is_set():
-                    self.__last_render = self.render(self.parameters)    
-                    print(f"last saved render => {self.__last_render}")
+                while not stop_event.is_set() and not (time.time()-t0)>timeout:
+                    res = self.render(args=args, kwargs=kwargs)    
                     time.sleep(self.refresh_timer)
-                return self.__last_render
+                return (res, None)
         except Exception as e:
             tb = traceback.format_exc()
-            print(f"Error executing command '{self.name}': {str(e)}")
-            print(tb)
+            logger.error(f"Error BaseCommand.execute '{self.name}': {str(e)}")
+            logger.error(tb)
             self.exception = e
             self.traceback = tb
-            return None
+            return (None, e)
     
-    def update(self, parameters):
+    def update(self, args=[], kwargs={}):
         pass
 
-    def render(self, parameters):
+    def render(self, args=[], kwargs={}):
         raise NotImplementedError
     
     def getScreenShots(self):
         
         result=[]
         base_dir = get_screenshots_dir()
-        print(f"base_dir = {base_dir}")
-        print(f"=> = {os.listdir(base_dir)}")
+        #logger.debug(f"base_dir = {base_dir}")
+        #logger.debug(f"=> = {os.listdir(base_dir)}")
         
         for file in os.listdir(base_dir):
             if file.startswith(self.name):
@@ -144,11 +147,10 @@ class BaseCommand:
         return open(file, 'rb')
     
 
-
 class MatrixBaseCmd(BaseCommand):
 
-    def __init__(self, name, description, parameters=None):
-        super().__init__(name, description, parameters)
+    def __init__(self, name, description):
+        super().__init__(name, description)
 
         self.options = getMatrixOptions()
         self.matrix = RGBMatrix(options = self.options)
@@ -158,21 +160,19 @@ class MatrixBaseCmd(BaseCommand):
         if not name in self.fonts:
             self.fonts[name]= ImageFont.load(get_fonts_dir(name)) 
         return self.fonts[name]
-         
-
 
 
 class PictureScrollBaseCmd(MatrixBaseCmd):
 
-    def __init__(self, name, description, parameters=None):
-        super().__init__(name, description, parameters)
+    def __init__(self, name, description):
+        super().__init__(name, description)
         self.speedX=1
         self.speedY=0
         self.scroll = True
         self.refresh = False
         
-    def update(self, parameters):
-        self.image = self.generate_image(parameters)
+    def update(self, args=[], kwargs={}):
+        self.image = self.generate_image(args,kwargs)
         self.double_buffer = self.matrix.CreateFrameCanvas()
         
         if self.scroll and self.speedX!=0:
@@ -181,10 +181,10 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
             self.xpos = 0
         self.ypos = 0
 
-    def generate_image(self, parameters):
+    def generate_image(self, args=[], kwargs={}):
         raise NotImplementedError
         
-    def render(self, parameters):
+    def render(self,args=[], kwargs={}):
         if self.scroll:
             self.xpos -= self.speedX
             if (self.xpos < -self.image.size[0]):
@@ -197,26 +197,23 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         self.double_buffer.Clear()
         img_width, img_height = self.image.size
         self.double_buffer.SetImage(self.image, self.xpos, self.ypos)
-        #self.double_buffer.SetImage(self.image, -self.xpos + img_width)
-
+ 
         self.double_buffer = self.matrix.SwapOnVSync(self.double_buffer)
 
         if self.refresh:
-            self.image = self.generate_image(parameters)
-          
-
-
+            self.image = self.generate_image(args,kwargs)
+        
 
 class TextScrollBaseCmd(MatrixBaseCmd):
 
-    def __init__(self, name, description, parameters=None):
-        super().__init__(name, description, parameters)
+    def __init__(self, name, description):
+        super().__init__(name, description)
         self.speedX=1
         self.speedY=0
         
 
-    def update(self, parameters):
-        self.text = self.get_text(parameters)
+    def update(self, args=[], kwargs={}):
+        self.text = self.get_text(args=[], kwargs={})
         self.double_buffer = self.matrix.CreateFrameCanvas()
         
         font = graphics.Font()
@@ -227,10 +224,10 @@ class TextScrollBaseCmd(MatrixBaseCmd):
         self.pos = self.double_buffer.width
 
 
-    def get_text(self, parameters):
+    def get_text(self, args=[], kwargs={}):
         raise NotImplementedError
         
-    def render(self, parameters):
+    def render(self, args=[], kwargs={}):
 
         double_buffer = self.double_buffer
         double_buffer.Clear()

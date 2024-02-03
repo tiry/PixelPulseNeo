@@ -64,7 +64,6 @@ class TestSchedule(unittest.TestCase):
         os.remove(cls.temp_file_name)
         #print("Temporary file deleted:", cls.temp_file_name)
 
-
     def test_create_scheduler(self):
         
         scheduler = Scheduler(schedule_file=None)
@@ -159,8 +158,8 @@ class TestSchedule(unittest.TestCase):
         with open(schedule_file, 'r') as file:
             yo = json.load(file)
             self.assertEqual(2, len(yo["playlists"].keys()))
-  
 
+        os.remove(schedule_file)
         
     def test_load_playlists(self):
 

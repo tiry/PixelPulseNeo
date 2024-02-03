@@ -26,17 +26,17 @@ class MtaCmd(PictureScrollBaseCmd):
         self.tempoframes=PAUSED_FRAMES
         self.direction=-1
 
-    def update(self, parameters):
+    def update(self, args=[], kwargs={}):
         next_trains = route.getNextTrainsToward(Direction="N", Routes=["F","G"], Station="Carroll")
         print(f"Next trains {next_trains}")
         self.next_trains = next_trains
         self.next_buses = bus.get_stop_info("B61", "Carroll")
         print(f"Next Buses {self.next_buses}")
-        super().update(parameters)
+        super().update(args, kwargs)
         #self.ypos=-64
 
 
-    def generate_image(self, parameters):
+    def generate_image(self, args=[], kwargs={}):
         
         width = get_total_matrix_width()
         height = get_total_matrix_height() * 2
@@ -82,8 +82,8 @@ class MtaCmd(PictureScrollBaseCmd):
             
         return img
 
-    def render(self, parameters):
-        super().render(parameters)
+    def render(self,args=[], kwargs={}):
+        super().render(args,kwargs)
 
         self.tempoframes-=1
         if self.tempoframes<=0:
