@@ -43,6 +43,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.schedule_thread.start()
 
         self.audit_log = []
+        self.execution_counter=0
 
     def load_commands(self):
         commands = {}
@@ -86,6 +87,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             return cmd.getScreenShot(screenshot_name)
         return None
     
+    def load_schedule(self, name):
+        self.scheduler.load_playlist(name)
+
     def get_schedule(self):
         return self.scheduler.get_current_stack()
 
@@ -105,13 +109,32 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 time.sleep(BUSY_WAIT)
 
     def _add_log(self, log_entry):
-        logger.debug(f"LOG> {log_entry}")
+        logger.debug(f" [AUDIT] {log_entry}")
         self.audit_log.append(log_entry)
         if len(self.audit_log)>MAX_AUDIT_SIZE:
             self.audit_log.remove(0)
 
+    def _log_exec(self,log_entry):
+        self._add_log(log_entry)
+        self.execution_counter +=1 # unbounded int in python3
+
+
     def get_audit_log(self):
         return self.audit_log
+
+    def get_execution_count(self):
+        return self.execution_counter
+
+    def _wait_for_executions(self, num_executions, timeout_seconds=10):
+        t0=time.time()
+        c0=self.get_execution_count()
+        while((time.time()-t0) < timeout_seconds):
+            time.sleep(BUSY_WAIT)
+            c_now = self.get_execution_count()
+            if c_now-c0 >= num_executions:
+                break
+        return self.get_audit_log()[:]       
+
 
     def _run_command(self, command_entry):
         try:
@@ -126,7 +149,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 error = str(err)
 
             log_entry = CommandExecutionLog(command=command_entry.copy(deep=True), result=str(res), effective_duration=time.time()-t0, error=error)
-            self._add_log(log_entry)
+            self._log_exec(log_entry)
 
         except Exception as e:
             logger.error(f"Error executing {command_entry.command_name}: {str(e)}")

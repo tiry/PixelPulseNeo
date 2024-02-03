@@ -85,7 +85,7 @@ class NewsCmd(PictureScrollBaseCmd):
 
     def update(self, args=[], kwargs={}):
         self.feed = FeedWrapper(feed.get(self.src_url))
-        super().update(args,kwargs)
+        return super().update(args,kwargs)
 
     def render_news_item(self):
 

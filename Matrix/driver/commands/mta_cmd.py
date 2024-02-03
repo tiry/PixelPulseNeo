@@ -24,6 +24,7 @@ class MtaCmd(PictureScrollBaseCmd):
         self.speedX=0
         self.speedY=0
         self.tempoframes=PAUSED_FRAMES
+        self.pause_duration = PAUSED_FRAMES
         self.direction=-1
 
     def update(self, args=[], kwargs={}):
@@ -33,7 +34,10 @@ class MtaCmd(PictureScrollBaseCmd):
         self.next_buses = bus.get_stop_info("B61", "Carroll")
         print(f"Next Buses {self.next_buses}")
         super().update(args, kwargs)
-        #self.ypos=-64
+
+        if "pause_frames" in kwargs.keys():
+            self.tempoframes = int(kwargs["pause_frames"])
+            self.pause_duration = self.tempoframes
 
 
     def generate_image(self, args=[], kwargs={}):
@@ -88,10 +92,10 @@ class MtaCmd(PictureScrollBaseCmd):
         self.tempoframes-=1
         if self.tempoframes<=0:
             if self.ypos==-64:
-                self.tempoframes=PAUSED_FRAMES
+                self.tempoframes=self.pause_duration
                 self.direction = +1
             elif self.ypos==0:
-                self.tempoframes=PAUSED_FRAMES
+                self.tempoframes=self.pause_duration
                 self.direction = -1
             self.speedY = 4*self.direction
         else:

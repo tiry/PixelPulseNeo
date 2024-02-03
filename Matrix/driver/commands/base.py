@@ -104,6 +104,7 @@ class BaseCommand:
             logger.debug(f"#######################\n Execute command '{self.name}' {args} {kwargs}\n")
             self.update(args, kwargs)
             if render:
+                res = None
                 while not stop_event.is_set() and not (time.time()-t0)>timeout:
                     res = self.render(args=args, kwargs=kwargs)    
                     time.sleep(self.refresh_timer)
@@ -170,6 +171,7 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         self.speedY=0
         self.scroll = True
         self.refresh = False
+        self.image_counter=0
         
     def update(self, args=[], kwargs={}):
         self.image = self.generate_image(args,kwargs)
@@ -180,6 +182,7 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         else:
             self.xpos = 0
         self.ypos = 0
+        return f"update image source data"
 
     def generate_image(self, args=[], kwargs={}):
         raise NotImplementedError
@@ -201,7 +204,9 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         self.double_buffer = self.matrix.SwapOnVSync(self.double_buffer)
 
         if self.refresh:
+            self.image_counter+=1
             self.image = self.generate_image(args,kwargs)
+        return f"rendered {self.image_counter} images"
         
 
 class TextScrollBaseCmd(MatrixBaseCmd):
@@ -236,3 +241,4 @@ class TextScrollBaseCmd(MatrixBaseCmd):
         if (self.pos + len < 0):
             self.pos = double_buffer.width
         double_buffer = self.matrix.SwapOnVSync(double_buffer)
+        
