@@ -21,8 +21,7 @@ The following endpoints are available:
 
 # Creates a Flask application instance with the given name
 
-executor = CommandExecutor(scheduler_enabled=False)
-
+executor = CommandExecutor()
 
 app = Flask(__name__)
 
@@ -112,10 +111,6 @@ class Schedule(Resource):
         - `name`: The name of the scheduled command  
         - `interval`: The interval in seconds between runs of this command
         """
-
-        if len(executor.get_schedule())==0:
-            executor.load_schedule()
-
         return jsonify(executor.get_schedule())
 
     def post(self):

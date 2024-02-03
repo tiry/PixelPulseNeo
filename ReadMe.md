@@ -58,9 +58,19 @@ Listing available commands
 
     python -m Matrix.driver.executor -l
 
-Start the scheduler:
+Start the scheduler: (see [schedule.json](schedule.json))
 
     python -m Matrix.driver.executor --scheduler
+
+### Running unit tests
+
+From the root folder
+
+    python -m unittest
+
+Or to run a specific test suite
+
+    python -m unittest Matrix.tests.test_cmdexec
 
 ## API Server
 

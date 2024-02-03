@@ -46,6 +46,8 @@ class Scheduler(Base):
         if not os.path.exists(schedule_file):
             schedule_file = self.get_current_directory() + "/" + schedule_file
         
+        logger.debug(f"loading schedule file {schedule_file}")
+           
         try:
             #logger.debug(f"loading schedule from file {schedule_file}")
             with open(schedule_file, 'r') as file:

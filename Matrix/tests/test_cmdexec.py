@@ -1,5 +1,9 @@
 import unittest
 import time
+import tempfile
+import os
+import json
+
 
 from Matrix.driver.executor import CommandExecutor
 from Matrix.models.Commands import CommandEntry, CommandExecutionLog
@@ -68,8 +72,64 @@ class TestCmdExecutor(unittest.TestCase):
         self.assertEqual(2, len(log))
         self.assertIsNotNone(log[1].error)
         
-        
         executor.stop()
+
+
+
+    def get_test_schedule_file(self):
+
+        temp_file = tempfile.NamedTemporaryFile(delete=False, mode='w+', suffix=".json", prefix="schedule-")
+       
+        data = {
+                "playlists": {
+                    "default": {
+                        "commands": [
+                            {
+                                "command_name": "time",
+                                "duration": 0.5,
+                                "args": [],
+                                "kwargs": {}
+                            },
+                            {
+                                "command_name": "faker",
+                                "duration": 0.5,
+                                "args": ["oho", "nino"],
+                                "kwargs": {"mock_return": "EchoArgs"}
+                            },
+                        ],
+                        "conditions": []
+                    }                
+                }
+            }
+
+        # Write JSON data to the file
+        json.dump(data, temp_file)
+        temp_file.flush()  # Ensure data is written to the file
+        temp_file.close()
+        return temp_file.name
+        
+
+
+    def test_schedule_and_enqueue(self):
+        
+        schedule_file = self.get_test_schedule_file()
+
+        executor = CommandExecutor(schedule_file=schedule_file)
+        # give  time for the scheduler to load
+        time.sleep(1)
+        schedule = executor.get_schedule()
+        #print(f"schedule = {schedule}")
+        
+        # give time to execute
+        time.sleep(2)
+        log = executor.get_audit_log()
+        self.assertTrue(len(log)>2)
+
+        executor.stop(interrupt=True)
+
+        os.remove(schedule_file)
+
+
 
 
 

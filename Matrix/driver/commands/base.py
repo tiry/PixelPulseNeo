@@ -101,7 +101,7 @@ class BaseCommand:
     def execute(self, stop_event, timeout=10, args=[], kwargs={}, render=True):
         t0=time.time()
         try:
-            print(f"#######################\n Execute command '{self.name}' {args} {kwargs}\n")
+            logger.debug(f"#######################\n Execute command '{self.name}' {args} {kwargs}\n")
             self.update(args, kwargs)
             if render:
                 while not stop_event.is_set() and not (time.time()-t0)>timeout:

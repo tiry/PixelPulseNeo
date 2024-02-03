@@ -67,12 +67,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def get_commands(self):
         result = []
         for name in self.commands:
-            cmd = self.commands[name]
-            result.append({
-                "name": cmd.name,
-                "description": cmd.description,
-                "screenshots": cmd.getScreenShots()
-            })
+            result.append(self.get_command(name))
         return result
     
     def get_command(self, name):
@@ -110,7 +105,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 time.sleep(BUSY_WAIT)
 
     def _add_log(self, log_entry):
-        print(f"LOG> {log_entry}")
+        logger.debug(f"LOG> {log_entry}")
         self.audit_log.append(log_entry)
         if len(self.audit_log)>MAX_AUDIT_SIZE:
             self.audit_log.remove(0)
@@ -125,7 +120,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
 
             t0 = time.time()
             res, err = executable_command.execute(self.stop_current, command_entry.duration, command_entry.args, command_entry.kwargs )
-            print(f"run_command executed with result = {res} and error = {err}")
+            logger.debug(f"run_command executed with result = {res} and error = {err}")
             error = None
             if err:
                 error = str(err)
@@ -134,8 +129,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self._add_log(log_entry)
 
         except Exception as e:
-            print(f"Error executing {command_entry.command_name}: {str(e)}")
-            print(traceback.format_exc())
+            logger.error(f"Error executing {command_entry.command_name}: {str(e)}")
+            logger.error(traceback.format_exc())
             log_entry = CommandExecutionLog(command=command_entry.copy(deep=True), result=None, effective_duration=time.time()-t0, error=str(e))
             self._add_log(log_entry)
 
@@ -145,10 +140,14 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         if interrupt:
             self.stop_current.set()
 
-    def stop(self):
+    def stop(self, interrupt=False):
         time.sleep(0.1)
+        if (interrupt):
+            self.stop_current.set()
         self.stop_scheduler.set()
+        logger.debug("waiting for scheduler to exit")
         self.schedule_thread.join()
+        logger.info("Scheduler shutdown completed, exiting")
 
     def execute_ipc_request(self, command, args, kwargs):
         response_wrapper = {
@@ -188,7 +187,11 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    executor = CommandExecutor(scheduler_enabled=args.scheduler)
+    if not args.scheduler:
+        # prevent loading of default scheduler file
+        executor = CommandExecutor(schedule_file=None)
+    else:
+        executor = CommandExecutor()
 
     if args.list:
         print(f"Listing commands:")
@@ -204,5 +207,7 @@ if __name__ == "__main__":
                 executor.execute_now(cmds[0], int(cmds[1]))
             else:
                 executor.execute_now(cmds[0], int(args.duration))
+            time.sleep(1)
+            executor.stop()
     
     

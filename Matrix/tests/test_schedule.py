@@ -28,13 +28,13 @@ class TestSchedule(unittest.TestCase):
                                 "command_name": "mta",
                                 "duration": 10,
                                 "args": [],
-                                "nargs": {}
+                                "kwargs": {}
                             },
                             {
                                 "command_name": "meteo",
                                 "duration": 10,
                                 "args": [],
-                                "nargs": {}
+                                "kwargs": {}
                             },
                         ],
                         "conditions": []
@@ -45,7 +45,7 @@ class TestSchedule(unittest.TestCase):
                                 "command_name": "meteo",
                                 "duration": 10,
                                 "args": [],
-                                "nargs": {}
+                                "kwargs": {}
                             },
                         ],
                         "conditions": []
