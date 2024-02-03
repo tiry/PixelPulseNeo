@@ -28,7 +28,7 @@ class FeedWrapper():
 
     def next(self):
 
-        print("Next")
+        #print("Next")
         next_idx = self.ids.index(self.current_id)+1
 
         if (next_idx>=len(self.ids)):
@@ -45,7 +45,7 @@ class FeedWrapper():
 
     def set_scrolling_boundaries(self, text_width):
 
-        print(f"set boundary to {text_width}")
+        #print(f"set boundary to {text_width}")
 
         self.scrolling_position=get_total_matrix_width()
         self.max_scrolling_position = - text_width
@@ -57,7 +57,7 @@ class FeedWrapper():
 
         self.scrolling_position -=1.5
         if self.scrolling_position < self.max_scrolling_position:
-            print("Reset position")
+            #print("Reset position")
             self.scrolling_position=get_total_matrix_width()
             return None
 

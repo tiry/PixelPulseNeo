@@ -13,6 +13,8 @@ The project is broken down into multiple parts:
 
 ## Driver
 
+### A CommandExecutor for driving the LED Matrix
+
 This is the python program driving the LED Matrix.
 
 The Led Matrix Driver allows to execute commands like:
@@ -22,10 +24,29 @@ The Led Matrix Driver allows to execute commands like:
  - display news 
  - ...
 
+Thanks to [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator) commands can be tested on a laptop with a `pygame`` display.
+
+### Implementation
+
+Commands are simple python scripts located in the [commands](Matrix/driver/commands) directory.
+
+The command typically execute 2 steps:
+
+ - `update`: gather some data
+ - `render`: update the display
+
+The executor starts a background thread that is in charge of executing a list of commands ( schedule or playlist ).
+
+The executor can be used to add commands to the current schedule: enqueue or play next.
+
 See  [Matrix.driver](Matrix/driver) the source and for more details on the internals.
 
 See further in this ReadMe for details on how to install the requirements
 
+### Command Line usage
+
+The CommandExecutor can be used as a CLI.
+ 
 Once the setup is completed, you can use the `ppnctl` script:
 
     ./ppnctl ls
@@ -40,23 +61,21 @@ Alternatively you can also run from python
 
     python -m Matrix.driver.executor
 
-### Example commands
+#### Listing available commands
 
-Running a single command:
+    python -m Matrix.driver.executor -l
 
-    python -m Matrix.driver.executor -c matrix -d 10
+#### Running a command
+
+Running the `mta` command for 200 seconds
 
     python -m Matrix.driver.executor -c mta -d 200
 
-    python -m Matrix.driver.executor -c conway -d 200
+Running the `meteo` command for 20 seconds
 
-    python -m Matrix.driver.executor -c meteo -d 200
+    python -m Matrix.driver.executor -c meteo -d 20
 
-    python -m Matrix.driver.executor -c citibikes -d 200
-
-Listing available commands
-
-    python -m Matrix.driver.executor -l
+#### Start with Scheduler
 
 Start the scheduler: (see [schedule.json](schedule.json))
 
@@ -72,6 +91,20 @@ Or to run a specific test suite
 
     python -m unittest Matrix.tests.test_cmdexec
 
+### IPC
+
+When driving a real LED Matrix, the code needs to run as `root`, this is a constraint from the[rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) lib.
+
+Because the API Server should not run as root, the CommandExecutor can be used as a IPC Server can the APi Server will use the IPC client to communicate with it:
+
+    REST API(low_privilege) => IPC_Client(low_privilege) => IPC_Server(root)
+
+Because the IPC communication relies on Linux local Socket, this should be safe.
+
+To run in IPC mode:
+
+XXX
+
 ## API Server
 
 The API Server expose a REST API using Flask.
@@ -86,10 +119,15 @@ or run from python
 
     python -m Matrix.api.server
 
+run with debug mode
+
+    python -m Matrix.api.server --debug
+
+NB: in debug mode, because Flask uses `WERKZEUG` to run 2 python interpreter there are technically 2 instances of the command executor running. This will created duplicate display with the `RGBMatrixEmulator` and will produce funky results with a real matrix.
+
 Server by default will run on localhost:5000
 
 <img src="pictures/openapi.png" width="500px"/>
-
 
 Get Swagger-UI from : http://localhost:5000/
 

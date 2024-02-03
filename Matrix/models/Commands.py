@@ -17,12 +17,11 @@ class CommandExecutionLog(BaseModel):
     execution_time: Optional[str] = datetime.now().strftime("%H:%M:%S")
     effective_duration : float
 
-datetime.now().strftime("%H:%M:%S")
-class Schedule(BaseModel):
+class ScheduleModel(BaseModel):
 
     commands : List[CommandEntry]
     conditions : Optional[List[str]] = []
 
 class ScheduleCatalog(BaseModel):
 
-    playlists : dict = {} # Schedule Map
+    playlists : dict = {} # ScheduleModel Map

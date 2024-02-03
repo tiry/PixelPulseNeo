@@ -4,27 +4,27 @@
             "commands": [
                 {
                     "command_name": "mta",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 },
                 {
                     "command_name": "meteo",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 },
                 {
                     "command_name": "citibikes",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 },
                 {
                     "command_name": "news",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 }
             ],
             "conditions": []
@@ -33,24 +33,50 @@
             "commands": [
                 {
                     "command_name": "meteo",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 },
                 {
                     "command_name": "news",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 },
                 {
                     "command_name": "conway",
-                    "duration": 10,
+                    "duration": 10.0,
                     "args": [],
-                    "nargs": {}
+                    "kwargs": {}
                 }
             ],
             "conditions": []
+        },
+        "bitou": {
+            "commands": [
+                {
+                    "command_name": "mta",
+                    "duration": 6.0,
+                    "args": [],
+                    "kwargs": {}
+                }
+            ],
+            "conditions": [
+                ""
+            ]
+        },
+        "bitou2": {
+            "commands": [
+                {
+                    "command_name": "time",
+                    "duration": 10.0,
+                    "args": [],
+                    "kwargs": {}
+                }
+            ],
+            "conditions": [
+                ""
+            ]
         }
     }
 }

@@ -29,10 +29,10 @@ class MtaCmd(PictureScrollBaseCmd):
 
     def update(self, args=[], kwargs={}):
         next_trains = route.getNextTrainsToward(Direction="N", Routes=["F","G"], Station="Carroll")
-        print(f"Next trains {next_trains}")
+        #print(f"Next trains {next_trains}")
         self.next_trains = next_trains
         self.next_buses = bus.get_stop_info("B61", "Carroll")
-        print(f"Next Buses {self.next_buses}")
+        #print(f"Next Buses {self.next_buses}")
         super().update(args, kwargs)
 
         if "pause_frames" in kwargs.keys():

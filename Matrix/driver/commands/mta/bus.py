@@ -137,7 +137,7 @@ def get_stop_info(route, stop_name):
         if response.status_code == 200:
             data = response.json()
             monitoring_data = data["Siri"]["ServiceDelivery"]["StopMonitoringDelivery"][0]
-            print(f"CALL {monitoring_data}")
+            #print(f"CALL {monitoring_data}")
             if not "MonitoredStopVisit" in monitoring_data:
                 infos["???"]= ["???"]
             else:

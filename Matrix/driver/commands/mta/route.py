@@ -14,7 +14,7 @@ def getNextTrains(Route="F", Station="Carroll"):
 
     feed = SubwayFeed.get(Route, api_key=get_API_key())
     stopids = stopResolverSingleton.findStopIdsByName(Station)
-    print(f"StopIds = {stopids}")
+    #print(f"StopIds = {stopids}")
     data = {}
     all_stops = feed.extract_stop_dict()
     for stopid in stopids:

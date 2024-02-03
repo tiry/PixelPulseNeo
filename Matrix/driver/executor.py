@@ -9,7 +9,7 @@ from datetime import datetime
 import shutil
 import time
 import traceback
-from Matrix.models.Commands import CommandEntry, Schedule
+from Matrix.models.Commands import CommandEntry
 from Matrix.driver.base_executor import Scheduler, BaseCommandExecutor,  BUFFER_SIZE
 from Matrix.driver.ipc_server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
@@ -90,12 +90,17 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def load_schedule(self, name):
         self.scheduler.load_playlist(name)
 
-    def get_schedule(self):
-        return self.scheduler.get_current_stack()
-
-    def set_schedule(self, schedule):
-        # XXX
-        self.scheduler
+    def get_schedule(self, name = None):
+        if name is None:
+            return self.scheduler.get_current_stack()
+        else:
+            return self.scheduler.get_playlist(name)
+        
+    def set_schedule(self, schedule, name= None):
+        if name:
+            self.scheduler.save_playlist(schedule, name)
+        else:
+            self.scheduler.update_current_stack(schedule)
 
     def save_schedule(self, schedule_file=None):
         self.scheduler.save(schedule_file=schedule_file)
@@ -196,6 +201,15 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         
         return response_wrapper
 
+
+singleton=None
+
+def instance():
+    global singleton
+
+    if not singleton:
+        singleton = CommandExecutor()
+    return singleton
 
 if __name__ == "__main__":
 

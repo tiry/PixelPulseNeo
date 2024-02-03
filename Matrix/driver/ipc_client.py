@@ -98,8 +98,8 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
         BaseCommandExecutor.__init__(self)
 
     def get_shell_command(self):
-        return ['sudo', 'python3', 'executor.py -s']
-
+        return "sudo python -m Matrix.driver.ipc_server"
+    
     def list_commands(self):
 
         pass

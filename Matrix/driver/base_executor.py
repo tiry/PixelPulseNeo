@@ -6,7 +6,7 @@ import json
 import os
 from datetime import datetime
 import shutil
-from Matrix.models.Commands import CommandEntry, Schedule, ScheduleCatalog
+from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
 
 BUFFER_SIZE = 1024*10    
     
@@ -30,7 +30,7 @@ class Scheduler(Base):
         else:
             self.catalog = ScheduleCatalog()
 
-        self.current_stack = Schedule(commands=[])
+        self.current_stack = ScheduleModel(commands=[])
         cname = self.get_next_catalog()
         if cname:
             self.load_playlist(cname)
@@ -54,7 +54,7 @@ class Scheduler(Base):
                 data= json.load(file)
                 catalog = ScheduleCatalog(**data)
                 for k in catalog.playlists.keys():
-                    catalog.playlists[k] = Schedule(**(catalog.playlists[k]))
+                    catalog.playlists[k] = ScheduleModel(**(catalog.playlists[k]))
                 self.catalog = catalog 
             self.schedule_file=schedule_file
 
@@ -140,10 +140,10 @@ class Scheduler(Base):
         return self.catalog.playlists.copy(deep=True)
     
     def get_playlist(self, name):
-        return self.catalog.playlists[name]
+        return self.catalog.playlists.get(name, None)
 
     def load_playlist(self,name):
-        self.current_stack = Schedule(commands = self.get_playlist(name).commands[:])
+        self.current_stack = ScheduleModel(commands = self.get_playlist(name).commands[:])
     
 
 

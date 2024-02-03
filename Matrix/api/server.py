@@ -1,9 +1,14 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, make_response, request, send_file
 from flask_restx import Api, Resource
 from flask_cors import CORS
+import json
+import argparse
+from Matrix.driver.executor import instance
+import signal, os, sys
+from Matrix.models.Commands import ScheduleModel
+from Matrix.models.resthelper import pydantic_to_restx_model
 
-from Matrix.driver.executor import CommandExecutor
-import os
+from flask_restx import fields
 
 app = Flask(__name__)# Creates a Flask application instance with the given name
 """Creates a Flask application instance to host the API endpoints.
@@ -19,10 +24,25 @@ The following endpoints are available:
 """
 
 
+# in debug + reload mode, there will be 2 python interpreter and then 2 singletons ...
+#if os.environ.get("WERKZEUG_RUN_MAIN") == "true":  
+executor = instance()
+
+def shutdown_cleanly(signum, frame):
+    print(f"### Signal handler called with signal  {signum}")
+
+    if (executor):
+        print("Shuting down Executor")
+        executor.stop(interrupt=True)
+
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, shutdown_cleanly)
+signal.signal(signal.SIGINT, shutdown_cleanly)
+signal.signal(signal.SIGQUIT, shutdown_cleanly)
+
+
 # Creates a Flask application instance with the given name
-
-executor = CommandExecutor()
-
 app = Flask(__name__)
 
 CORS(app)  # This enables CORS for all routes
@@ -44,6 +64,7 @@ class Commands(Resource):
         """
         result = executor.get_commands()
         return jsonify(result)
+
 
 @api.route('/screenshots/<command_name>/<screenshot_name>')
 class Screenshot(Resource):
@@ -99,10 +120,14 @@ class Command(Resource):
             print(e)      
             return jsonify({"error": str(e)}), 500
 
-@api.route('/schedule')
+
+rest_schedule = pydantic_to_restx_model(api, ScheduleModel)
+
+@api.route('/schedule', defaults={'playlist_name': None})
+@api.route('/schedule/<playlist_name>')
 class Schedule(Resource):
 
-    def get(self):
+    def get(self, playlist_name=None):
         """Returns the executor's current schedule.
 
         The schedule is returned as a JSON array containing dictionaries 
@@ -111,26 +136,56 @@ class Schedule(Resource):
         - `name`: The name of the scheduled command  
         - `interval`: The interval in seconds between runs of this command
         """
-        return jsonify(executor.get_schedule())
+        schedule = executor.get_schedule(playlist_name)
+        if not schedule:
+            return make_response(jsonify({"error": f"Schedule '{playlist_name}' not found"}), 404)
+        
+        print(f"SCHEDULE = {schedule}")
+        return json.loads(schedule.json())  
 
-    def post(self):
+    @api.expect(rest_schedule)
+    def post(self, playlist_name=None):
         """Updates the executor's schedule.
 
         Accepts a JSON array containing the new schedule and replaces the 
         executor's current schedule with it. Validates that the named commands
         exist before updating the schedule.
         """
-        new_schedule = request.json
-        print(new_schedule)
-        for item in new_schedule:
-            command_name = item['command_name']
-            if executor.get_command(command_name) is None:
-                return jsonify({"error": f"Command '{command_name}' not found"}), 400
+        payload = request.json
+
+        print(f"payload type {type(payload)} content: {payload}")
         
-        executor.set_schedule(new_schedule)
-        executor.save_schedule()
+        # convert back to SchedulModel // Sanitize
+        schedule = ScheduleModel(**payload) 
+
+        print(f"converted schedule {schedule}")
+
+        # validate commands 
+        for item in schedule.commands:
+            command_name = item.command_name
+            if executor.get_command(command_name) is None:
+                return make_response(jsonify({"error": f"Command '{command_name}' not found"}), 404)
+
+        # update schedule
+        executor.set_schedule(schedule, playlist_name)
+
+        # flush / persist on disk
+        if playlist_name:
+            executor.save_schedule()
+
         return jsonify({"result": "Schedule updated"})
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--debug", help="enable flash debug mode", action="store_true")
+    parser.add_argument("--noreload", help="disable reloader", action="store_true")
+     
+    args = parser.parse_args()
+    
+    debug = args.debug
+    reload = debug
+    if args.noreload:
+        reload = False
+
+    app.run(debug=debug, use_reloader=reload)
