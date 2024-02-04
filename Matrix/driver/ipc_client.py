@@ -7,7 +7,7 @@ from time import sleep
 import os
 import sys
 from pathlib import Path
-
+import argparse
 from Matrix.driver.base_executor import BaseCommandExecutor, BUFFER_SIZE
 from Matrix.driver.ipc_server import IPC_PORT
 
@@ -92,24 +92,28 @@ class IPCClient():
 
 class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
-    def __init__(self):
+    def __init__(self, run_as_root=False):
 
+        self.run_as_root=run_as_root
         IPCClient.__init__(self)
         BaseCommandExecutor.__init__(self)
-
+        
     def get_shell_command(self):
-        return "sudo python -m Matrix.driver.ipc_server"
+        prefix = ""
+        if self.run_as_root:
+            prefix = "sudo "
+
+        return f"{prefix}python -m Matrix.driver.executor --scheduler --listen"
     
     def list_commands(self):
-
-        pass
-    
+        return self.send_command("ls")
+      
     def get_commands(self):
-        pass
+        return self.send_command("get_commands")
     
     def get_command(self, name):
-        pass
-
+        return self.send_command("get_command", name)
+    
     def load_schedule(self, schedule_file=None):
         pass
 
@@ -118,23 +122,85 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
     def run_schedule(self):
         pass
+import signal
+
+class RemoteCLI():
+
+    def __init__(self):
+        self.client = IPCClientExecutor()
+        signal.signal(signal.SIGTERM, self.shutdown_cleanly)
+        signal.signal(signal.SIGINT, self.shutdown_cleanly)
+        signal.signal(signal.SIGQUIT, self.shutdown_cleanly)
+
+    def run(self):
+        while True:
+            cmd = input("remote cmd executor>")  # Python 3
+            #print(cmd)
+            res = None
+            cmds = cmd.split(" ")
+            cmd = cmds[0]
+            args = cmds[1:]
+            if cmd=="exit":
+                self.client.disconnect()
+                break   
+            elif cmd =="ls":
+                res = self.client.list_commands()
+            elif cmd =="commands":
+                res = self.client.get_commands()
+            elif cmd =="command":
+                res = self.client.get_command(args[0])
+            else:
+                res = self.client.send_command(cmd)
+            
+            if res["error"] is not None and len(res["error"])>0:
+                print(f'Error : {res["error"]}')
+            elif res["success"]:
+                response = res["response"]
+                if type(response) == list:
+                    for item in response:
+                        print(item)
+                else:
+                    print(response)         
+                print("")
+            else:        
+                print(f"result => {res}")
+
+    def shutdown_cleanly(self, signum, frame):
+        print(f"### Signal handler called with signal  {signum}")
+        self.client.disconnect()
+        sys.exit(0)
+
 
 
 if __name__ == "__main__":
 
-    logger.debug("Starting IPC client")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--remotecli", help="Use remote CLI mode", action="store_true")
+     
+    args = parser.parse_args()
+    
+    remotecli = args.remotecli
 
-    # clean connection / disconnection use case
-    client = IPCClient()
+    if remotecli:
 
-    client.send_command("dummy", 1,2,3, foo ="bar")
-    client.send_command("dummy2", 1, foo ="beer")
+        rcli= RemoteCLI()
+        rcli.run()
+        print("remote CLI exited")
 
-    client.disconnect()
+    else:
+        logger.debug("Starting IPC client")
 
-    # connect then kill server
-    client = IPCClient()
+        # clean connection / disconnection use case
+        client = IPCClient()
 
-    client.send_command("dummy3", 1, oho ="nino")
-    client.send_command("exit")
+        client.send_command("dummy", 1,2,3, foo ="bar")
+        client.send_command("dummy2", 1, foo ="beer")
+
+        client.disconnect()
+
+        # connect then kill server
+        client = IPCClient()
+
+        client.send_command("dummy3", 1, oho ="nino")
+        client.send_command("exit")
 

@@ -30,7 +30,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def __init__(self, schedule_file='schedule.json'):
 
         # load commands
-        self.commands = self.load_commands()
+        self.commands = self._load_commands()
 
         # init scheduler and load playlists
         self.scheduler = Scheduler(schedule_file=schedule_file)
@@ -45,7 +45,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.audit_log = []
         self.execution_counter=0
 
-    def load_commands(self):
+    def _load_commands(self):
         commands = {}
         current_directory = self.get_current_directory()
         for file in os.listdir(f'{current_directory}/commands'):
@@ -63,7 +63,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         return commands
 
     def list_commands(self):
-        return self.commands.keys()
+        print("execure ls")
+        return list(self.commands.keys())
     
     def get_commands(self):
         result = []
@@ -87,7 +88,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             return cmd.getScreenShot(screenshot_name)
         return None
     
-    def load_schedule(self, name):
+    def _load_schedule(self, name):
         self.scheduler.load_playlist(name)
 
     def get_schedule(self, name = None):
@@ -183,29 +184,13 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.schedule_thread.join()
         logger.info("Scheduler shutdown completed, exiting")
 
-    def execute_ipc_request(self, command, args, kwargs):
-        response_wrapper = {
-            "success" : False,
-            "error": None,
-            "response" : None
+    def get_valid_commands(self):
+        return {
+            "ls": self.list_commands,
+            "get_commands": self.get_commands,
+            "get_command": self.get_command
+
         }
-        try:
-            if command =="list_commands":
-                response = self.list_commands()
-                response_wrapper["success"]=True
-                response_wrapper["response"] = response
-            elif command =="get_commands":
-                response = self.get_commands()
-                response_wrapper["success"]=True
-                response_wrapper["response"] = response
-            else:
-                response_wrapper["error"]=f"Command {command} not found"
-        except Exception as e:
-            response_wrapper["success"]=False
-            response_wrapper["error"] = str(e)
-            print(e)
-        
-        return response_wrapper
 
 
 singleton=None
@@ -242,15 +227,18 @@ if __name__ == "__main__":
             print(f"{command.name} - {command.description}")
         exit(0)
  
-    if args.commands:
-        for command in args.commands:
-            print(f"command = {command}")
-            cmds = command.split(":")
-            if len(cmds)==2:
-                executor.execute_now(cmds[0], int(cmds[1]))
-            else:
-                executor.execute_now(cmds[0], int(args.duration))
-            time.sleep(1)
-            executor.stop()
+    if args.listen:
+        executor.serve()
+    else:
+        if args.commands:
+            for command in args.commands:
+                print(f"command = {command}")
+                cmds = command.split(":")
+                if len(cmds)==2:
+                    executor.execute_now(cmds[0], int(cmds[1]))
+                else:
+                    executor.execute_now(cmds[0], int(args.duration))
+                time.sleep(1)
+                executor.stop()
     
     

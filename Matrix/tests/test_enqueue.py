@@ -121,7 +121,7 @@ class TestEnqueeCmd(unittest.TestCase):
         schedule_file = self.get_test_schedule_file()
 
         executor = CommandExecutor(schedule_file=schedule_file)
-        executor.load_schedule("slow")
+        executor._load_schedule("slow")
         schedule = executor.get_schedule()
         print(schedule)
 
@@ -149,7 +149,7 @@ class TestEnqueeCmd(unittest.TestCase):
         schedule_file = self.get_test_schedule_file()
 
         executor = CommandExecutor(schedule_file=schedule_file)
-        executor.load_schedule("smoke_test")
+        executor._load_schedule("smoke_test")
         executor._wait_for_executions(6, timeout_seconds=120)
 
         log = executor.get_audit_log()

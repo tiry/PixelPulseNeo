@@ -1,7 +1,6 @@
 import unittest
 from Matrix.driver.base_executor import Scheduler
-from Matrix.models.Commands import ScheduleCatalog
-from Matrix.driver.executor import CommandEntry,Schedule
+from Matrix.models.Commands import ScheduleModel, CommandEntry
 
 import tempfile
 import os
@@ -144,7 +143,7 @@ class TestSchedule(unittest.TestCase):
         commands.append(CommandEntry(command_name="meteo"))
         commands.append(CommandEntry(command_name="news"))
         commands.append(CommandEntry(command_name="conway"))
-        schedule = Schedule(commands=commands)
+        schedule = ScheduleModel(commands=commands)
         scheduler.save_playlist(schedule, "evening")
 
         # check that we have 2 schedules in the catalog

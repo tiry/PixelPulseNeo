@@ -165,18 +165,22 @@ class BaseCommandExecutor(Base):
     def get_command_screenshot(self, name, screenshot_name):
         pass
 
-    def load_schedule(self, schedule_file=None):
+    def list_schedules(self):
         pass
 
-    def get_schedule(self):
+    def get_schedule(self, playlist_name):
         pass
 
-    def set_schedule(self, schedule):
+    def set_schedule(self, schedule, playlist_name):
         pass
 
-    def run_command(self, command):
+    def execute_now(self, command_name, duration, interrupt=False):
         pass
 
-    def run_schedule(self):
+    def save_schedule(self):
         pass
+
+    def stop(self):
+        pass
+
 

@@ -44,6 +44,7 @@ class IPCServer:
         else:
             cmds = self.get_valid_commands()
             if command in cmds:
+                logger.debug(f"Command :{command} is valid => execute")
                 try:
                     result=cmds[command](*args, **kwargs)
                     response_wrapper["success"]=True
@@ -93,6 +94,7 @@ class IPCServer:
                         client_socket.close()
                         sys.exit()              
                     response_wrapper = self.execute_ipc_request(command,args, kwargs)
+                    logger.debug(f"Execution response = {response_wrapper}")
                 except Exception as e:
                     response_wrapper["success"]=False
                     response_wrapper["error"] = f"Error tryingh to execute command {command} : {e}"
