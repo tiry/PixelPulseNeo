@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 import argparse
 from Matrix.driver.base_executor import BaseCommandExecutor, BUFFER_SIZE
-from Matrix.driver.ipc_server import IPC_PORT
+from Matrix.driver.ipc.server import IPC_PORT
 
 from Matrix.driver.utilz import configure_log, BLUE
 import logging

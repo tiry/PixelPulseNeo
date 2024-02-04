@@ -43,7 +43,7 @@ See  [Matrix.driver](Matrix/driver) the source and for more details on the inter
 
 See further in this ReadMe for details on how to install the requirements
 
-### Command Line usage
+### Simple Command Line wrapper
 
 The CommandExecutor can be used as a CLI.
  
@@ -57,7 +57,9 @@ Once the setup is completed, you can use the `ppnctl` script:
 
 => will execute the `news` command for 200s
 
-Alternatively you can also run from python
+### Run directly using Python
+
+Alternatively you can also run it as a module from python
 
     python -m Matrix.driver.executor
 
@@ -97,13 +99,52 @@ When driving a real LED Matrix, the code needs to run as `root`, this is a const
 
 Because the API Server should not run as root, the CommandExecutor can be used as a IPC Server can the APi Server will use the IPC client to communicate with it:
 
-    REST API(low_privilege) => IPC_Client(low_privilege) => IPC_Server(root)
+    REST API(low_privilege) => IPC_Client(low_privilege) => IPC_Server(root) => rpi-rgb-led-matrix
 
 Because the IPC communication relies on Linux local Socket, this should be safe.
 
 To run in IPC mode:
 
-XXX
+#### Starting CommandExecuter as a IPC Server
+
+When started with `--listen` the CommandExecutor will start a socket server
+
+    python -m Matrix.driver.executor --listen
+
+#### Interactive CommandLine IPC Client
+
+`Matrix.driver.ipc.client` contains a `RemoteCLI` class that acts as an interactive CLI using the IPC client to control the `CommandExecutor` through the IPC Server.
+
+    python -m Matrix.driver.ipc.client --remotecli
+
+Sample usage:
+
+    Client > Connected via socket <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 54346), raddr=('127.0.0.1', 6000)> 
+    remote cmd executor>ls
+    Client > Send command call : ["ls", [], {}] 
+    Client > received response : {"success": true, "error": null, "response": ["matrix", "mta", "meteo", "conway", "scrolltext", "citibikes", "news", "time", "faker"]} 
+    matrix
+    mta
+    meteo
+    conway
+    scrolltext
+    citibikes
+    news
+    time
+    faker
+
+    remote cmd executor>command mta
+    Client > Send command call : ["get_command", ["mta"], {}] 
+    Client > received response : {"success": true, "error": null, "response": {"name": "mta", "description": "Displays next trains and bus arrival time for a given location", "screenshots": ["mta2.gif", "mta1.gif"]}} 
+    {'name': 'mta', 'description': 'Displays next trains and bus arrival time for a given location', 'screenshots': ['mta2.gif', 'mta1.gif']}
+
+
+    remote cmd executor>exit
+    Client > Disconnect from server 
+    Client > Send command call : ["disconnect", [], {}] 
+    Client > received response :  
+    remote CLI exited
+
 
 ## API Server
 

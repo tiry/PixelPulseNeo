@@ -3,10 +3,7 @@ import time
 import tempfile
 import os
 import json
-
-
 from Matrix.driver.executor import CommandExecutor
-from Matrix.models.Commands import CommandEntry, CommandExecutionLog
 
 class TestEnqueeCmd(unittest.TestCase):
 

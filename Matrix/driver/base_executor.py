@@ -146,8 +146,6 @@ class Scheduler(Base):
         self.current_stack = ScheduleModel(commands = self.get_playlist(name).commands[:])
     
 
-
-
 class BaseCommandExecutor(Base):
     
     def __init__(self):

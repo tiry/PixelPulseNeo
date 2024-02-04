@@ -11,19 +11,16 @@ import time
 import traceback
 from Matrix.models.Commands import CommandEntry
 from Matrix.driver.base_executor import Scheduler, BaseCommandExecutor,  BUFFER_SIZE
-from Matrix.driver.ipc_server import IPCServer
+from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
+from Matrix.driver.utilz import configure_log, CYAN
+import logging
 
 MAX_AUDIT_SIZE=100
 BUSY_WAIT = 0.1
 
-
-from Matrix.driver.utilz import configure_log, CYAN
-import logging
-
 logger = logging.getLogger(__name__)
 configure_log(logger, CYAN, "CmdExec")
-
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
 
@@ -189,12 +186,12 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "ls": self.list_commands,
             "get_commands": self.get_commands,
             "get_command": self.get_command
-
         }
 
 
+###################################
+# Helper to manage as singleton
 singleton=None
-
 def instance():
     global singleton
 
@@ -204,11 +201,12 @@ def instance():
 
 if __name__ == "__main__":
 
+    ###################################
+    # act as a simple CLI
     parser = argparse.ArgumentParser()
     parser.add_argument("--scheduler", help="start scheduler", action="store_true")
     parser.add_argument("-l", "--list", help="list commands", action="store_true")
     parser.add_argument("-s", "--listen", help="start IPC Server", action="store_true")
-    
    
     parser.add_argument("-d", "--duration", help="default command duration", default=5)
     parser.add_argument("-c", "--commands", nargs="+", help="list of commands to execute")

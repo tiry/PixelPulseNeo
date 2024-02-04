@@ -1,6 +1,6 @@
 import unittest
-from Matrix.driver.ipc_server import IPCServer
-from Matrix.driver.ipc_client import IPCClient
+from Matrix.driver.ipc.server import IPCServer
+from Matrix.driver.ipc.client import IPCClient
 
 class TestIPCServer(unittest.TestCase):
 
