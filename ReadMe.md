@@ -83,16 +83,6 @@ Start the scheduler: (see [schedule.json](schedule.json))
 
     python -m Matrix.driver.executor --scheduler
 
-### Running unit tests
-
-From the root folder
-
-    python -m unittest
-
-Or to run a specific test suite
-
-    python -m unittest Matrix.tests.test_cmdexec
-
 ### IPC
 
 When driving a real LED Matrix, the code needs to run as `root`, this is a constraint from the[rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) lib.
