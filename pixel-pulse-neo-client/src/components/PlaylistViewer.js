@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import ApiService from '../services/ApiService';
-import { List, ListItem, TextField, IconButton, Button, ListItemText } from '@mui/material';
+import { List, ListItem, TextField, IconButton, Button, ListItemText, InputLabel, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-function ScheduleViewer() {
+function PlaylistViewer() {
+    const [playlists, setPlaylists] = useState(["default"]);
+    const [selectedPlaylist, setselectPlaylist] = useState("default");
     const [schedule, setSchedule] = useState({ commands :[]});
     const [editMode, setEditMode] = useState(false);
     
     useEffect(() => {
-        ApiService.getSchedule().then(data => {
+        ApiService.getPlaylist(selectedPlaylist).then(data => {
             var commands = data.commands
             // Assign a unique ID to each item (if they don't already have one)
             const commandWithIds = commands.map((item, index) => ({
@@ -23,7 +25,17 @@ function ScheduleViewer() {
             scheduleWithIds.conditions = data.conditions 
             setSchedule(scheduleWithIds);
         });
+    }, [selectedPlaylist]);
+
+    useEffect(() => {
+        ApiService.getPlaylists().then(setPlaylists);
     }, []);
+
+
+    const handleSelectedPlaylist = (event) => {
+        //console.log(event.target.value)
+        setselectPlaylist(event.target.value)
+    }
 
     const handleAdd = () => {
         const newItem = {
@@ -89,7 +101,21 @@ function ScheduleViewer() {
     };
 
     return (
-        <div>          
+        <div>
+            <InputLabel id="combo-box-label">Select Playlist: </InputLabel>
+            <Select
+                labelId="combo-box-label"
+                id="combo-box"
+                value={selectedPlaylist}
+                label="Item"
+                onChange={handleSelectedPlaylist}
+            >
+                {playlists.map((item, index) => (
+                    <MenuItem key={index} value={item}>
+                        {item}
+                    </MenuItem>
+                ))}
+            </Select>
             <List>
                 {schedule.commands.map((item, index) => (
                     <ListItem key={item.id}>
@@ -153,4 +179,4 @@ function ScheduleViewer() {
     );
 }
 
-export default ScheduleViewer;
+export default PlaylistViewer;

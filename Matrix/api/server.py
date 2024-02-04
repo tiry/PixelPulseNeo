@@ -65,6 +65,14 @@ class Commands(Resource):
         result = executor.get_commands()
         return jsonify(result)
 
+@api.route('/schedules')
+class Schedules(Resource):
+
+    def get(self):
+        """Returns a JSON array of the names of all available schedules / playlists.
+        """
+        result = executor.list_schedules()
+        return jsonify(result)
 
 @api.route('/screenshots/<command_name>/<screenshot_name>')
 class Screenshot(Resource):
@@ -95,13 +103,15 @@ class Screenshot(Resource):
         if os.path.exists(screenshot_path):
             return send_file(open(screenshot_path, "rb"), mimetype=mimetype)
         else:
-            return jsonify({"error": "Screenshot not found"}), 404
+            return make_response(jsonify({"error": "Screenshot not found"}), 404)
 
 @api.route('/command/<command_name>')
 class Command(Resource):
 
     @api.doc(params={
-        'duration': {'description': 'Duration of the command', 'type': 'integer', 'required': False}})
+        'duration': {'description': 'Duration of the command', 'type': 'integer', 'required': False},
+        'interrupt': {'description': 'Interrup ongoing command', 'type': 'boolean', 'required': False, 'default' : False}
+        })
     def post(self, command_name):
         """Executes the command with the given name.
 
@@ -112,13 +122,15 @@ class Command(Resource):
         print("XXX Execute")
         # Access the duration query parameter with a default value if it's not provided
         duration = request.args.get('duration', default=10, type=int)
+        interrupt = request.args.get('interupt', default="false", type=bool)
+        
         try:
-            executor.execute_now(command_name, duration)
+            executor.execute_now(command_name, duration, interrupt=interrupt)
             return jsonify({"result": f"Command '{command_name}' executed"})
         except Exception as e:
             print(f"Error during command execution for {command_name}")
             print(e)      
-            return jsonify({"error": str(e)}), 500
+            return make_response(jsonify({"error": str(e)}), 500)
 
 
 rest_schedule = pydantic_to_restx_model(api, ScheduleModel)

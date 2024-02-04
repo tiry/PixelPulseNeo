@@ -95,7 +95,10 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             return self.scheduler.get_current_stack()
         else:
             return self.scheduler.get_playlist(name)
-        
+    
+    def list_schedules(self):
+        return self.scheduler.get_playlist_names()
+
     def set_schedule(self, schedule, name= None):
         if name:
             self.scheduler.save_playlist(schedule, name)
@@ -117,7 +120,10 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.debug(f" [AUDIT] {log_entry}")
         self.audit_log.append(log_entry)
         if len(self.audit_log)>MAX_AUDIT_SIZE:
-            self.audit_log.remove(0)
+            try:
+                self.audit_log.remove(0)
+            except Exception as e :
+                pass
 
     def _log_exec(self,log_entry):
         self._add_log(log_entry)

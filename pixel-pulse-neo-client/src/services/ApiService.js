@@ -8,18 +8,33 @@ export default class ApiService {
         return axios.get(`${BASE_URL}/commands`).then(res => res.data);
     }
 
-    static executeCmd(name) {
-        return axios.post(`${BASE_URL}/command/` + name).then(res => res.data);
+    static executeCmd(name, interupt=false) {
+        return axios.post(`${BASE_URL}/command/` + name + "?interup=" + interupt).then(res => res.data);
     }
     
+    static queueCmd(name) {
+        return axios.post(`${BASE_URL}/command/` + name ).then(res => res.data);
+    }
     static getSchedule() {
         return axios.get(`${BASE_URL}/schedule`).then(res => res.data);
     }
     
-    static setSchedule(schedule) {
-        console.log("save Schdule " + schedule)
-        return axios.post(`${BASE_URL}/schedule`, schedule)
-        .then(response => response.data)
+    static getPlaylist(name) {
+        return axios.get(`${BASE_URL}/schedule/` + name).then(res => res.data);
+    }
+
+    static getPlaylists() {
+        return axios.get(`${BASE_URL}/schedules`).then(res => res.data);
+    }
+
+    static setSchedule(schedule, name) {
+        console.log("save schedule " + schedule)
+        var post
+        if (name)  
+            post= axios.post(`${BASE_URL}/schedule/` + name , schedule)
+        else
+            post =axios.post(`${BASE_URL}/schedule`, schedule)
+        post.then(response => response.data)
         .catch(error => {
             // Handle errors here, such as displaying a notification to the user
             console.error('Error updating schedule:', error);
