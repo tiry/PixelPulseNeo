@@ -1,12 +1,12 @@
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 from datetime import datetime
 
 class CommandEntry(BaseModel):
     command_name: str
     duration: float = 10.0
     args: List[str] = []
-    kwargs: Dict[str, str] = {}
+    kwargs: Dict[str, Any] = {}
 
 class CommandExecutionLog(BaseModel):
 
@@ -24,4 +24,5 @@ class ScheduleModel(BaseModel):
 
 class ScheduleCatalog(BaseModel):
 
-    playlists : dict = {} # ScheduleModel Map
+    #playlists : dict = {} # ScheduleModel Map
+    playlists : Dict[str, ScheduleModel] = {} # ScheduleModel Map

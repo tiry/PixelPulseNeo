@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 import shutil
 from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
-from Matrix.models.encode import deepcopy
+from Matrix.models.encode import deepcopy, loadModel
 
 BUFFER_SIZE = 1024*10    
     
@@ -48,17 +48,11 @@ class Scheduler(Base):
             schedule_file = self.get_current_directory() + "/" + schedule_file
         
         logger.debug(f"loading schedule file {schedule_file}")
-           
+        self.catalog=None
         try:
             #logger.debug(f"loading schedule from file {schedule_file}")
             with open(schedule_file, 'r') as file:
-                data= json.load(file)
-                catalog = ScheduleCatalog(**data)
-                for k in catalog.playlists.keys():
-                    catalog.playlists[k] = ScheduleModel(**(catalog.playlists[k]))
-                self.catalog = catalog 
-            self.schedule_file=schedule_file
-
+                self.catalog = loadModel(file.read(), ScheduleCatalog)
         except Exception as e:
             logger.error(f"Error loading schedule: {str(e)}")
             logger.error(e, exc_info=True)  

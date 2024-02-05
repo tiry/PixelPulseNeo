@@ -36,7 +36,7 @@ class IPCClient():
             
     def get_shell_command(self):
 
-        return "python -m Matrix.driver.ipc_server"
+        return "python -m Matrix.driver.ipc.server"
 
     def start_server_process(self):
         

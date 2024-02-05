@@ -4,6 +4,9 @@ import tempfile
 import os
 import json
 from Matrix.driver.executor import CommandExecutor
+from Matrix.models.Commands import ScheduleCatalog, ScheduleModel
+from Matrix.models.encode import loadModel
+import json
 
 class TestEnqueeCmd(unittest.TestCase):
 
@@ -91,10 +94,23 @@ class TestEnqueeCmd(unittest.TestCase):
         temp_file.flush()  # Ensure data is written to the file
         temp_file.close()
         return temp_file.name
-        
 
 
-    def _test_schedule_load(self):
+    def test_catalog_from_json(self):
+
+        schedule_file = self.get_test_schedule_file()
+        with open(schedule_file) as f:
+
+            json_str = f.read()
+            catalog = loadModel(json_str, ScheduleCatalog)
+
+            self.assertIsNotNone(catalog)
+            self.assertTrue(isinstance(catalog,ScheduleCatalog ))
+            self.assertTrue(isinstance(catalog.playlists["default"],ScheduleModel ))
+
+            print(catalog)      
+
+    def test_schedule_load(self):
         
         schedule_file = self.get_test_schedule_file()
 
@@ -113,7 +129,7 @@ class TestEnqueeCmd(unittest.TestCase):
 
         os.remove(schedule_file)
     
-    def _test_schedule_and_enqueue(self):
+    def test_schedule_and_enqueue(self):
         
         schedule_file = self.get_test_schedule_file()
 
