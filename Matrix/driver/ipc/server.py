@@ -7,11 +7,12 @@ import subprocess
 import time
 import os
 import sys
-
+from Matrix.models.encode import json_dumps
 from Matrix.driver.base_executor import BUFFER_SIZE
 
 from Matrix.driver.utilz import configure_log, GREEN
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 configure_log(logger, GREEN, "Server")
@@ -27,7 +28,6 @@ class IPCServer:
         return {
             "echo": self.method_echo
         }
-
 
     def execute_ipc_request(self, command, args, kwargs):
         response_wrapper = {
@@ -50,7 +50,7 @@ class IPCServer:
                     response_wrapper["success"]=True
                     response_wrapper["response"]= result
                 except Exception as e:
-                    response_wrapper["error"] = f"exception {e} "
+                    response_wrapper["error"] = f"exception {e} : {traceback.format_exc()}"
                     logger.error(e)
             else:    
                 response_wrapper["error"] = f"Command {command} not found"
@@ -97,10 +97,10 @@ class IPCServer:
                     logger.debug(f"Execution response = {response_wrapper}")
                 except Exception as e:
                     response_wrapper["success"]=False
-                    response_wrapper["error"] = f"Error tryingh to execute command {command} : {e}"
+                    response_wrapper["error"] = f"Error trying to execute command {command} : {e}"
                     logger.debug(f" while executing command {command} {e}")
                 
-                json_response = json.dumps(response_wrapper)
+                json_response = json_dumps(response_wrapper)
                 logger.debug(f" Send response {json_response}")
                 response_payload = json_response.encode()
                 client_socket.send(response_payload)

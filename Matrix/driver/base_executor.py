@@ -7,6 +7,7 @@ import os
 from datetime import datetime
 import shutil
 from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
+from Matrix.models.encode import deepcopy
 
 BUFFER_SIZE = 1024*10    
     
@@ -126,18 +127,18 @@ class Scheduler(Base):
         return self.current_stack.commands.pop(0)
 
     def create_playlist(self, name):
-        self.catalog.playlists[name] = self.current_stack.copy(deep=True)     
+        self.catalog.playlists[name] = deepcopy(self.current_stack)     
         return self.get_playlist(name)
 
     def save_playlist(self, schedule, name):
-        self.catalog.playlists[name] = schedule.copy(deep=True)     
+        self.catalog.playlists[name] = deepcopy(schedule)     
         return self.get_playlist(name)
 
     def get_playlist_names(self):
         return [name for name in self.catalog.playlists.keys()]
 
     def get_playlists(self):
-        return self.catalog.playlists.copy(deep=True)
+        return deepcopy(self.catalog.playlists)
     
     def get_playlist(self, name):
         return self.catalog.playlists.get(name, None)

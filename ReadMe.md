@@ -24,7 +24,7 @@ The Led Matrix Driver allows to execute commands like:
  - display news 
  - ...
 
-Thanks to [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator) commands can be tested on a laptop with a `pygame`` display.
+Thanks to [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator) commands can be tested on a laptop with a `pygame` display.
 
 ### Implementation
 
@@ -99,7 +99,7 @@ To run in IPC mode:
 
 When started with `--listen` the CommandExecutor will start a socket server
 
-    python -m Matrix.driver.executor --listen
+    python -m Matrix.driver.executor --listen --scheduler
 
 #### Interactive CommandLine IPC Client
 
@@ -107,34 +107,25 @@ When started with `--listen` the CommandExecutor will start a socket server
 
     python -m Matrix.driver.ipc.client --remotecli
 
-Sample usage:
+Available CLI commands:
 
-    Client > Connected via socket <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 54346), raddr=('127.0.0.1', 6000)> 
-    remote cmd executor>ls
-    Client > Send command call : ["ls", [], {}] 
-    Client > received response : {"success": true, "error": null, "response": ["matrix", "mta", "meteo", "conway", "scrolltext", "citibikes", "news", "time", "faker"]} 
-    matrix
-    mta
-    meteo
-    conway
-    scrolltext
-    citibikes
-    news
-    time
-    faker
+`ls commands` : list commands registered in the `CmdExecutor`
 
-    remote cmd executor>command mta
-    Client > Send command call : ["get_command", ["mta"], {}] 
-    Client > received response : {"success": true, "error": null, "response": {"name": "mta", "description": "Displays next trains and bus arrival time for a given location", "screenshots": ["mta2.gif", "mta1.gif"]}} 
-    {'name': 'mta', 'description': 'Displays next trains and bus arrival time for a given location', 'screenshots': ['mta2.gif', 'mta1.gif']}
+`ls schedules` : list schedules / playlists registered in the `CmdExecutor`
 
+`command <command_name>` : retrive definition of command <command_name>
 
-    remote cmd executor>exit
-    Client > Disconnect from server 
-    Client > Send command call : ["disconnect", [], {}] 
-    Client > received response :  
-    remote CLI exited
+`schedule <schedule_name>` : retrive definition of Schedule <schedule_name>
 
+`commands` : retrive definition of all commands
+
+`run <command_name> arg1 arg2 arg3`: run command <command_name> using positional arguments
+
+`set_schedule <schedule_name> <json>`: update or create the schedule <schedule_name> with the provided <json>
+
+`save_schedule`: persist the schedule definitions
+
+`exit`: disconnect and exit gracefully
 
 ## API Server
 
@@ -189,14 +180,22 @@ Activate virtual env
 
 ### base requirements
 
-Command system
+Command system (`Matrix.driver`)
 
     pip install underground
     pip install numpy
     pip install feedparser
     pip install pydantic
 
-API server
+Because of `underground` the pydantic version is fixed to 1.9.2
+
+    underground 0.4.0 requires pydantic~=1.9.2
+
+However, forcing upgrade to 2.6.x seems to work
+
+    pip install  pydantic --upgrade
+
+API server (`Matrix.api`)
 
     pip install flask
     pip install flask-restx

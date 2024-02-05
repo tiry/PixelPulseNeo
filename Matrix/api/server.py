@@ -153,7 +153,7 @@ class Schedule(Resource):
             return make_response(jsonify({"error": f"Schedule '{playlist_name}' not found"}), 404)
         
         print(f"SCHEDULE = {schedule}")
-        return json.loads(schedule.json())  
+        return json.loads(schedule.model_dump_json())  
 
     @api.expect(rest_schedule)
     def post(self, playlist_name=None):

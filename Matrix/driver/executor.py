@@ -60,7 +60,6 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         return commands
 
     def list_commands(self):
-        print("execure ls")
         return list(self.commands.keys())
     
     def get_commands(self):
@@ -182,10 +181,17 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Scheduler shutdown completed, exiting")
 
     def get_valid_commands(self):
+        # make remote commands list explicit
         return {
             "ls": self.list_commands,
             "get_commands": self.get_commands,
-            "get_command": self.get_command
+            "get_command": self.get_command,
+            "get_command_screenshot" : self.get_command_screenshot,
+            "list_schedules" : self.list_schedules,
+            "get_schedule" : self.get_schedule,
+            "execute_now" : self.execute_now,
+            "set_schedule" : self.set_schedule,
+            "save_schedule" : self.save_schedule,
         }
 
 

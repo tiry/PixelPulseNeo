@@ -3,6 +3,11 @@ from pydantic import BaseModel
 from typing import get_type_hints, List, Dict, Optional, Type, Tuple, Union,  get_args
 from datetime import datetime
 import traceback
+
+
+# XXX this code is broken because of a version missmatch on pydntic
+# => to be revisited
+
 def __pydantic_field_to_restx_field(api, field_type):
     """Map a Pydantic field type to a Flask-RestX field type."""
     if issubclass(field_type, str):
