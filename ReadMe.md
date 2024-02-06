@@ -166,6 +166,66 @@ For more details see [README.md](pixel-pulse-neo-client/README.md)
 
 <img src="pictures/UI.png" width="200px"/>
 
+# Configuration
+
+Configuration is done via a simple python file [config.py](Matrix/config.py)
+
+
+## Configuring how to talk to the Matrix
+
+    # Control if we use the emulator or send data to LED Matrix via GPIO
+    USE_EMULATOR=True
+
+    # Control if we go through IPC Comunication 
+    USE_IPC = False
+
+    # Run CommandExecutor as root
+    RUN_AS_ROOT = False
+
+When `USE_EMULATOR=True` `RGBMatrixEmulator` is used, otherwise the data is sent to GPIO via `rpi-rgb-led-matrix`
+
+Technically, only 2 configuration make sense:
+
+**When using Emulator**
+
+    USE_EMULATOR = True
+    USE_IPC = False
+    RUN_AS_ROOT = False
+
+**When using GPIO + Real LED Matrix**
+
+    USE_EMULATOR = False
+    USE_IPC = True
+    RUN_AS_ROOT = True
+
+When GPIO is used, the `CommandExecutor` needs to run as `root` and because we do not want to run the REST API Server as root, we need to go through IPC Communication.
+
+NB: All other configurations are for testing purposes
+
+## Configuration of the target LED Matrix 
+
+    # matrix dimentions
+    MATRIX_WIDTH = 64
+    MATRIX_HEIGHT = 64
+
+    # number of chained matrix
+    MATRIX_CHAINED = 3 
+
+    # default refresh rate 
+    DEFAULT_REFRESH = 1/60.0
+
+# Start / Stop
+
+To start the services:
+
+    ./ppnctl server
+
+To stop the services:
+
+    ./ppnctl stop
+
+TODO: SystemD config files for the PI
+
 # Setup
 
 ## Python3 Virtual env
@@ -186,6 +246,7 @@ Command system (`Matrix.driver`)
     pip install numpy
     pip install feedparser
     pip install pydantic
+    pip install spotipy
 
 Because of `underground` the pydantic version is fixed to 1.9.2
 

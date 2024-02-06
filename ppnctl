@@ -8,14 +8,73 @@ show_help() {
     exit 1
 }
 
+# Function to kill a process based on a PID file
+kill_process_from_pidfile() {
+    local pid_file=$1
+
+    # Check if the PID file exists
+    if [ -f "$pid_file" ]; then
+        # Read the PID from the file
+        local pid=$(cat "$pid_file")
+
+        # Check if the process with this PID is running and kill it
+        if kill -0 "$pid" > /dev/null 2>&1; then
+            echo "Process $pid is running. Attempting to kill it..."
+            kill "$pid"
+            
+            # Optional: Remove the PID file after killing the process
+            rm "$pid_file"
+        else
+            echo "Process $pid not found."
+        fi
+    else
+        echo "PID file $pid_file does not exist."
+    fi
+}
+
 # Check if at least one argument is provided
 if [ $# -lt 1 ]; then
     echo "Error: Command not specified."
     show_help
 fi
 
+# Capture the current directory
+CURRENT_DIR=$(pwd)
+
 # Main command handling
 case "$1" in
+    serve)
+        # run the 3 processes
+        
+        #echo "starting IPC server"        
+        #python3 -m Matrix.driver.executor --scheduler > server.log 2> server_err.log &
+        #echo "server started"
+
+
+        #echo "starting Server "        
+        #python3 -m Matrix.driver --scheduler --listen&> "${CURRENT_DIR}/executor.log" & echo $! > "${CURRENT_DIR}/executor.pid"
+        #echo "server started"
+
+        echo "starting API "        
+        python3 -m Matrix.api.server  &> "${CURRENT_DIR}/server.log" & echo $! > "${CURRENT_DIR}/api.pid"
+        echo "server started"
+
+        sleep 2
+
+        echo "starting UI "
+        cd pixel-pulse-neo-client ; npm start &> "${CURRENT_DIR}/ui.log" & echo $! > "${CURRENT_DIR}/ui.pid"
+        echo "server started"
+
+        ;;
+ 
+    stop)
+        
+        #kill_process_from_pidfile "${CURRENT_DIR}/ui.pid"
+        killall -9 node
+
+        kill_process_from_pidfile "${CURRENT_DIR}/api.pid"
+
+        ;;
     run)
         # Default value for duration
         duration=200
@@ -32,7 +91,7 @@ case "$1" in
         fi
 
         # Calling the Python script for 'run'
-        python3 -m Matrix.driver,executor -c "$2" -d "$duration"
+        python3 -m Matrix.driver.executor -c "$2" -d "$duration"
         ;;
 
     ls)

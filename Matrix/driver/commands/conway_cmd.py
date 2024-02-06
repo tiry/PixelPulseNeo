@@ -54,7 +54,7 @@ class ConwayCmd(PictureScrollBaseCmd):
     def update(self,args=[], kwargs={}):
 
         model = randomGrid(get_total_matrix_width(), get_total_matrix_height())
-        print(model)
+        #print(model)
         self.models = [model]
         super().update(args, kwargs)
         

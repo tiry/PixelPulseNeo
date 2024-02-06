@@ -4,9 +4,11 @@ from flask_cors import CORS
 import json
 import argparse
 from Matrix.driver.executor import instance
+from Matrix.driver.ipc.client import IPCClientExecutor
 import signal, os, sys
 from Matrix.models.Commands import ScheduleModel
 from Matrix.models.resthelper import pydantic_to_restx_model
+from Matrix.config import USE_IPC, RUN_AS_ROOT
 
 from flask_restx import fields
 
@@ -26,8 +28,12 @@ The following endpoints are available:
 
 # in debug + reload mode, there will be 2 python interpreter and then 2 singletons ...
 #if os.environ.get("WERKZEUG_RUN_MAIN") == "true":  
-executor = instance()
-
+emulator = None
+if USE_IPC:
+    executor = IPCClientExecutor(RUN_AS_ROOT)
+else:
+    executor = instance()
+    
 def shutdown_cleanly(signum, frame):
     print(f"### Signal handler called with signal  {signum}")
 

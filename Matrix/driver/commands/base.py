@@ -6,18 +6,16 @@ from PIL import ImageChops
 import os
 import traceback
 from Matrix.driver.utilz import configure_log, DARKCYAN
+from Matrix.config import MATRIX_CHAINED, MATRIX_HEIGHT, MATRIX_WIDTH, USE_EMULATOR, DEFAULT_REFRESH
 import logging
 
 logger = logging.getLogger(__name__)
 configure_log(logger, DARKCYAN, "Command", logging.INFO)
 
-from RGBMatrixEmulator import RGBMatrix, RGBMatrixOptions, graphics
-
-MATRIX_CHAINED = 3 
-MATRIX_WIDTH = 64
-MATRIX_HEIGHT = 64
-
-DEFAULT_REFRESH = 1/60.0
+if USE_EMULATOR: 
+    from RGBMatrixEmulator import RGBMatrix, RGBMatrixOptions, graphics
+else:
+    from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 
 def get_matrix_width():
     return MATRIX_WIDTH

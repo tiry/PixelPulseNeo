@@ -4,4 +4,6 @@ __pycache__/
 venv
 *.pyc
 Matrix/driver/backups/*
-
+*.log
+*.pid
+.cache
