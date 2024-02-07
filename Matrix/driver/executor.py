@@ -14,7 +14,7 @@ from Matrix.driver.base_executor import Scheduler, BaseCommandExecutor,  BUFFER_
 from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
 from Matrix.driver.utilz import configure_log, CYAN
-from Matrix.config import USE_IPC
+from Matrix.config import is_ipc_enabled
 
 import logging
 
@@ -199,6 +199,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "execute_now" : self.execute_now,
             "set_schedule" : self.set_schedule,
             "save_schedule" : self.save_schedule,
+            "stop" : self.stop,
+            
         }
 
 
@@ -250,7 +252,7 @@ if __name__ == "__main__":
             print(f"{command.name} - {command.description}")
         exit(0)
  
-    if args.listen or USE_IPC:
+    if args.listen or is_ipc_enabled():
         executor.serve()    
     else:
         if args.commands:

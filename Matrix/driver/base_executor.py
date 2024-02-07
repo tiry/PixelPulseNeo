@@ -177,7 +177,7 @@ class BaseCommandExecutor(Base):
     def save_schedule(self):
         pass
 
-    def stop(self):
+    def stop(self,interrupt=False):
         pass
 
 

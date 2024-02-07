@@ -1,3 +1,6 @@
+from Matrix import config
+#config.USE_IPC = True
+import argparse
 import unittest
 import requests
 from Matrix.api.server import app
@@ -7,6 +10,25 @@ import os, signal
 from PIL import Image
 from io import BytesIO
 import json
+import sys
+
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ipc", help="run end to end test with IPC communication", action="store_true")   
+    args = parser.parse_args()
+    
+    print("################################################")
+    if not args.ipc:
+        print("Running test with No IPC")
+        config.USE_IPC = False
+    else:
+        print("Running test with IPC")
+        config.USE_IPC = True
+        old_sys_argv = sys.argv
+        sys.argv = [old_sys_argv[0]] 
+    print("################################################")    
+
 
 class FlaskServerTestCase(unittest.TestCase):
 
@@ -98,6 +120,8 @@ class FlaskServerTestCase(unittest.TestCase):
         response = requests.post(f'http://localhost:5000/command/{target_command}')  
         self.assertEqual(response.status_code, 200)
         res = response.json()
+        
+        # XXX Get logs to verify
         #print(res)
 
 
@@ -133,7 +157,7 @@ class FlaskServerTestCase(unittest.TestCase):
         self.assertEqual(json.dumps(src_schedule_json), json.dumps(new_schedule_json))
 
         
-
-     
 if __name__ == '__main__':
+
     unittest.main()
+    

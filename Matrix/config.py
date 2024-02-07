@@ -7,6 +7,10 @@ USE_EMULATOR=True
 # Control if we go through IPC Comunication 
 USE_IPC = False
 
+def is_ipc_enabled():
+    return USE_IPC
+
+
 # Run CommandExecutor as root
 RUN_AS_ROOT = False
 

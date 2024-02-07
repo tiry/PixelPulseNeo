@@ -107,6 +107,15 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
         return f"{prefix}python -m Matrix.driver.executor --scheduler --listen"
     
+    def send_command(self,command, *args, **kwargs):
+
+        json_response = IPCClient.send_command(self, command, *args, **kwargs)
+        response = json_response["response"]
+        if response:
+            return response
+        else:
+            return None
+
     def list_commands(self):
         return self.send_command("ls")
       
@@ -134,8 +143,9 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
     def save_schedule(self):
         return self.send_command("save_schedule")
 
-    def stop(self):
-        pass
+    def stop(self, interrupt=False):
+        res = self.send_command("stop", interrupt=interrupt)
+        return res
 
 class InteractiveRemoteCLI():
 

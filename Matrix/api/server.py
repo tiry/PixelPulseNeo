@@ -4,13 +4,20 @@ from flask_cors import CORS
 import json
 import argparse
 from Matrix.driver.executor import instance, release
-from Matrix.driver.ipc.client import IPCClientExecutor
+from Matrix.driver.ipc.client import IPCClientExecutor, IPCClient
 import signal, os, sys
 from Matrix.models.Commands import ScheduleModel
 from Matrix.models.resthelper import pydantic_to_restx_model
-from Matrix.config import USE_IPC, RUN_AS_ROOT
+from Matrix.config import is_ipc_enabled, RUN_AS_ROOT
 import time
 from flask_restx import fields
+from pydantic import BaseModel
+from Matrix.driver.utilz import configure_log, YELLOW
+import logging
+
+
+logger = logging.getLogger(__name__)
+configure_log(logger, YELLOW, "API> ")
 
 app = Flask(__name__)# Creates a Flask application instance with the given name
 """Creates a Flask application instance to host the API endpoints.
@@ -29,9 +36,11 @@ executor = None
 def get_executor():
     global executor
     if executor is None:
-        if USE_IPC:
+        if is_ipc_enabled():
+            logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
             executor = IPCClientExecutor(RUN_AS_ROOT)
         else:
+            logger.info(f"Creating inproces client")
             executor = instance()
     return executor
 
@@ -161,7 +170,10 @@ class Schedule(Resource):
             return make_response(jsonify({"error": f"Schedule '{playlist_name}' not found"}), 404)
         
         print(f"SCHEDULE = {schedule}")
-        return json.loads(schedule.model_dump_json())  
+        if issubclass(schedule.__class__, BaseModel):
+            return json.loads(schedule.model_dump_json())  
+        else:
+            return schedule
 
     @api.expect(rest_schedule)
     def post(self, playlist_name=None):
@@ -201,12 +213,15 @@ class Shutdown(Resource):
 
     def get(self):
         global executor
-        if (executor is None):
-            print("API Server shutting down Executor")
+        if (executor is not None):
+            logger.info("API Server shutting down Executor")
             executor.stop(interrupt=True)
+            if  issubclass(executor.__class__, IPCClient):
+                executor.disconnect()
+                #executor.kill_server()
             executor=None
             release()
-            print("API Server: executor shutdown completed")
+            logger.info("API Server: executor shutdown completed")
         #time.sleep(1)
         #func = request.environ.get('werkzeug.server.shutdown')
         #if func is not None:
@@ -214,6 +229,7 @@ class Shutdown(Resource):
         #    func()
         #    print("werkzeug shut down completed")
         #os.kill(os.getpid(), signal.SIGINT)
+        logger.info("Bye !")
         return "server exit"
 
 if __name__ == '__main__':

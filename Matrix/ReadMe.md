@@ -25,6 +25,12 @@ Or to run a specific test suite
 
     python -m unittest Matrix.tests.test_cmdexec
 
+## End 2 End testing
+
+To run end to end test with IPC enabled:
+
+    python -m  Matrix.tests.test_end2end --ipc
+
 ## Models
 
 Store Models objects (Pydantic and RestX).
