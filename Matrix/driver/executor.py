@@ -14,6 +14,8 @@ from Matrix.driver.base_executor import Scheduler, BaseCommandExecutor,  BUFFER_
 from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
 from Matrix.driver.utilz import configure_log, CYAN
+from Matrix.config import USE_IPC
+
 import logging
 
 MAX_AUDIT_SIZE=100
@@ -108,10 +110,12 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def _scheduler_loop(self):
         while not self.stop_scheduler.is_set():
             command_entry  = self.scheduler.fetch_next_command()
-            if command_entry:
-                self._run_command(command_entry)
-            else:
-                time.sleep(BUSY_WAIT)
+            if not self.stop_scheduler.is_set():
+                if command_entry:
+                    self._run_command(command_entry)
+                else:
+                    time.sleep(BUSY_WAIT)
+        print("SCHEDULER EXITED FOR REAL")
 
     def _add_log(self, log_entry):
         logger.debug(f" [AUDIT] {log_entry}")
@@ -172,11 +176,14 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self.stop_current.set()
 
     def stop(self, interrupt=False):
-        time.sleep(0.1)
+        logger.info("Stop request received")
+        
+        self.stop_scheduler.set()
+        time.sleep(BUSY_WAIT*5)
         if (interrupt):
             self.stop_current.set()
-        self.stop_scheduler.set()
-        logger.debug("waiting for scheduler to exit")
+            time.sleep(BUSY_WAIT*5)
+        logger.debug("waiting for scheduler thread to exit")
         self.schedule_thread.join()
         logger.info("Scheduler shutdown completed, exiting")
 
@@ -205,6 +212,18 @@ def instance():
         singleton = CommandExecutor()
     return singleton
 
+def release():
+    global singleton
+
+    if singleton:
+        singleton = None
+    
+def client():
+    global singleton
+    if not singleton:
+        singleton = None
+    return singleton
+
 if __name__ == "__main__":
 
     ###################################
@@ -231,8 +250,8 @@ if __name__ == "__main__":
             print(f"{command.name} - {command.description}")
         exit(0)
  
-    if args.listen:
-        executor.serve()
+    if args.listen or USE_IPC:
+        executor.serve()    
     else:
         if args.commands:
             for command in args.commands:

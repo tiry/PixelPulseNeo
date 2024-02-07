@@ -36,6 +36,10 @@ class Scheduler(Base):
         if cname:
             self.load_playlist(cname)
     
+    def make_empty(self):
+         self.catalog = ScheduleCatalog()
+         self.current_stack = ScheduleModel(commands=[])
+
     def get_next_catalog(self):
         if "default" in self.catalog.playlists.keys():
             return "default"

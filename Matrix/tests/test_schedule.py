@@ -8,6 +8,7 @@ import json
 
 PLAYLIST_NAME = "default_test_schedule"
 
+"""Test cases for the "low level" Scheduler module."""
 class TestSchedule(unittest.TestCase):
 
     @classmethod

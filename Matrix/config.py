@@ -32,9 +32,15 @@ MATRIX_WIDTH = 64
 MATRIX_HEIGHT = 64
 
 # number of chained matrix
-MATRIX_CHAINED = 3 
+MATRIX_CHAINED = 3
 
 # default refresh rate 
 DEFAULT_REFRESH = 1/60.0
+
+
+## Test IPC Config
+#USE_EMULATOR = True
+#USE_IPC = True
+#RUN_AS_ROOT = False
 
 

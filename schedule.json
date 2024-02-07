@@ -77,6 +77,19 @@
             "conditions": [
                 ""
             ]
+        },
+        "testingschedule": {
+            "commands": [
+                {
+                    "command_name": "time",
+                    "duration": 1.0,
+                    "args": [
+                        "token1707279541.755147"
+                    ],
+                    "kwargs": {}
+                }
+            ],
+            "conditions": []
         }
     }
 }
