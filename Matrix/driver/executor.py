@@ -38,8 +38,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.stop_scheduler = threading.Event()
         self.schedule_thread = None
         print(f"starting schedule thread")
-        #self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
-        #self.schedule_thread.start()
+        self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
+        self.schedule_thread.start()
 
         self.audit_log = []
         self.execution_counter=0
