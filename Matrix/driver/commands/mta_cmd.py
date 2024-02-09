@@ -4,6 +4,9 @@ import Matrix.driver.commands.mta.bus as bus
 
 from PIL import Image
 from PIL import ImageDraw
+import threading
+import argparse
+import time
 
 def truncate(s, length):
     if len(s) > length:
@@ -105,7 +108,27 @@ class MtaCmd(PictureScrollBaseCmd):
                 self.speedY=0
             
 
+def exec_thread(loop=5, cmd=None):
+    
+    for i in range(loop):
+        print(f"Execute {cmd.name} in dedicated thread")
+        cmd.execute(threading.Event(), timeout=60)
+        time.sleep(1)
 
+if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--thread", help="start in a thread", action="store_true")
+    
+    args = parser.parse_args()
 
+    cmd = MtaCmd()
+    if args.thread:
+        schedule_thread = threading.Thread(target=exec_thread, kwargs={"loop":5, "cmd": cmd })
+        schedule_thread.start()
 
+    else:
+        print("Execute MTA Command in main thread")
+        cmd.execute(threading.Event(), timeout=60)
+
+    

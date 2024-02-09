@@ -85,9 +85,13 @@ Start the scheduler: (see [schedule.json](schedule.json))
 
 ### IPC
 
-When driving a real LED Matrix, the code needs to run as `root`, this is a constraint from the[rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) lib.
+When driving a real LED Matrix, the code needs to be started as `root`, this is a constraint from the[rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) lib.
 
-Because the API Server should not run as root, the CommandExecutor can be used as a IPC Server can the APi Server will use the IPC client to communicate with it:
+The documentation says that the lib drops privilege by default, but it result in a lot of strange file related issues: unable to load files, unable to load python module ...
+
+As a result, the default config is to run the Matris with `drop_privileges = False` and run the CommandExecutor code as root.
+
+Because the API Server should not run as root, the CommandExecutor can be used as a IPC Server can the API Server will use the IPC client to communicate with it:
 
     REST API(low_privilege) => IPC_Client(low_privilege) => IPC_Server(root) => rpi-rgb-led-matrix
 
@@ -247,6 +251,8 @@ Command system (`Matrix.driver`)
     pip install feedparser
     pip install pydantic
     pip install spotipy
+    pip install pillow
+    pip install unidecode
 
 Because of `underground` the pydantic version is fixed to 1.9.2
 
@@ -276,4 +282,14 @@ API server (`Matrix.api`)
 On the target system, you want to run the code against the real [rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) lib.
 
 See https://github.com/hzeller/rpi-rgb-led-matrix to install on the target system.
+
+One installed, the `rgbmatrix` will be installed in the "global python" but you still need to make it available inside the `venv`.
+
+One approach is:
+
+    cp -R /usr/local/lib/python3.11/dist-packages/rgbmatrix-0.0.1-py3.11-linux-aarch64.egg/rgbmatrix venv/lib/python3.11/site-packages/.
+
+
+
+
 

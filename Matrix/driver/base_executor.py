@@ -1,6 +1,6 @@
 import os
 import json
-from Matrix.driver.utilz import configure_log, BLUE
+from Matrix.driver.utilz import configure_log
 import logging
 import json
 import os
@@ -8,6 +8,8 @@ from datetime import datetime
 import shutil
 from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
 from Matrix.models.encode import deepcopy, loadModel
+
+from abc import ABC, abstractmethod
 
 BUFFER_SIZE = 1024*10    
     
@@ -145,38 +147,47 @@ class Scheduler(Base):
         self.current_stack = ScheduleModel(commands = self.get_playlist(name).commands[:])
     
 
-class BaseCommandExecutor(Base):
+class BaseCommandExecutor(ABC,Base):
     
     def __init__(self):
         pass
 
+    @abstractmethod
     def list_commands(self):
         pass
     
+    @abstractmethod
     def get_commands(self):
         pass
-    
+    @abstractmethod
     def get_command(self, name):
         pass
 
+    @abstractmethod
     def get_command_screenshot(self, name, screenshot_name):
         pass
-
+    
+    @abstractmethod
     def list_schedules(self):
         pass
 
+    @abstractmethod
     def get_schedule(self, playlist_name):
         pass
 
+    @abstractmethod
     def set_schedule(self, schedule, playlist_name):
         pass
 
+    @abstractmethod
     def execute_now(self, command_name, duration, interrupt=False):
         pass
 
+    @abstractmethod
     def save_schedule(self):
         pass
 
+    @abstractmethod
     def stop(self,interrupt=False):
         pass
 

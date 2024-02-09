@@ -39,6 +39,7 @@ def getMatrixOptions():
     options.chain_length = get_matrix_chained()
     options.parallel = 1
     options.hardware_mapping = 'regular'
+    options.drop_privileges = False
     return options
 
 def get_screenshots_dir(name=None):
@@ -144,7 +145,10 @@ class BaseCommand:
         base_dir = get_screenshots_dir()
         file = f"{base_dir}/{name}"
         return open(file, 'rb')
-    
+
+# We want a sigleton matrix because we want to share the same matrix between all the commands
+# Failing to do so works with the Matrix emulator but gives super bad result with the real hardware 
+matrix_singleton = RGBMatrix(options = getMatrixOptions())
 
 class MatrixBaseCmd(BaseCommand):
 
@@ -152,7 +156,8 @@ class MatrixBaseCmd(BaseCommand):
         super().__init__(name, description)
 
         self.options = getMatrixOptions()
-        self.matrix = RGBMatrix(options = self.options)
+        self.matrix = matrix_singleton
+        #self.matrix = RGBMatrix(options = self.options)
         self.fonts={}
     
     def getFont(self, name):

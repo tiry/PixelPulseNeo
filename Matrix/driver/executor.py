@@ -38,8 +38,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.stop_scheduler = threading.Event()
         self.schedule_thread = None
         print(f"starting schedule thread")
-        self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
-        self.schedule_thread.start()
+        #self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
+        #self.schedule_thread.start()
 
         self.audit_log = []
         self.execution_counter=0
@@ -250,7 +250,7 @@ if __name__ == "__main__":
         print(f"Listing commands:")
         for command in executor.commands.values():
             print(f"{command.name} - {command.description}")
-        exit(0)
+        #exit(0)
  
     if args.listen or is_ipc_enabled():
         executor.serve()    
@@ -264,6 +264,6 @@ if __name__ == "__main__":
                 else:
                     executor.execute_now(cmds[0], int(args.duration))
                 time.sleep(1)
-                executor.stop()
+    executor.stop()
     
     

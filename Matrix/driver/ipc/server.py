@@ -1,14 +1,10 @@
 
 import time
 import json
-from datetime import datetime
 import socket
-import subprocess
-import time
 import os
 import sys
 from Matrix.models.encode import json_dumps
-from Matrix.driver.base_executor import BUFFER_SIZE
 
 from Matrix.driver.utilz import configure_log, GREEN
 import logging
