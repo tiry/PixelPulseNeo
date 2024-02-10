@@ -3,7 +3,8 @@ import ApiService from '../services/ApiService';
 import { List, ListItem, ListItemText, Button, Grid, Card, CardMedia, CardContent } from '@mui/material';
 
 //const BASE_URL = 'http://localhost:5000';
-const BASE_URL = '';
+//const BASE_URL = '';
+const BASE_URL = 'http://lcddriver.local:5000';
 
 function CommandList() {
     const [commands, setCommands] = useState([]);

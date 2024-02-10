@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 //const BASE_URL = 'http://localhost:5000';
-const BASE_URL = '';
+//const BASE_URL = '';
+const BASE_URL = 'http://lcddriver.local:5000';
+
 
 export default class ApiService {
     static getCommands() {

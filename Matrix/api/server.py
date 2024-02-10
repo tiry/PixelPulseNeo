@@ -14,7 +14,7 @@ from flask_restx import fields
 from pydantic import BaseModel
 from Matrix.driver.utilz import configure_log, YELLOW
 import logging
-
+import traceback
 
 logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
@@ -38,7 +38,7 @@ def get_executor():
     if executor is None:
         if is_ipc_enabled():
             logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
-            executor = IPCClientExecutor(RUN_AS_ROOT)
+            executor = IPCClientExecutor(RUN_AS_ROOT, start_server_if_needed=False)
         else:
             logger.info(f"Creating inproces client")
             executor = instance()
@@ -116,10 +116,15 @@ class Screenshot(Resource):
         else:
             mimetype = 'application/octet-stream'
         
-        if os.path.exists(screenshot_path):
-            return send_file(open(screenshot_path, "rb"), mimetype=mimetype)
-        else:
-            return make_response(jsonify({"error": "Screenshot not found"}), 404)
+        try:
+            if os.path.exists(screenshot_path):
+                return send_file(open(screenshot_path, "rb"), mimetype=mimetype)
+            else:
+                return make_response(jsonify({"error": "Screenshot not found"}), 404)
+        except Exception as e:
+            logger.error(f"Unable to send screenshot {screenshot_path} - {e}")
+            traceback.print_exc()
+            return make_response(jsonify({"error": f"Unable to resolve screenshot {screenshot_path}"}), 500)
 
 @api.route('/command/<command_name>')
 class Command(Resource):
@@ -244,4 +249,4 @@ if __name__ == '__main__':
     if args.noreload:
         reload = False
 
-    app.run(debug=debug, use_reloader=reload)
+    app.run(debug=debug, use_reloader=reload, host="0.0.0.0")
