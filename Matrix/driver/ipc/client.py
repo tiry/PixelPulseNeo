@@ -22,16 +22,19 @@ configure_log(logger, BLUE, "Client")
 
 class IPCClient():
 
-    def __init__(self):
+    def __init__(self, start_server_if_needed=True):
         
         self.server_process=None
         try:
             self.connect()
         except ConnectionRefusedError as e:
-            logger.debug("Unable to connect to server")
-            logger.debug("=> starting server")  
-            self.start_server_process()
-            self.connect()
+            logger.info("Unable to connect to server")
+            if start_server_if_needed:
+                logger.debug("=> starting server")  
+                self.start_server_process()
+                self.connect()
+            else:
+                logger.info("=> exiting")
 
             
     def get_shell_command(self):
@@ -94,10 +97,10 @@ class IPCClient():
 
 class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
-    def __init__(self, run_as_root=False):
+    def __init__(self, run_as_root=False, start_server_if_needed=True):
 
         self.run_as_root=run_as_root
-        IPCClient.__init__(self)
+        IPCClient.__init__(self, start_server_if_needed=start_server_if_needed)
         BaseCommandExecutor.__init__(self)
         
     def get_shell_command(self):
@@ -150,7 +153,7 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 class InteractiveRemoteCLI():
 
     def __init__(self):
-        self.client = IPCClientExecutor()
+        self.client = IPCClientExecutor(start_server_if_needed=False)
         signal.signal(signal.SIGTERM, self.shutdown_cleanly)
         signal.signal(signal.SIGINT, self.shutdown_cleanly)
         signal.signal(signal.SIGQUIT, self.shutdown_cleanly)
@@ -216,18 +219,16 @@ class InteractiveRemoteCLI():
                 else:
                     print(f"Command {cmd} not supportted by client")
                     continue
-                if res["error"] is not None and len(res["error"])>0:
+
+                if type(res) == dict and "error" in res  and len(res["error"])>0:
                     print(f'Server returned an Error : {res["error"]}')
-                elif res["success"]:
-                    response = res["response"]
-                    if type(response) == list:
-                        for item in response:
+                else:
+                    if type(res) == list:
+                        for item in res:
                             print(item)
                     else:
-                        print(response)         
+                        print(res)         
                     print("")
-                else:        
-                    print(f"result => {res}")
         except Exception as e:
             print("error trying to execute {e}")
             print(traceback.format_exc())

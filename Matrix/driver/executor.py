@@ -184,7 +184,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self.stop_current.set()
             time.sleep(BUSY_WAIT*5)
         logger.debug("waiting for scheduler thread to exit")
-        self.schedule_thread.join()
+        self.schedule_thread.join(timeout=2)
         logger.info("Scheduler shutdown completed, exiting")
 
     def get_valid_commands(self):

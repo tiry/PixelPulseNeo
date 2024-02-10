@@ -117,11 +117,11 @@ Available CLI commands:
 
 `ls schedules` : list schedules / playlists registered in the `CmdExecutor`
 
-`command <command_name>` : retrive definition of command <command_name>
+`command <command_name>` : retrieve definition of command <command_name>
 
-`schedule <schedule_name>` : retrive definition of Schedule <schedule_name>
+`schedule <schedule_name>` : retrieve definition of Schedule <schedule_name>
 
-`commands` : retrive definition of all commands
+`commands` : retrieve definition of all commands
 
 `run <command_name> arg1 arg2 arg3`: run command <command_name> using positional arguments
 
