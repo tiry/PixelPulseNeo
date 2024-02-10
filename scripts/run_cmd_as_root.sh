@@ -1,4 +1,5 @@
 #!/bin/bash
+
 LEDDRIVER_HOME=/home/tiry/dev/PixelPulseNeo
 
 # Check if the script is run as root
@@ -25,8 +26,17 @@ cd "$LEDDRIVER_HOME" || exit
 # Source the Python virtual environment
 source venv/bin/activate
 
+# Default value for duration
+duration=20
+
+        
+# Check if duration is provided
+if [ -n "$2" ]; then
+    duration="$2"
+fi
+
 # Start the Command Executor
 # --scheduler: Run the scheduler
 # --listen: Start Socket server
-python -m Matrix.driver.executor --scheduler --listen
+python -m Matrix.driver.executor -c "$1" -d "$duration"
 
