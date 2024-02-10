@@ -40,6 +40,8 @@ def getMatrixOptions():
     options.parallel = 1
     options.hardware_mapping = 'regular'
     options.drop_privileges = False
+    # slow down GPIO when running on PI3 to avoid bad rendering on chained panels
+    options.gpio_slowdown = 2
     return options
 
 def get_screenshots_dir(name=None):
@@ -149,6 +151,7 @@ class BaseCommand:
 # We want a sigleton matrix because we want to share the same matrix between all the commands
 # Failing to do so works with the Matrix emulator but gives super bad result with the real hardware 
 matrix_singleton = RGBMatrix(options = getMatrixOptions())
+
 
 class MatrixBaseCmd(BaseCommand):
 
