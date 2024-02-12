@@ -3,16 +3,16 @@ from flask_restx import Api, Resource
 from flask_cors import CORS
 import json
 import argparse
-from Matrix.driver.executor import instance, release
-from Matrix.driver.ipc.client import IPCClientExecutor, IPCClient
 import signal
 import os
 import sys
 from Matrix.models.Commands import ScheduleModel
 from Matrix.models.resthelper import pydantic_to_restx_model
-from Matrix.config import is_ipc_enabled, RUN_AS_ROOT
+from Matrix.config import is_ipc_enabled
 from pydantic import BaseModel
 from Matrix.driver.utilz import configure_log, YELLOW
+from Matrix.driver.factory import CommandExecutorSingleton, IPCClientSingleton
+from Matrix.driver.ipc.client import IPCClient
 import logging
 import traceback
 
@@ -32,25 +32,27 @@ The following endpoints are available:
 - DELETE /stop - Stops the command executor
 """
 
+
 executor = None
 
-
 def get_executor():
+
     global executor
     if executor is None:
         if is_ipc_enabled():
-            logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
-            executor = IPCClientExecutor(RUN_AS_ROOT, start_server_if_needed=False)
+            executor = IPCClientSingleton.instance()
+            logger.info(f"Returning IPC Client {executor}")
+            #logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
+            #executor = IPCClientExecutor(RUN_AS_ROOT, start_server_if_needed=False)
         else:
-            logger.info("Creating inproces client")
-            executor = instance()
+            executor = CommandExecutorSingleton.instance()
+            logger.info(f"Returning inproces client {executor}")
+            #executor = instance()
     return executor
 
 
 def shutdown_cleanly(signum, frame):
     print(f"### Signal handler called with signal  {signum}")
-
-    global executor
     if executor is not None:
         print("Shuting down Executor")
         executor.stop(interrupt=True)
@@ -87,7 +89,9 @@ class Commands(Resource):
         - `description`: A description of what the command does
         - `screenshots`: Screenshot URLs demonstrating the visual effect of the command
         """
+        logger.info(f"GET /commands")
         result = get_executor().get_commands()
+        logger.info(f"result {result}")
         return jsonify(result)
 
 
@@ -252,7 +256,6 @@ class Shutdown(Resource):
                 executor.disconnect()
                 # executor.kill_server()
             executor = None
-            release()
             logger.info("API Server: executor shutdown completed")
         # time.sleep(1)
         # func = request.environ.get('werkzeug.server.shutdown')

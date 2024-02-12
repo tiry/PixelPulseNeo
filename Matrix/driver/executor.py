@@ -5,7 +5,8 @@ import os
 import argparse
 import traceback
 from Matrix.models.Commands import CommandEntry
-from Matrix.driver.base_executor import Scheduler, BaseCommandExecutor
+from Matrix.driver.base_executor import BaseCommandExecutor, synchronized_method
+from Matrix.driver.scheduler import Scheduler
 from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
 from Matrix.driver.utilz import configure_log, CYAN
@@ -57,15 +58,18 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                     logger.error(traceback.format_exc())
         return commands
 
+    @synchronized_method
     def list_commands(self):
         return list(self.commands.keys())
 
+    @synchronized_method
     def get_commands(self):
         result = []
         for name in self.commands:
             result.append(self.get_command(name))
         return result
 
+    @synchronized_method
     def get_command(self, name):
         cmd = self.commands.get(name, None)
         if cmd:
@@ -75,7 +79,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 "screenshots": cmd.getScreenShots(),
             }
         return None
-
+        
+    @synchronized_method
     def get_command_screenshot(self, name, screenshot_name):
         cmd = self.commands.get(name, None)
         if cmd:
@@ -85,21 +90,25 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def _load_schedule(self, name):
         self.scheduler.load_playlist(name)
 
-    def get_schedule(self, name=None):
-        if name is None:
+    @synchronized_method
+    def get_schedule(self, playlist_name=None):
+        if playlist_name is None:
             return self.scheduler.get_current_stack()
         else:
-            return self.scheduler.get_playlist(name)
+            return self.scheduler.get_playlist(playlist_name)
 
+    @synchronized_method
     def list_schedules(self):
         return self.scheduler.get_playlist_names()
 
-    def set_schedule(self, schedule, name=None):
-        if name:
-            self.scheduler.save_playlist(schedule, name)
+    @synchronized_method
+    def set_schedule(self, schedule, playlist_name=None):
+        if playlist_name is not None:
+            self.scheduler.save_playlist(schedule, playlist_name)
         else:
             self.scheduler.update_current_stack(schedule)
 
+    @synchronized_method
     def save_schedule(self, schedule_file=None):
         self.scheduler.save(schedule_file=schedule_file)
 
@@ -178,7 +187,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             )
             self._add_log(log_entry)
 
-    def execute_now(self, command_name, duration, args=[], kwargs={}, interrupt=False):
+    @synchronized_method
+    def execute_now(self, command_name, duration, interrupt=False, args=[], kwargs={}):
         self.scheduler.append_next(
             CommandEntry(
                 command_name=command_name, duration=duration, args=args, kwargs=kwargs
@@ -187,6 +197,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         if interrupt:
             self.stop_current.set()
 
+    @synchronized_method
     def stop(self, interrupt=False):
         logger.info("Stop request received")
 
@@ -214,11 +225,13 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "stop": self.stop,
         }
 
+    def connected(self):
+        return True
+
 
 ###################################
 # Helper to manage as singleton
 singleton = None
-
 
 def instance():
     global singleton

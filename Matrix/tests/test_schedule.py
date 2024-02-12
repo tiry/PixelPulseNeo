@@ -1,5 +1,5 @@
 import unittest
-from Matrix.driver.base_executor import Scheduler
+from Matrix.driver.scheduler import Scheduler
 from Matrix.models.Commands import ScheduleModel, CommandEntry
 
 import tempfile

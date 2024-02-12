@@ -13,6 +13,8 @@ from Matrix.driver.utilz import configure_log, BLUE
 import logging
 import signal
 from Matrix.models.encode import json_dumps
+from Matrix.driver.base_executor import synchronized_method
+import traceback
 
 logger = logging.getLogger(__name__)
 configure_log(logger, BLUE, "Client")
@@ -21,16 +23,18 @@ configure_log(logger, BLUE, "Client")
 class IPCClient:
     def __init__(self, start_server_if_needed=True):
         self.server_process = None
+        self.client = None 
         try:
             self.connect()
-        except ConnectionRefusedError:
-            logger.info("Unable to connect to server")
+        except ConnectionRefusedError as e:
+            logger.info(f"Unable to connect to server {e}")
+            traceback.print_exc()
             if start_server_if_needed:
-                logger.debug("=> starting server")
+                logger.debug("start_server_if_needed=True => starting server")
                 self.start_server_process()
                 self.connect()
             else:
-                logger.info("=> exiting")
+                logger.info("start_server_if_needed=False => we can not continue, exiting")
 
     def get_shell_command(self):
         return "python -m Matrix.driver.ipc.server"
@@ -101,6 +105,7 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
         return f"{prefix}python -m Matrix.driver.executor --scheduler --listen"
 
+    @synchronized_method
     def send_command(self, command, *args, **kwargs):
         json_response = IPCClient.send_command(self, command, *args, **kwargs)
         response = json_response["response"]
@@ -108,39 +113,57 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
             return response
         else:
             return None
-
+        
+    @synchronized_method
     def list_commands(self):
         return self.send_command("ls")
 
+    @synchronized_method
     def get_commands(self):
         return self.send_command("get_commands")
 
+    @synchronized_method
     def get_command(self, name):
         return self.send_command("get_command", name)
 
+    @synchronized_method
     def get_command_screenshot(self, name, screenshot_name):
         return self.send_command("get_command_screenshot", name, screenshot_name)
 
+    @synchronized_method
     def list_schedules(self):
         return self.send_command("list_schedules")
 
+    @synchronized_method
     def get_schedule(self, playlist_name):
         return self.send_command("get_schedule", playlist_name)
 
+    @synchronized_method
     def set_schedule(self, schedule, playlist_name):
         return self.send_command("set_schedule", schedule, playlist_name)
 
-    def execute_now(self, command_name, duration, interrupt=False):
+    @synchronized_method
+    def execute_now(self, command_name, duration, interrupt=False, args=[], kwargs={}):
         return self.send_command(
-            "execute_now", command_name, duration, [], {}, interrupt
+            "execute_now", command_name, duration, args, kwargs, interrupt
         )
-
+    
+    @synchronized_method
     def save_schedule(self):
         return self.send_command("save_schedule")
 
+    @synchronized_method
     def stop(self, interrupt=False):
         res = self.send_command("stop", interrupt=interrupt)
         return res
+    
+    def connected(self):
+        if self.client is None:
+            return False
+        else:
+            # XXX Ping Server
+            return True
+    
 
 
 class InteractiveRemoteCLI:

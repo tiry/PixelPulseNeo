@@ -1,6 +1,5 @@
 from Matrix import config
-
-# config.USE_IPC = True
+from Matrix.driver.factory import IPCClientSingleton
 import argparse
 import unittest
 import requests
@@ -26,6 +25,8 @@ if __name__ == "__main__":
     else:
         print("Running test with IPC")
         config.USE_IPC = True
+        # Make the IPC Client automatically start the server
+        IPCClientSingleton.start_server_if_needed=True
         old_sys_argv = sys.argv
         sys.argv = [old_sys_argv[0]]
     print("################################################")
@@ -43,13 +44,14 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("################################################")
         print("Test API Server Started ")
+        print(f"    use IPC = {config.USE_IPC}")
 
     @classmethod
     def tearDownClass(cls):
         print("Tear down test: asking server to shut down")
         # Shutdown the Flask server after tests
         requests.get(
-            "http://localhost:5000/shutdown"
+            "http://localhost:5000/shutdown", timeout=5
         )  # Assuming you have a shutdown route
         print("Tear down test: wait for server to exit")
         cls.server_process.terminate()
@@ -64,7 +66,8 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing commands API")
 
-        response = requests.get("http://localhost:5000/commands")
+        response = requests.get("http://localhost:5000/commands", timeout=5)
+        response.raise_for_status()
         self.assertEqual(response.status_code, 200)
 
         cmds = response.json()
@@ -80,7 +83,9 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing schedules API")
 
-        response = requests.get("http://localhost:5000/schedules")
+        response = requests.get("http://localhost:5000/schedules",timeout=5)
+        response.raise_for_status()
+
         self.assertEqual(response.status_code, 200)
 
         schedules = response.json()
@@ -92,7 +97,8 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing command API")
 
-        response = requests.get("http://localhost:5000/commands")
+        response = requests.get("http://localhost:5000/commands", timeout=5)
+        response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         cmds = response.json()
 
@@ -104,7 +110,7 @@ class FlaskServerTestCase(unittest.TestCase):
             # now download the images
             for name in cmd["screenshots"]:
                 response = requests.get(
-                    f"http://localhost:5000/screenshots/{target_command}/{name}"
+                    f"http://localhost:5000/screenshots/{target_command}/{name}", timeout=5
                 )
                 self.assertEqual(response.status_code, 200)
                 i = Image.open(BytesIO(response.content))
@@ -115,7 +121,8 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing command API")
 
-        response = requests.post(f"http://localhost:5000/command/{target_command}")
+        response = requests.post(f"http://localhost:5000/command/{target_command}", timeout=5)
+        response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         res = response.json()
 
@@ -144,13 +151,15 @@ class FlaskServerTestCase(unittest.TestCase):
         response = requests.post(
             f"http://localhost:5000/schedule/{schedule_name}",
             headers=headers,
-            data=json.dumps(src_schedule_json),
+            data=json.dumps(src_schedule_json), timeout=5
         )
+        response.raise_for_status()
         self.assertEqual(response.status_code, 200)
 
         # now get the schedule back
 
-        response = requests.get(f"http://localhost:5000/schedule/{schedule_name}")
+        response = requests.get(f"http://localhost:5000/schedule/{schedule_name}", timeout=5)
+        response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         new_schedule_json = response.json()
 

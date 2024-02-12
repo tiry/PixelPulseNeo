@@ -4,6 +4,7 @@ import socket
 import os
 import sys
 from Matrix.models.encode import json_dumps
+from Matrix.driver.base_executor import synchronized_method
 
 from Matrix.driver.utilz import configure_log, GREEN
 import logging
@@ -16,12 +17,14 @@ IPC_PORT = 6000
 
 
 class IPCServer:
+
     def method_echo(self, *args, **kwargs):
         return "\n".join(["OK", str(args), str(kwargs)])
 
     def get_valid_commands(self):
         return {"echo": self.method_echo}
 
+    @synchronized_method
     def execute_ipc_request(self, command, args, kwargs):
         response_wrapper = {"success": False, "error": None, "response": None}
 
