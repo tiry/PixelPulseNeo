@@ -15,6 +15,8 @@ from Matrix.driver.factory import CommandExecutorSingleton, IPCClientSingleton
 from Matrix.driver.ipc.client import IPCClient
 import logging
 import traceback
+from flask import send_from_directory
+
 
 logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
@@ -75,6 +77,9 @@ api = Api(
     version="1.0",
     title="PixelPulseNeoServer",
     description="REST API to interact with PixelPulseNeoServer",
+    prefix = "/api",
+    default = "PixelPulseNeoAPI",
+    default_label="REST API for PixelPulseNeoServer",
 )
 
 
@@ -267,7 +272,12 @@ class Shutdown(Resource):
         logger.info("Bye !")
         return "server exit"
 
-
+@app.route('/web/<path:path>')
+def send_report(path):
+    if path is None or path == "":
+        path="index.html"
+    return send_from_directory('../../pixel-pulse-neo-client/build/', path)
+    
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", help="enable flash debug mode", action="store_true")

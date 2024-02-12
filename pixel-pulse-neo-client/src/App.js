@@ -10,21 +10,21 @@ function App() {
         <Router>
             <AppBar position="static">
                 <Toolbar>
-                    <Button color="inherit" component={Link} to="/commands">
+                    <Button color="inherit" component={Link} to="/web/commands">
                         Available Commands
                     </Button>
-                    <Button color="inherit" component={Link} to="/schedule">
+                    <Button color="inherit" component={Link} to="/web/schedule">
                         Current Queue
                     </Button>
-                    <Button color="inherit" component={Link} to="/playlists">
+                    <Button color="inherit" component={Link} to="/web/playlists">
                         Playlists
                     </Button>
                 </Toolbar>
             </AppBar>
             <Routes>
-                <Route path="/commands" element={<CommandList />} />
-                <Route path="/schedule" element={<ScheduleViewer />} />
-                <Route path="/playlists" element={<PlaylistViewer />} />
+                <Route path="/web/commands" element={<CommandList />} />
+                <Route path="/web/schedule" element={<ScheduleViewer />} />
+                <Route path="/web/playlists" element={<PlaylistViewer />} />
             </Routes>
         </Router>
     );

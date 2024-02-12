@@ -1,8 +1,12 @@
 {
   "name": "pixel-pulse-neo-client",
-  "proxy": "http://localhost:5000",
+  "proxy": "http://lcddriver.local:5000",
+  "allowedHosts": [
+    "127.0.0.1", "lcddriver.local", "0.0.0.0", "192.168.1.177"
+  ],
   "version": "0.1.0",
   "private": true,
+  "homepage" : "web",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",

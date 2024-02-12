@@ -28,20 +28,7 @@ Thanks to [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator) co
 
 ### Implementation
 
-Commands are simple python scripts located in the [commands](Matrix/driver/commands) directory.
-
-The command typically execute 2 steps:
-
- - `update`: gather some data
- - `render`: update the display
-
-The executor starts a background thread that is in charge of executing a list of commands ( schedule or playlist ).
-
-The executor can be used to add commands to the current schedule: enqueue or play next.
-
 See  [Matrix.driver](Matrix/driver) the source and for more details on the internals.
-
-See further in this ReadMe for details on how to install the requirements
 
 ### Simple Command Line wrapper
 
@@ -157,13 +144,36 @@ Server by default will run on localhost:5000
 
 Get Swagger-UI from : http://localhost:5000/
 
-Get OpenAPI definition from: http://localhost:5000/swagger.json
+Get OpenAPI definition from: http://localhost:5000/api/swagger.json
+
+The API endpoint is exposed on `http://localhost:5000/api/`
+
+The Web interface is exposed on `http://localhost:5000/web/`
 
 ## Mobile Progressive WebApp
 
-To run UI
+The PWA is a Progressive WebApp that can be used from a mobile device.
+
+The PWA is located in [pixel-pulse-neo-client](pixel-pulse-neo-client)
 
     cd pixel-pulse-neo-client
+
+This is a simple React app that use the API Server to control the display on the LED Matrix.
+
+To build the web app
+
+    npm install
+
+    npm run build
+
+The resulting static files are located in [pixel-pulse-neo-client/build](pixel-pulse-neo-client/build).
+
+These files are served via the API Server on
+
+    http://localhost:5000/web/
+
+To run the web app in debug:
+
     npm start
 
 For more details see [README.md](pixel-pulse-neo-client/README.md)
@@ -174,29 +184,13 @@ For more details see [README.md](pixel-pulse-neo-client/README.md)
 
 Configuration is done via a simple python file [config.py](Matrix/config.py)
 
-
-## Configuring how to talk to the Matrix
-
-    # Control if we use the emulator or send data to LED Matrix via GPIO
-    USE_EMULATOR=True
-
-    # Control if we go through IPC Comunication 
-    USE_IPC = False
-
-    # Run CommandExecutor as root
-    RUN_AS_ROOT = False
-
-When `USE_EMULATOR=True` `RGBMatrixEmulator` is used, otherwise the data is sent to GPIO via `rpi-rgb-led-matrix`
-
-Technically, only 2 configuration make sense:
-
-**When using Emulator**
+**Laptop mode (Enulated LEDMatrix)**
 
     USE_EMULATOR = True
     USE_IPC = False
     RUN_AS_ROOT = False
 
-**When using GPIO + Real LED Matrix**
+**Pi mode (Raspberry Pi + GPIO + LEDMatrix)**
 
     USE_EMULATOR = False
     USE_IPC = True

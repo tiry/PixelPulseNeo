@@ -4,7 +4,8 @@ import { List, ListItem, ListItemText, Button, Grid, Card, CardMedia, CardConten
 
 //const BASE_URL = 'http://localhost:5000';
 //const BASE_URL = '';
-const BASE_URL = 'http://lcddriver.local:5000';
+const BASE_URL = '/api';
+//const BASE_URL = 'http://lcddriver.local:5000/api';
 
 function CommandList() {
     const [commands, setCommands] = useState([]);
