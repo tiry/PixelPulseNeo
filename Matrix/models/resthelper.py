@@ -1,12 +1,12 @@
 from flask_restx import fields, Model
 from pydantic import BaseModel
-from typing import get_type_hints, List, Dict, Optional, Type, Tuple, Union,  get_args
-from datetime import datetime
+from typing import get_type_hints, List, Dict, Optional, Type, Tuple, Union, get_args
 import traceback
 
 
 # XXX this code is broken because of a version missmatch on pydntic
 # => to be revisited
+
 
 def __pydantic_field_to_restx_field(api, field_type):
     """Map a Pydantic field type to a Flask-RestX field type."""
@@ -31,9 +31,10 @@ def __pydantic_field_to_restx_field(api, field_type):
         # Default to raw field for unknown types
         return fields.Raw
 
+
 def ___pydantic_field_to_restx_field(api, field_type: Type):
     """Map a Pydantic field type to a Flask-RestX field type."""
-    origin_type = getattr(field_type, '__origin__', None)
+    origin_type = getattr(field_type, "__origin__", None)
 
     try:
         if field_type is str or origin_type is str:
@@ -60,15 +61,15 @@ def ___pydantic_field_to_restx_field(api, field_type: Type):
         else:
             # Default to raw field for unknown types
             return fields.Raw
-    except Exception as e:
+    except Exception:
         print(f"Unable to map field of type {field_type}")
         return fields.Raw
 
 
 def pydantic_field_to_restx_field(api, field_type: Type):
     """Map a Pydantic field type to a Flask-RestX field type."""
-    origin_type = getattr(field_type, '__origin__', field_type)
-    
+    origin_type = getattr(field_type, "__origin__", field_type)
+
     print(f"called with type = {field_type} {origin_type}")
     try:
         # Handle Optional types and Union types (like Optional[X])
@@ -77,14 +78,14 @@ def pydantic_field_to_restx_field(api, field_type: Type):
             field_types = get_args(field_type)
             non_none_types = [t for t in field_types if t is not type(None)]
             field_type = non_none_types[0] if non_none_types else field_type
-            origin_type = getattr(field_type, '__origin__', field_type)
+            origin_type = getattr(field_type, "__origin__", field_type)
 
         if origin_type in (str, int, float, bool):
             type_mapping = {
                 str: fields.String,
                 int: fields.Integer,
                 float: fields.Float,
-                bool: fields.Boolean
+                bool: fields.Boolean,
             }
             return type_mapping[origin_type]
         elif origin_type is List or origin_type is list:
@@ -114,8 +115,7 @@ def pydantic_field_to_restx_field(api, field_type: Type):
         return fields.Raw()
 
 
-            
-def pydantic_to_restx_model(api, pydantic_model: BaseModel) -> Model:
+def _pydantic_to_restx_model(api, pydantic_model: BaseModel) -> Model:
     """
     Converts a Pydantic model into a Flask-RestX model.
 
@@ -127,29 +127,51 @@ def pydantic_to_restx_model(api, pydantic_model: BaseModel) -> Model:
 
     for field_name, field_type in get_type_hints(pydantic_model).items():
         # Handle Optional fields
-        if hasattr(field_type, '__origin__') and field_type.__origin__ is Optional:
+        if hasattr(field_type, "__origin__") and field_type.__origin__ is Optional:
             field_type = field_type.__args__[0]
 
         restx_field = pydantic_field_to_restx_field(api, field_type)
         restx_fields[field_name] = restx_field
-        #restx_fields[field_name] = restx_field(description=field_name)
+        # restx_fields[field_name] = restx_field(description=field_name)
 
     return fields.Nested(api.model(pydantic_model.__name__, restx_fields))
 
-def pydantic_to_restx_model(api, pydantic_model: BaseModel) -> Model:
 
-    command = api.model('Command', {
-        'command_name': fields.String(required=True, default="time", description='The name of the command'),
-        'duration': fields.Integer(required=False, default=10, description='The duration in seconds to  run this command'),
-        'args': fields.List(fields.String(required=False, description='command arguments (positional)'), default=[]),
-        'kwargs': fields.Raw(required=False, description='command names arguments') ,
-    })
+def pydantic_to_restx_model(api, pydantic_model: BaseModel) -> Model:
+    command = api.model(
+        "Command",
+        {
+            "command_name": fields.String(
+                required=True, default="time", description="The name of the command"
+            ),
+            "duration": fields.Integer(
+                required=False,
+                default=10,
+                description="The duration in seconds to  run this command",
+            ),
+            "args": fields.List(
+                fields.String(
+                    required=False, description="command arguments (positional)"
+                ),
+                default=[],
+            ),
+            "kwargs": fields.Raw(required=False, description="command names arguments"),
+        },
+    )
 
     ## Define the model for the schedule (an array of schedule items)
-    schedule_model = api.model('Schedule', {
-        'commands': fields.List(fields.Nested(command), required=True, description='The list of commands'),
-        'conditions': fields.List(fields.String(required=True, description='conditions', default=""))
-    })
+    schedule_model = api.model(
+        "Schedule",
+        {
+            "commands": fields.List(
+                fields.Nested(command),
+                required=True,
+                description="The list of commands",
+            ),
+            "conditions": fields.List(
+                fields.String(required=True, description="conditions", default="")
+            ),
+        },
+    )
 
     return schedule_model
-

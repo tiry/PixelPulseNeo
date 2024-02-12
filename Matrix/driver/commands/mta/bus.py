@@ -1,8 +1,6 @@
-
-
 import io
 import json
-import xml.etree.ElementTree as ElementTree 
+import xml.etree.ElementTree as ElementTree
 import requests
 import os
 import sys
@@ -21,10 +19,13 @@ import urllib.parse
 
 AGENCY = "MTA%20NYCT"
 
-ROUTES_URL = "https://bustime.mta.info/api/where/routes-for-agency/MTA%20NYCT.xml?key={API_KEY}"
+ROUTES_URL = (
+    "https://bustime.mta.info/api/where/routes-for-agency/MTA%20NYCT.xml?key={API_KEY}"
+)
 ROUTES_CACHE = "cache/bus_routes.txt"
 STOPS_URL = "https://bustime.mta.info/api/where/stops-for-route/{LINE}.json?key={API_KEY}&includePolylines=false&version=2"
 STOPS_MONITORING_URL = "https://bustime.mta.info/api/siri/stop-monitoring.json?key={API_KEY}&OperatorRef={AGENCY}&MonitoringRef={STOP_ID}&LineRef={LINE}"
+
 
 def get_API_key():
     key = os.environ["MTA_SIRI_API_KEY"]
@@ -33,25 +34,27 @@ def get_API_key():
         sys.exit()
     return key
 
-def add_parameter(url, name, value):  
+
+def add_parameter(url, name, value):
     return url.replace("{" + name + "}", value)
+
 
 def add_key(url):
     return add_parameter(url, "API_KEY", get_API_key())
 
-def get_from_cache_or_url(url, cache_file, format="json", refresh=False):
 
-    data= None
+def get_from_cache_or_url(url, cache_file, format="json", refresh=False):
+    data = None
     data_txt = None
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
     cache_file = f"{dir_path}/{cache_file}"
     if os.path.isfile(cache_file) and not refresh:
-        #print("get Data from cache")
+        # print("get Data from cache")
         with open(cache_file) as cache:
             data_txt = io.StringIO(cache.read())
     else:
-        #print("get Data from url")
+        # print("get Data from url")
         url = add_key(url)
         response = requests.get(url)
         if response.status_code == 200:
@@ -68,17 +71,19 @@ def get_from_cache_or_url(url, cache_file, format="json", refresh=False):
 
     return data
 
+
 def get_routes(refresh=False):
     routes = {}
-    tree =  get_from_cache_or_url(ROUTES_URL, ROUTES_CACHE, "xml", refresh)
+    tree = get_from_cache_or_url(ROUTES_URL, ROUTES_CACHE, "xml", refresh)
     root = tree.getroot()
     for route in root.findall("./data/list/route"):
-        r_data={}
+        r_data = {}
         for tag in route:
             r_data[tag.tag] = tag.text
         route_id = r_data["id"]
         routes[route_id] = r_data
     return routes
+
 
 def find_route(name, refresh=False):
     routes = get_routes(refresh)
@@ -89,6 +94,7 @@ def find_route(name, refresh=False):
             return route
     return None
 
+
 def get_stops_for_route(route, refresh=False):
     route = find_route(route)
     if not route:
@@ -96,18 +102,28 @@ def get_stops_for_route(route, refresh=False):
     route = urllib.parse.quote(route)
     url = add_parameter(STOPS_URL, "LINE", route)
 
-    json_data= get_from_cache_or_url(url, f"cache/{route}_stops.txt", "json", refresh)["data"]
+    json_data = get_from_cache_or_url(url, f"cache/{route}_stops.txt", "json", refresh)[
+        "data"
+    ]
     return json_data["references"]["stops"]
+
 
 def find_stops(route, name, refresh=False):
     stops = get_stops_for_route(route, refresh)
     if not stops:
         return None
-    matches=[]
+    matches = []
     name = urllib.parse.quote(name)
     for stop in stops:
         if name.lower() in stop["name"].lower():
-            matches.append({"id" : stop["id"], "name" : stop["name"], "routeIds" : stop["routeIds"], "direction" : stop["direction"]})
+            matches.append(
+                {
+                    "id": stop["id"],
+                    "name": stop["name"],
+                    "routeIds": stop["routeIds"],
+                    "direction": stop["direction"],
+                }
+            )
     return matches
 
 
@@ -116,16 +132,17 @@ def extract_time(time_str):
     t_comp = time_str.split(":")
     return f"{t_comp[0]}:{t_comp[1]}"
 
-def get_stop_info(route, stop_name):    
+
+def get_stop_info(route, stop_name):
     route = find_route(route)
     if not route:
-        print(f"Unable to find route")
+        print("Unable to find route")
         return None
     stops = find_stops(route, stop_name)
-    if not stops or len(stops)==0:
+    if not stops or len(stops) == 0:
         print(f"Unable to find stops for route = {route}")
         return None
-    
+
     infos = {}
     for stop in stops:
         stop_id = stop["id"]
@@ -136,12 +153,14 @@ def get_stop_info(route, stop_name):
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
-            monitoring_data = data["Siri"]["ServiceDelivery"]["StopMonitoringDelivery"][0]
-            #print(f"CALL {monitoring_data}")
-            if not "MonitoredStopVisit" in monitoring_data:
-                infos["???"]= ["???"]
+            monitoring_data = data["Siri"]["ServiceDelivery"]["StopMonitoringDelivery"][
+                0
+            ]
+            # print(f"CALL {monitoring_data}")
+            if "MonitoredStopVisit" not in monitoring_data:
+                infos["???"] = ["???"]
             else:
-                monitoring_data= monitoring_data["MonitoredStopVisit"]
+                monitoring_data = monitoring_data["MonitoredStopVisit"]
                 for entry in monitoring_data:
                     entry = entry["MonitoredVehicleJourney"]
                     direction = entry["DestinationName"]
@@ -151,12 +170,10 @@ def get_stop_info(route, stop_name):
                     time_str = extract_time(time_data["AimedArrivalTime"]) + "*"
                     if "ExpectedArrivalTime" in time_data:
                         time_str = extract_time(time_data["ExpectedArrivalTime"])
-                    #print(json.dumps(time_data, indent=1))
+                    # print(json.dumps(time_data, indent=1))
                     infos[direction].append(time_str)
     return infos
 
 
-
 if __name__ == "__main__":
     print(get_stop_info("B61", "Carroll"))
-    

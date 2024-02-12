@@ -272,6 +272,11 @@ API server (`Matrix.api`)
 
     pip install matplotlib
     pip install RGBMatrixEmulator
+    pip install ruff
+
+
+    ruff check --fix Matrix/
+    ruff format Matrix
 
 [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator) is used to simulate the LED Matrix and be able to run the code on a bare laptop.
 

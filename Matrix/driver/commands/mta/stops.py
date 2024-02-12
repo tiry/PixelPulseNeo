@@ -1,4 +1,3 @@
-
 import csv
 import io
 import zipfile
@@ -11,7 +10,6 @@ DATA_URL = "http://web.mta.info/developers/data/nyct/subway/google_transit.zip"
 CACHE = "cache/stops.txt"
 
 
-
 def request_data() -> zipfile.ZipFile:
     """Request the metadata zip file from the MTA."""
     res = requests.get(DATA_URL)
@@ -20,21 +18,20 @@ def request_data() -> zipfile.ZipFile:
 
 
 class Resolver(object):
-
     def __init__(self, refresh=False):
-        self.stops={}
-        self.stopsByName={}
+        self.stops = {}
+        self.stopsByName = {}
 
         stops_txt = None
-        
+
         dir_path = os.path.dirname(os.path.realpath(__file__))
 
         cache_file = f"{dir_path}/{CACHE}"
         if os.path.isfile(cache_file) and not refresh:
-            #print("load stops definition data from cache")
+            # print("load stops definition data from cache")
             with open(cache_file) as cache:
                 stops_txt = io.StringIO(cache.read())
-            
+
         else:
             print("Download stops data from Google")
             # get zip file
@@ -42,7 +39,6 @@ class Resolver(object):
             stops_txt = io.StringIO(zpfile.read("stops.txt").decode())
             with open(cache_file, "w") as cache:
                 cache.write(stops_txt.getvalue())
-
 
         # iterate using dictreader
         for stop in csv.DictReader(stops_txt):
@@ -61,32 +57,32 @@ class Resolver(object):
 
             name = stop["stop_name"]
 
-            self.stops[stop["stop_id"]]=dict(
-                        stop_id=stop["stop_id"],
-                        stop_name=name,
-                        direction=stop["direction"],
-                        stop_lat=float(stop["stop_lat"]),
-                        stop_lon=float(stop["stop_lon"]),
-                    )
-            if not name in self.stopsByName:
+            self.stops[stop["stop_id"]] = dict(
+                stop_id=stop["stop_id"],
+                stop_name=name,
+                direction=stop["direction"],
+                stop_lat=float(stop["stop_lat"]),
+                stop_lon=float(stop["stop_lon"]),
+            )
+            if name not in self.stopsByName:
                 self.stopsByName[name] = []
             self.stopsByName[name].append(stop["stop_id"])
 
-    def getStopByName(self,name):
+    def getStopByName(self, name):
         return self.stopsByName[name]
 
-    def getStopById(self,id):
+    def getStopById(self, id):
         return self.stops[id]
 
-    def findStopByName(self,name):
+    def findStopByName(self, name):
         matches = []
         for stopid in self.stops:
             stop = self.stops[stopid]
             if name.lower() in stop["stop_name"].lower():
                 matches.append(stop)
         return matches
-    
-    def findStopIdsByName(self,name):
+
+    def findStopIdsByName(self, name):
         matches = []
         for stopid in self.stops:
             stop = self.stops[stopid]
@@ -99,5 +95,6 @@ stopResolverSingleton = Resolver()
 
 if __name__ == "__main__":
     print(f"loaded {len(stopResolverSingleton.stopsByName)} stops")
-    print(f"findStopByName('Carroll') {stopResolverSingleton.findStopByName('Carroll')} ")
-    
+    print(
+        f"findStopByName('Carroll') {stopResolverSingleton.findStopByName('Carroll')} "
+    )

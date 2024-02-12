@@ -1,10 +1,10 @@
 import argparse
-import os, sys
+import os
 from Matrix.driver.executor import CommandExecutor
 import datetime
 
-def document_commands(cmds):
 
+def document_commands(cmds:dict):
     lines = []
 
     lines.append("# Commands")
@@ -12,7 +12,7 @@ def document_commands(cmds):
     for cmd in cmds:
         print(cmd)
         lines.append(f'\n## {cmd["name"]}')
-        
+
         lines.append(f'\n{cmd["description"]}')
 
         for screenshot in cmd["screenshots"]:
@@ -22,12 +22,11 @@ def document_commands(cmds):
 
 
 if __name__ == "__main__":
-
     ###################################
-    parser = argparse.ArgumentParser()   
+    parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    
-    executor = CommandExecutor(schedule_file=None)    
+
+    executor = CommandExecutor(schedule_file=None)
     cmds = executor.get_commands()
     ReadMeContent = document_commands(cmds)
 
@@ -42,9 +41,8 @@ if __name__ == "__main__":
     folder = os.path.dirname(os.path.realpath(__file__))
     ReadMePath = f"{folder}/driver/commands/ReadMe.md"
 
-    with open(ReadMePath, 'w') as file:
+    with open(ReadMePath, "w", encoding="utf-8") as file:
         file.write(ReadMeContent)
 
     executor.stop()
-    
-    
+

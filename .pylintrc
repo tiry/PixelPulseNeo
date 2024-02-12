@@ -1,0 +1,15 @@
+[MESSAGES CONTROL]
+# E0401 Unable to import '$'
+# R0914 too-many-locals
+# W1203 logging-fstring-interpolation
+# W0703 broad-exception
+# R0913 too many arguments
+# W0102 dangerous default value
+# W0511 FIXME
+# R0903 too-few-public-methods
+# C0301 line too long
+# W0707 re-raise exception
+# W0603 global-statement
+# C0116 missing-function-docstring
+disable=E0401,R0914,W1203,W0703,R0913,W0102,W0511,R0903,C0301,W0707,W0603,C0116
+max-line-length=120

@@ -5,12 +5,12 @@ import json
 import argparse
 from Matrix.driver.executor import instance, release
 from Matrix.driver.ipc.client import IPCClientExecutor, IPCClient
-import signal, os, sys
+import signal
+import os
+import sys
 from Matrix.models.Commands import ScheduleModel
 from Matrix.models.resthelper import pydantic_to_restx_model
 from Matrix.config import is_ipc_enabled, RUN_AS_ROOT
-import time
-from flask_restx import fields
 from pydantic import BaseModel
 from Matrix.driver.utilz import configure_log, YELLOW
 import logging
@@ -19,7 +19,7 @@ import traceback
 logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
 
-app = Flask(__name__)# Creates a Flask application instance with the given name
+app = Flask(__name__)  # Creates a Flask application instance with the given name
 """Creates a Flask application instance to host the API endpoints.
 
 The API is defined using OpenAPI 3.0 specification.
@@ -33,6 +33,8 @@ The following endpoints are available:
 """
 
 executor = None
+
+
 def get_executor():
     global executor
     if executor is None:
@@ -40,19 +42,21 @@ def get_executor():
             logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
             executor = IPCClientExecutor(RUN_AS_ROOT, start_server_if_needed=False)
         else:
-            logger.info(f"Creating inproces client")
+            logger.info("Creating inproces client")
             executor = instance()
     return executor
+
 
 def shutdown_cleanly(signum, frame):
     print(f"### Signal handler called with signal  {signum}")
 
     global executor
-    if not executor is None:
+    if executor is not None:
         print("Shuting down Executor")
         executor.stop(interrupt=True)
     # Yeek !
     sys.exit(0)
+
 
 signal.signal(signal.SIGTERM, shutdown_cleanly)
 signal.signal(signal.SIGINT, shutdown_cleanly)
@@ -64,36 +68,40 @@ app = Flask(__name__)
 
 CORS(app)  # This enables CORS for all routes
 
-api = Api(app, version='1.0', title='PixelPulseNeoServer', description='REST API to interact with PixelPulseNeoServer')
+api = Api(
+    app,
+    version="1.0",
+    title="PixelPulseNeoServer",
+    description="REST API to interact with PixelPulseNeoServer",
+)
 
-@api.route('/commands')
+
+@api.route("/commands")
 class Commands(Resource):
-
     def get(self):
         """Returns a JSON array of all available commands.
 
         Each command is represented as a dictionary with the following fields:
 
         - `name`: The name of the command
-        - `description`: A description of what the command does  
+        - `description`: A description of what the command does
         - `screenshots`: Screenshot URLs demonstrating the visual effect of the command
         """
         result = get_executor().get_commands()
         return jsonify(result)
 
-@api.route('/schedules')
-class Schedules(Resource):
 
+@api.route("/schedules")
+class Schedules(Resource):
     def get(self):
-        """Returns a JSON array of the names of all available schedules / playlists.
-        """
+        """Returns a JSON array of the names of all available schedules / playlists."""
         result = get_executor().list_schedules()
         return jsonify(result)
 
-@api.route('/screenshots/<command_name>/<screenshot_name>')
-class Screenshot(Resource):
 
-    def get(self,command_name, screenshot_name):
+@api.route("/screenshots/<command_name>/<screenshot_name>")
+class Screenshot(Resource):
+    def get(self, command_name, screenshot_name):
         """Returns a screenshot file for the given command and screenshot name.
 
         Checks that the command and screenshot exist, determines the mimetype
@@ -103,19 +111,21 @@ class Screenshot(Resource):
         command = get_executor().get_command(command_name)
         if command is None:
             return jsonify({"error": "Command not found"}), 404
-        
-        screenshot_path = get_executor().get_command_screenshot(command_name, screenshot_name)
+
+        screenshot_path = get_executor().get_command_screenshot(
+            command_name, screenshot_name
+        )
         if screenshot_path is None:
             return jsonify({"error": "Screenshot not found"}), 404
 
         _, ext = os.path.splitext(screenshot_name)
-        if ext == '.png':
-            mimetype = 'image/png'
-        elif ext == '.gif':
-            mimetype = 'image/gif'
+        if ext == ".png":
+            mimetype = "image/png"
+        elif ext == ".gif":
+            mimetype = "image/gif"
         else:
-            mimetype = 'application/octet-stream'
-        
+            mimetype = "application/octet-stream"
+
         try:
             if os.path.exists(screenshot_path):
                 return send_file(open(screenshot_path, "rb"), mimetype=mimetype)
@@ -124,15 +134,29 @@ class Screenshot(Resource):
         except Exception as e:
             logger.error(f"Unable to send screenshot {screenshot_path} - {e}")
             traceback.print_exc()
-            return make_response(jsonify({"error": f"Unable to resolve screenshot {screenshot_path}"}), 500)
+            return make_response(
+                jsonify({"error": f"Unable to resolve screenshot {screenshot_path}"}),
+                500,
+            )
 
-@api.route('/command/<command_name>')
+
+@api.route("/command/<command_name>")
 class Command(Resource):
-
-    @api.doc(params={
-        'duration': {'description': 'Duration of the command', 'type': 'integer', 'required': False},
-        'interrupt': {'description': 'Interrup ongoing command', 'type': 'boolean', 'required': False, 'default' : False}
-        })
+    @api.doc(
+        params={
+            "duration": {
+                "description": "Duration of the command",
+                "type": "integer",
+                "required": False,
+            },
+            "interrupt": {
+                "description": "Interrup ongoing command",
+                "type": "boolean",
+                "required": False,
+                "default": False,
+            },
+        }
+    )
     def post(self, command_name):
         """Executes the command with the given name.
 
@@ -142,41 +166,43 @@ class Command(Resource):
         """
 
         # Access the duration query parameter with a default value if it's not provided
-        duration = request.args.get('duration', default=10, type=int)
-        interrupt = request.args.get('interupt', default="false", type=bool)
-        
+        duration = request.args.get("duration", default=10, type=int)
+        interrupt = request.args.get("interupt", default="false", type=bool)
+
         try:
             # result is async and only accessible via audit log
             get_executor().execute_now(command_name, duration, interrupt=interrupt)
             return jsonify({"message": f"Command '{command_name}' executed"})
         except Exception as e:
             print(f"Error during command execution for {command_name}")
-            print(e)      
+            print(e)
             return make_response(jsonify({"error": str(e)}), 500)
 
 
 rest_schedule = pydantic_to_restx_model(api, ScheduleModel)
 
-@api.route('/schedule', defaults={'playlist_name': None})
-@api.route('/schedule/<playlist_name>')
-class Schedule(Resource):
 
+@api.route("/schedule", defaults={"playlist_name": None})
+@api.route("/schedule/<playlist_name>")
+class Schedule(Resource):
     def get(self, playlist_name=None):
         """Returns the executor's current schedule.
 
-        The schedule is returned as a JSON array containing dictionaries 
+        The schedule is returned as a JSON array containing dictionaries
         with the following fields:
 
-        - `name`: The name of the scheduled command  
+        - `name`: The name of the scheduled command
         - `interval`: The interval in seconds between runs of this command
         """
         schedule = get_executor().get_schedule(playlist_name)
         if not schedule:
-            return make_response(jsonify({"error": f"Schedule '{playlist_name}' not found"}), 404)
-        
+            return make_response(
+                jsonify({"error": f"Schedule '{playlist_name}' not found"}), 404
+            )
+
         print(f"SCHEDULE = {schedule}")
         if issubclass(schedule.__class__, BaseModel):
-            return json.loads(schedule.model_dump_json())  
+            return json.loads(schedule.model_dump_json())
         else:
             return schedule
 
@@ -184,24 +210,26 @@ class Schedule(Resource):
     def post(self, playlist_name=None):
         """Updates the executor's schedule.
 
-        Accepts a JSON array containing the new schedule and replaces the 
+        Accepts a JSON array containing the new schedule and replaces the
         executor's current schedule with it. Validates that the named commands
         exist before updating the schedule.
         """
         payload = request.json
 
         print(f"payload type {type(payload)} content: {payload}")
-        
+
         # convert back to SchedulModel // Sanitize
-        schedule = ScheduleModel(**payload) 
+        schedule = ScheduleModel(**payload)
 
         print(f"converted schedule {schedule}")
 
-        # validate commands 
+        # validate commands
         for item in schedule.commands:
             command_name = item.command_name
             if get_executor().get_command(command_name) is None:
-                return make_response(jsonify({"error": f"Command '{command_name}' not found"}), 404)
+                return make_response(
+                    jsonify({"error": f"Command '{command_name}' not found"}), 404
+                )
 
         # update schedule
         get_executor().set_schedule(schedule, playlist_name)
@@ -213,37 +241,37 @@ class Schedule(Resource):
         return jsonify({"result": "Schedule updated"})
 
 
-@api.route('/shutdown')
+@api.route("/shutdown")
 class Shutdown(Resource):
-
     def get(self):
         global executor
-        if (executor is not None):
+        if executor is not None:
             logger.info("API Server shutting down Executor")
             executor.stop(interrupt=True)
-            if  issubclass(executor.__class__, IPCClient):
+            if issubclass(executor.__class__, IPCClient):
                 executor.disconnect()
-                #executor.kill_server()
-            executor=None
+                # executor.kill_server()
+            executor = None
             release()
             logger.info("API Server: executor shutdown completed")
-        #time.sleep(1)
-        #func = request.environ.get('werkzeug.server.shutdown')
-        #if func is not None:
+        # time.sleep(1)
+        # func = request.environ.get('werkzeug.server.shutdown')
+        # if func is not None:
         #    print("werkzeug shut down")
         #    func()
         #    print("werkzeug shut down completed")
-        #os.kill(os.getpid(), signal.SIGINT)
+        # os.kill(os.getpid(), signal.SIGINT)
         logger.info("Bye !")
         return "server exit"
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", help="enable flash debug mode", action="store_true")
     parser.add_argument("--noreload", help="disable reloader", action="store_true")
-     
+
     args = parser.parse_args()
-    
+
     debug = args.debug
     reload = debug
     if args.noreload:
