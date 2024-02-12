@@ -86,6 +86,11 @@ class IPCClient:
 
         return json_response
 
+    def shutdown_server(self):
+        logger.debug("Send Exit command to server and disconnecting")
+        self.send_command("exit")
+        self.client.close()
+
     def kill_server(self):
         self.disconnect()
         if self.server_process:

@@ -4,7 +4,9 @@ from Matrix.driver.ipc.client import IPCClient
 
 
 class TestIPCServer(unittest.TestCase):
+
     def test_execute_server_command(self):
+    
         server = IPCServer()
         # Call with valid command
         response = server.execute_ipc_request("ping", [], {})
@@ -23,6 +25,7 @@ class TestIPCServer(unittest.TestCase):
         self.assertTrue(f"{str(pparams)}" in response["response"])
 
     def test_invalid_command(self):
+    
         server = IPCServer()
 
         # Call with invalid command
@@ -32,6 +35,7 @@ class TestIPCServer(unittest.TestCase):
 
 
 class TestIPCClientServer(unittest.TestCase):
+
     def test_execute_server_command(self):
         client = IPCClient()
 
@@ -51,7 +55,8 @@ class TestIPCClientServer(unittest.TestCase):
         self.assertTrue(f"{str(pparams)}" in response["response"])
         # client.send_command("dummy2", 1, foo ="beer")
 
-        client.disconnect()
+        client.send_command("exit")
+        #client.disconnect()
 
 
 if __name__ == "__main__":

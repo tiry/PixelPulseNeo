@@ -5,7 +5,7 @@ import os
 import sys
 from Matrix.models.encode import json_dumps
 from Matrix.driver.base_executor import synchronized_method
-
+import threading
 from Matrix.driver.utilz import configure_log, GREEN
 import logging
 import traceback
@@ -52,6 +52,43 @@ class IPCServer:
 
         return response_wrapper
 
+    def handle_client(self, client_socket, addr):
+        connected=True
+        while connected:
+            json_str = client_socket.recv(1024).decode()
+            if len(json_str) == 0:
+                time.sleep(0.2)
+                continue
+            response_wrapper = {"success": False, "error": None, "response": None}
+            try:
+                logger.debug(f" received message: {json_str}")
+                command, args, kwargs = json.loads(json_str)
+                if command == "disconnect":
+                    logger.debug(" closing connection")
+                    client_socket.close()
+                    connected = False
+                    break
+                elif command == "exit":
+                    logger.debug(" Server shuting down")
+                    self.shutdown_requested=True
+                    self.server_socket.shutdown(socket.SHUT_RD)
+                    client_socket.close()
+                    sys.exit()
+                response_wrapper = self.execute_ipc_request(command, args, kwargs)
+                logger.debug(f"Execution response = {response_wrapper}")
+            except Exception as e:
+                response_wrapper["success"] = False
+                response_wrapper[
+                    "error"
+                ] = f"Error trying to execute command {command} : {e}"
+                logger.debug(f" while executing command {command} {e}")
+
+            json_response = json_dumps(response_wrapper)
+            logger.debug(f" Send response {json_response}")
+            response_payload = json_response.encode()
+            client_socket.send(response_payload)
+
+
     def serve(self):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -63,39 +100,19 @@ class IPCServer:
             user = "root"
         logger.debug(f" IPC Server running as {user} and waiting for commands...")
 
-        while True:
-            logger.debug(" wait for incoming connection request")
-            client_socket, addr = server_socket.accept()
-            while True:
-                json_str = client_socket.recv(1024).decode()
-                if len(json_str) == 0:
-                    time.sleep(0.2)
-                    continue
-                response_wrapper = {"success": False, "error": None, "response": None}
-                try:
-                    logger.debug(f" received message: {json_str}")
-                    command, args, kwargs = json.loads(json_str)
-                    if command == "disconnect":
-                        logger.debug(" closing connection")
-                        client_socket.close()
-                        break
-                    elif command == "exit":
-                        logger.debug(" Server shuting down")
-                        client_socket.close()
-                        sys.exit()
-                    response_wrapper = self.execute_ipc_request(command, args, kwargs)
-                    logger.debug(f"Execution response = {response_wrapper}")
-                except Exception as e:
-                    response_wrapper["success"] = False
-                    response_wrapper[
-                        "error"
-                    ] = f"Error trying to execute command {command} : {e}"
-                    logger.debug(f" while executing command {command} {e}")
+        client_id=0
 
-                json_response = json_dumps(response_wrapper)
-                logger.debug(f" Send response {json_response}")
-                response_payload = json_response.encode()
-                client_socket.send(response_payload)
+        self.server_socket = server_socket
+        self.shutdown_requested=False
+
+        while not  self.shutdown_requested:
+            logger.debug(" wait for incomming connection request")
+            client_socket, addr = server_socket.accept()
+            client_id+=1
+            thread = threading.Thread(target=self.handle_client, args=(client_socket, addr))
+            thread.start()
+            print(f"client {client_id} handled by thread {thread}")
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":
