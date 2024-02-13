@@ -149,8 +149,10 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
     @synchronized_method
     def execute_now(self, command_name, duration, interrupt=False, args=[], kwargs={}):
+        kwargs["interrupt"] = interrupt
+        kwargs["duration"] = duration
         return self.send_command(
-            "execute_now", command_name, duration, args, kwargs, interrupt
+            "execute_now", command_name, args, kwargs
         )
     
     @synchronized_method

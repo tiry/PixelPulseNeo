@@ -4,6 +4,7 @@ from functools import wraps
 import os
 from abc import ABC, abstractmethod
 from Matrix.driver.utilz import configure_log
+import traceback
 
 BUFFER_SIZE = 1024 * 10
 
@@ -18,7 +19,15 @@ def synchronized_method(method):
         if not hasattr(self, '_lock'):
             self._lock = RLock()
         with self._lock:
-            return method(self, *args, **kwargs)
+            try:
+                return method(self, *args, **kwargs)
+            except Exception as e:
+                logger.error("Exception in synchronized method ")
+                print(f"args = {args} ")
+                print(f"kwargs = {kwargs} ")
+                traceback.print_exc()
+                raise e
+            
     return wrapper
 
 class Base:

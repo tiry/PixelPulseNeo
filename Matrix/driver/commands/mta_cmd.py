@@ -68,9 +68,9 @@ class MtaCmd(PictureScrollBaseCmd):
         # display train info
         for train in self.next_trains:
             icon = Image.open(get_icons_dir(f"mta/png/{train}.png")).convert("RGB")
-            icon = icon.resize((30, 30), Image.LANCZOS)
+            icon = icon.resize((25, 25), Image.LANCZOS)
 
-            img.paste(icon, (5, 1 + idx * 32))
+            img.paste(icon, (7, 4 + idx * 32))
 
             txt = " / ".join(self.next_trains[train])
             draw.text((40, 10 + idx * 32), txt, font=font7)

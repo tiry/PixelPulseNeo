@@ -15,7 +15,6 @@ configure_log(logger, GREEN, "Server")
 
 IPC_PORT = 6000
 
-
 class IPCServer:
 
     def method_echo(self, *args, **kwargs):
@@ -27,6 +26,13 @@ class IPCServer:
     @synchronized_method
     def execute_ipc_request(self, command, args, kwargs):
         response_wrapper = {"success": False, "error": None, "response": None}
+
+        # Yeark 
+        if len(args)>0:
+            if type(args[-1])==dict and len(kwargs)==0:
+                kwargs = args.pop()
+                if type(args[-1])==list and len(args[-1])==0:
+                    args.pop()
 
         logger.debug(f" Execute command {command} {args} {kwargs}")
 
@@ -90,6 +96,7 @@ class IPCServer:
 
 
     def serve(self):
+        # XXX switch to AF_UNIX
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind(("localhost", IPC_PORT))

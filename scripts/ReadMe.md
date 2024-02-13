@@ -3,7 +3,7 @@
 
 ## Execute a command as root
 
-    sudo -E scripts/run_cmd_as_root.sh <command_name> <duration>
+    sudo -E scripts/run_cmd.sh <command_name> <duration>
 
 ## Start the Command Server as root is listen mode
 
@@ -15,17 +15,27 @@
 
 # API and FrontEnd
 
-## Be sure to build the front end
-
-    cd pixel-pulse-neo-client
-
-    npm install
-
-    npm run build
-
 ## Start REST API Server
 
     python -m Matrix.api.server 
 
     python -m Matrix.api.server  &> "api_server.log" & echo $! > "api_server.pid"
+
+## Build the webapp if needed
+
+To build the web app
+
+    npm install
+
+    npm run build
+
+The resulting static files are located in [pixel-pulse-neo-client/build](pixel-pulse-neo-client/build).
+
+These files are served via the API Server on
+
+    http://localhost:5000/web/
+
+Alternatively, you can also run the web app in debug:
+
+    npm start
 
