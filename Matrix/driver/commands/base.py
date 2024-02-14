@@ -1,10 +1,12 @@
+import os
 import time
+import traceback
+from datetime import datetime
+from typing import List
+import logging
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageChops
-import os
-from typing import Dict, List, Tuple, Any, Optional
-import traceback
 from Matrix.driver.utilz import configure_log, DARKCYAN
 from Matrix.config import (
     MATRIX_CHAINED,
@@ -13,7 +15,7 @@ from Matrix.config import (
     USE_EMULATOR,
     DEFAULT_REFRESH,
 )
-import logging
+import pygame
 
 logger = logging.getLogger(__name__)
 configure_log(logger, DARKCYAN, "Command", logging.INFO)
@@ -43,6 +45,29 @@ def get_total_matrix_width():
 def get_total_matrix_height():
     return get_matrix_height()
 
+def format_date():
+    # Get the current date and time
+    current_datetime = datetime.now()
+
+    # Correct the day suffix (e.g., 1st, 2nd, 3rd, 4th, etc.)
+    day = current_datetime.day
+    if 4 <= day <= 20 or 24 <= day <= 30:
+        suffix = "th"
+    else:
+        suffix = ["st", "nd", "rd"][day % 10 - 1]
+    date_str = current_datetime.strftime(f"%A {day}{suffix} %B")
+
+    return date_str
+
+def format_date_short():
+    # Get the current date and time
+    current_datetime = datetime.now()
+    date_str = current_datetime.strftime(f"%m/%d/%y")
+
+    return date_str
+
+def format_time():
+    return datetime.now().strftime("%H:%M:%S")
 
 def getMatrixOptions():
     options = RGBMatrixOptions()
@@ -84,6 +109,16 @@ def get_fonts_dir(name=None):
 
     return absolute_path
 
+def get_capture_dir(name=None):
+    current_directory = os.path.dirname(os.path.realpath(__file__))
+    relative_path = os.path.join(current_directory, "../captures/")
+    absolute_path = os.path.abspath(relative_path)
+    if name:
+        return f"{absolute_path}/{name}"
+
+    return absolute_path
+
+
 
 def trimImage(im, center=True):
     bgc = im.getpixel((0, 0))
@@ -105,8 +140,10 @@ def trimImage(im, center=True):
     else:
         return im
 
+CAPTURE_PYGAME = False
 
 class BaseCommand:
+
     def __init__(self, name, description):
         self.refresh_timer = DEFAULT_REFRESH
         self.name = name
@@ -123,9 +160,13 @@ class BaseCommand:
             self.update(args, kwargs)
             if render:
                 res = None
+                frame_nb=0
                 while not stop_event.is_set() and not (time.time() - t0) > timeout:
                     res = self.render(args=args, kwargs=kwargs)
+                    frame_nb+=1
                     time.sleep(self.refresh_timer)
+                    if CAPTURE_PYGAME and frame_nb%100==0:
+                        self.capture_screen(tag= f"{frame_nb:05d}")
                 return (res, None)
         except Exception as e:
             tb = traceback.format_exc()
@@ -162,9 +203,16 @@ class BaseCommand:
         file = f"{base_dir}/{name}"
         return open(file, "rb")
 
+    def capture_screen(self, tag= None ):
+        screen = pygame.display.get_surface()
+        target_path= f"{get_capture_dir()}/{self.name}_{tag}.png"
+        pygame.image.save(screen, target_path)
+
+
 
 # We want a sigleton matrix because we want to share the same matrix between all the commands
 # Failing to do so works with the Matrix emulator but gives super bad result with the real hardware
+# XXX make thread safe
 matrix_singleton = RGBMatrix(options=getMatrixOptions())
 
 
@@ -192,9 +240,17 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         self.refresh = False
         self.image_counter = 0
 
+        self.capture= True
+
     def update(self, args=[], kwargs={}):
         self.image = self.generate_image(args, kwargs)
         self.double_buffer = self.matrix.CreateFrameCanvas()
+
+        #print(f"canvas adapter = {self.double_buffer.display_adapter.__surface}")
+        #print(f"{pygame.display}")
+        
+        #adapter = self.double_buffer.display_adapter
+
 
         if self.scroll and self.speedX != 0:
             self.xpos = get_total_matrix_width()

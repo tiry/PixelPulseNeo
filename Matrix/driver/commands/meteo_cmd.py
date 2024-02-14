@@ -1,32 +1,15 @@
+from PIL import Image
+from PIL import ImageDraw
 from Matrix.driver.commands.base import (
     PictureScrollBaseCmd,
     get_icons_dir,
     get_total_matrix_width,
     get_total_matrix_height,
+    format_date,
+    format_time,
 )
+
 from Matrix.driver.commands.wttr.weather import getTodayWeather
-from PIL import Image
-from PIL import ImageDraw
-from datetime import datetime
-
-
-def format_date():
-    # Get the current date and time
-    current_datetime = datetime.now()
-
-    # Correct the day suffix (e.g., 1st, 2nd, 3rd, 4th, etc.)
-    day = current_datetime.day
-    if 4 <= day <= 20 or 24 <= day <= 30:
-        suffix = "th"
-    else:
-        suffix = ["st", "nd", "rd"][day % 10 - 1]
-    date_str = current_datetime.strftime(f"%A {day}{suffix} %B")
-
-    return date_str
-
-
-def format_time():
-    return datetime.now().strftime("%H:%M:%S")
 
 
 class MeteoCmd(PictureScrollBaseCmd):
