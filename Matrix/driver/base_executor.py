@@ -66,7 +66,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def get_commands(self) -> List(Dict[str,str]):
+    def get_commands(self) -> list(Dict[str,str]):
         """
         Get all available commands
         
@@ -100,7 +100,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def list_schedules(self) -> List[str]:
+    def list_schedules(self) -> list[str]:
         """
         List all scheduled playlists
         

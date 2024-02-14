@@ -120,7 +120,7 @@ class Scheduler(Base):
         self.catalog.playlists[name] = deepcopy(schedule)
         return self.get_playlist(name)
 
-    def get_playlist_names(self) -> List(str):
+    def get_playlist_names(self) -> List[str]:
         return [name for name in self.catalog.playlists.keys()]
 
     def get_playlists(self):
