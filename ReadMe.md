@@ -7,6 +7,10 @@ The goal is to be able to display information coming from various sources (Weath
 
 <IMG src="pictures/screencast01.gif"/>
 
+# Installation
+
+See [Install.md](Install.md) for installation instructions.
+
 # Organization
 
 The project is broken down into multiple parts:
@@ -24,7 +28,9 @@ The Led Matrix Driver allows to execute commands like:
  - display news 
  - ...
 
-Thanks to [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator) commands can be tested on a laptop with a `pygame` display.
+Depending on the configuration the CommandExecutor can either run the command against a real LED Matrix using [rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) or emulate the display using   [RGBMatrixEmulator](https://github.com/ty-porter/RGBMatrixEmulator).
+
+The default configuration is "Laptop mode" using RGBMatrixEmulator to display via `pygame`.
 
 ### Usage
 
@@ -33,27 +39,21 @@ see [Usage.md](Usage.md) for details on how to use the CommandExecutor
     python -m Matrix.driver.executor -c mta -d 200
 
 
-See  [Matrix.driver](Matrix/driver) the source and for more details on the internals.
+See  [Matrix.driver](Matrix/driver) for the source and for more details on the internals.
 
 ## API Server
 
-The API Server expose a REST API using Flask.
+The API Server exposes a REST API using Flask.
 
 The APIServer use the driver, either directly or via IPC.
 
 To start the server:
 
-    ./server.sh
+    scripts/api_server.sh
 
 or run from python
 
     python -m Matrix.api.server
-
-run with debug mode
-
-    python -m Matrix.api.server --debug
-
-NB: in debug mode, because Flask uses `WERKZEUG` to run 2 python interpreter there are technically 2 instances of the command executor running. This will created duplicate display with the `RGBMatrixEmulator` and will produce funky results with a real matrix.
 
 Server by default will run on localhost:5000
 
@@ -61,11 +61,11 @@ Server by default will run on localhost:5000
 
 Get Swagger-UI from : http://localhost:5000/
 
-Get OpenAPI definition from: http://localhost:5000/api/swagger.json
-
 The API endpoint is exposed on `http://localhost:5000/api/`
 
 The Web interface is exposed on `http://localhost:5000/web/`
+
+See [Matrix.api](Matrix/api/ReadMe.md) for the source and for more details on the internals.
 
 ## Mobile Progressive WebApp
 
@@ -99,6 +99,8 @@ For more details see [README.md](pixel-pulse-neo-client/README.md)
 
 # Configuration
 
+## Driver configuration
+
 Configuration is done via a simple python file [config.py](Matrix/config.py)
 
 **Laptop mode (Enulated LEDMatrix)**
@@ -127,16 +129,10 @@ NB: All other configurations are for testing purposes
     # default refresh rate 
     DEFAULT_REFRESH = 1/60.0
 
+## Emulator configuration
 
-# Start / Stop
+When using the RGBEmulator the configuration is done via the 
+[emulator_config.json](emulator_config.json) file.
 
-To start the services:
-
-    ./ppnctl server
-
-To stop the services:
-
-    ./ppnctl stop
-
-TODO: SystemD config files for the PI
+The default configuration uses `pygame`, but see [RGBMatrixEmulator configuration-options](https://github.com/ty-porter/RGBMatrixEmulator?tab=readme-ov-file#configuration-options) for more options.
 

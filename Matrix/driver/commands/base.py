@@ -3,6 +3,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageChops
 import os
+from typing import Dict, List, Tuple, Any, Optional
 import traceback
 from Matrix.driver.utilz import configure_log, DARKCYAN
 from Matrix.config import (
@@ -140,7 +141,7 @@ class BaseCommand:
     def render(self, args=[], kwargs={}):
         raise NotImplementedError
 
-    def getScreenShots(self):
+    def getScreenShots(self) -> List[str]:
         result = []
         base_dir = get_screenshots_dir()
         # logger.debug(f"base_dir = {base_dir}")

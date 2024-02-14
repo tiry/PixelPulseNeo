@@ -7,7 +7,7 @@ from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
 from Matrix.models.encode import deepcopy, loadModel
 from Matrix.driver.base_executor import Base
 import logging
-
+from typing import List
 logger = logging.getLogger(__name__)
 configure_log(logger, level=logging.INFO)
 
@@ -120,7 +120,7 @@ class Scheduler(Base):
         self.catalog.playlists[name] = deepcopy(schedule)
         return self.get_playlist(name)
 
-    def get_playlist_names(self):
+    def get_playlist_names(self) -> List(str):
         return [name for name in self.catalog.playlists.keys()]
 
     def get_playlists(self):
