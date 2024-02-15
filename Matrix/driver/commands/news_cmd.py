@@ -14,6 +14,15 @@ from Matrix.driver.commands.news import feed
 
 feeds= [ {"url": "https://www.france24.com/en/rss", "name": "france24", "logo": "France_24.png"},
     {"url": "https://www.lemonde.fr/international/rss_full.xml", "name": "lemonde", "logo": "lemonde.jpeg"},
+    {"url": "http://rss.cnn.com/rss/cnn_topstories.rss", "name": "cnn top stories", "logo": "cnn.png"},
+    {"url": "http://rss.cnn.com/rss/cnn_world.rss	", "name": "cnn world", "logo": "cnn.png"},
+    {"url": "https://www.tomshardware.com/feeds/all", "name": "tomshardware", "logo": "tomshardware.png"},
+    {"url": "https://www.science.org/rss/news_current.xml", "name": "science.org", "logo": "science.png"},
+    {"url": "https://www.wired.com/feed/rss", "name": "wired", "logo": "wired.png"},
+    {"url": "https://www.wired.com/feed/category/science/latest/rss", "name": "wired science", "logo": "wired.png"},
+    {"url": "https://feeds.arstechnica.com/arstechnica/index", "name": "ars technica", "logo": "ars.png"},
+    {"url": "https://www.anandtech.com/rss", "name": "anandtech", "logo": "anandtech.png"},
+    
 ]
 
 def get_feed_definition(name=None) -> dict:
@@ -32,8 +41,6 @@ class NewsCmd(PictureScrollBaseCmd):
         self.refresh = True
         self.speedX = 0
         self.speedY = 0
-        # self.src_url = "https://www.france24.com/en/rss"
-        #self.src_url = "https://www.lemonde.fr/international/rss_full.xml"
 
     def update(self, args=[], kwargs={}):
         
@@ -41,20 +48,7 @@ class NewsCmd(PictureScrollBaseCmd):
         self.feed = feed.get(self.feed_definition["url"], get_total_matrix_width(), get_total_matrix_height())
         return super().update(args, kwargs)
 
-    def _resize_icon(self, icon, max_height:int = None , max_width:int= None ):
-        
-        icon_width, icon_height = icon.size
-        if max_height:
-            icon_width = int(icon_width / (icon_height / max_height))
-            icon_height = max_height
-        elif max_width:
-            icon_height = int(icon_height / (icon_width / max_width))
-            icon_width = max_width
 
-        print(f"resize to {icon_width}x{icon_height}")
-        icon = icon.resize((icon_width, icon_height), Image.LANCZOS)
-        return icon
-        
     def render_news_item(self):
         img = self.feed.get_rendered_img()
         font = self.getFont("6x12.pil")
@@ -69,11 +63,13 @@ class NewsCmd(PictureScrollBaseCmd):
 
             img = Image.new("RGB", (width, height), color=(0, 0, 0))
             
-            
-            thumb_url = entry.media_thumbnail[0]["url"]
-            thumb = feed.getImage(thumb_url)         
-            resized_thumb = self._resize_icon(thumb, max_height=50)
-            img.paste(resized_thumb, (0, 0))
+            try:
+                thumb_url = entry.media_thumbnail[0]["url"]
+                thumb = feed.getImage(thumb_url)         
+                resized_thumb = self._resize_icon(thumb, max_height=50)
+                img.paste(resized_thumb, (0, 0))
+            except AttributeError:
+                resized_thumb = Image.new("RGB", (50, 50), color=(0, 0, 0))
 
             target_height = 30
             margin = 1
@@ -83,27 +79,13 @@ class NewsCmd(PictureScrollBaseCmd):
             
             draw = ImageDraw.Draw(img)
 
+            available_text_width = 192 - resized_icon.size[0] - resized_thumb.size[0]
+            self.available_text_width = available_text_width
+
+            self.resized_thumb_size = resized_thumb.size
             date_text = format_date_short()
-            _, _, text_width, text_height = font.getbbox(date_text)            
-            available_width = 192 - resized_icon.size[0] - resized_thumb.size[0]
-            if text_width < available_width:
-                xoffset = resized_thumb.size[0] + (available_width-text_width)/2
-            else:
-                print("force position")
-                xoffset = resized_thumb.size[0] + margin
+            xoffset = resized_thumb.size[0]  + self._compute_text_position(date_text, font5, available_text_width)
             draw.text((xoffset, 40), date_text, font=font5)
-
-
-            time_text = format_time()
-            _, _, text_width, text_height = font.getbbox(date_text)            
-            available_width = 192 - resized_icon.size[0] - resized_thumb.size[0]
-            if text_width < available_width:
-                xoffset = resized_thumb.size[0] + (available_width-text_width)/2
-            else:
-                print("force position")
-                xoffset = resized_thumb.size[0] + margin
-            draw.text((xoffset, 10), time_text, font=font5)
-
 
             # compute scrolling size
             _, _, text_width, text_height = font.getbbox(entry.summary)
@@ -118,6 +100,14 @@ class NewsCmd(PictureScrollBaseCmd):
         # render text
         entry = self.feed.get_current_entry()
         draw = ImageDraw.Draw(img)
+
+
+        time_text = format_time()
+        xoffset = self.resized_thumb_size[0]  + self._compute_text_position(time_text, font, self.available_text_width)
+        draw.text((xoffset, 15), time_text, font=font)
+
+
+
         dx = self.feed.get_next_scrolling_position()
         if dx is None:
             # end of scroll => go to the next news

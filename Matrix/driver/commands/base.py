@@ -15,13 +15,13 @@ from Matrix.config import (
     USE_EMULATOR,
     DEFAULT_REFRESH,
 )
-import pygame
 
 logger = logging.getLogger(__name__)
 configure_log(logger, DARKCYAN, "Command", logging.INFO)
 
 if USE_EMULATOR:
     from RGBMatrixEmulator import RGBMatrix, RGBMatrixOptions, graphics
+    import pygame
 else:
     from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 
@@ -140,7 +140,8 @@ def trimImage(im, center=True):
     else:
         return im
 
-CAPTURE_PYGAME = False
+# XXX Check pygame is enabled
+CAPTURE_PYGAME = True
 
 class BaseCommand:
 
@@ -241,6 +242,43 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         self.image_counter = 0
 
         self.capture= True
+
+
+    def _resize_icon(self, icon: Image, max_height:int = None , max_width:int= None ):
+        """
+        Resize the icon to fit in max_height or max_width while keeping the aspect ratio
+        """
+        
+        icon_width, icon_height = icon.size
+        if max_height:
+            icon_width = int(icon_width / (icon_height / max_height))
+            icon_height = max_height
+        elif max_width:
+            icon_height = int(icon_height / (icon_width / max_width))
+            icon_width = max_width
+
+        #print(f"resize to {icon_width}x{icon_height}")
+        icon = icon.resize((icon_width, icon_height), Image.LANCZOS)
+        return icon
+    
+    def _compute_text_position(self, text:str, font: ImageFont, available_width:int):
+        """
+
+        Compute the text position to center it in the available width
+
+        Args:
+            text (_type_): _description_
+            font (_type_): _description_
+            available_width (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+
+        _, _, text_width, text_height = font.getbbox(text)            
+        if text_width < available_width:
+            return int((available_width-text_width)/2)
+        return 0
 
     def update(self, args=[], kwargs={}):
         self.image = self.generate_image(args, kwargs)

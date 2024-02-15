@@ -2,6 +2,8 @@ import feedparser
 from PIL import Image
 from urllib.request import urlopen
 from unidecode import unidecode
+import hashlib
+from bs4 import BeautifulSoup
 
 class FeedWrapper:
     
@@ -74,9 +76,20 @@ def get(url, max_width, max_height, max_items=6) -> FeedWrapper:
         feed.entries = feed.entries[:max_items]
 
     for entry in feed.entries:
-        entry.summary = unidecode(entry.summary)
+        entry.summary = unidecode(entry.get("summary", ""))
         entry.title = unidecode(entry.title)
-        print(entry.keys())
+        if entry.summary == "":
+            entry.summary = entry.title
+
+        id_str = entry.get("id", None)
+        if id_str is None:
+            id_str = hashlib.md5(entry.summary.encode())
+            entry.id = id_str
+
+        #print(entry.keys())
+        #print(entry.summary)
+        #print(entry.summary_detail)
+        
         # print(json.dumps(entry))
         # print("ID:", entry.id)
         #print("Entry conetnt:", entry.content)
@@ -85,10 +98,29 @@ def get(url, max_width, max_height, max_items=6) -> FeedWrapper:
         thumb = entry.get("media_thumbnail", None)
         if thumb is None and "media_content" in entry:
             thumb = entry.media_content[0]["url"]
-            # print(f"new thumb {thumb}")
             entry.__setitem__("media_thumbnail", [{"url": thumb}])
-        # print("Thumbs: " , thumb)
-
+        if thumb is None:
+            if "enc_enclosure" in entry.keys():
+                thumb = entry.enc_enclosure["rdf:resource"]
+                print(f"new thumb {thumb}")
+                entry.__setitem__("media_thumbnail", [{"url": thumb}])
+            elif "content" in entry.keys():
+                xml = entry.content[0].value
+                soup = BeautifulSoup(xml, 'html.parser')
+                imgs = soup.select("img")
+                if len(imgs) > 0:
+                    thumb = imgs[0].get("src")
+                    entry.__setitem__("media_thumbnail", [{"url": thumb}])
+            elif "summary" in entry.keys():
+                print("use summary")
+                xml = entry.summary
+                soup = BeautifulSoup(xml, 'html.parser')
+                imgs = soup.select("img")
+                if len(imgs) > 0:
+                    thumb = imgs[0].get("src")
+                    entry.__setitem__("media_thumbnail", [{"url": thumb}])
+                    entry.summary = entry.title
+                
         # print("Tags:", entry.get("tags", None))
 
     return FeedWrapper(feed, max_width, max_height)
