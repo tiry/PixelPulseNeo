@@ -38,6 +38,12 @@ Displays information about the closest Citibike Station
 
 Displays News from RSS feeds
 
+<img src="screenshots/news2.png"/>
+
+<img src="screenshots/news1.png"/>
+
+<img src="screenshots/news3.png"/>
+
 ## time
 
 Displays the current time
@@ -47,4 +53,4 @@ Displays the current time
 Fake command to test input and output
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 04-02-2024 16:54:08.
+Automatically generated using `python -m Matrix.doc_gen` on 14-02-2024 23:19:55.
