@@ -26,6 +26,8 @@ class SpotifyCmd(PictureScrollBaseCmd):
         self.cached_image = None
         self.cached_track_id = None
         self.track_info = None
+        self.cached_placeholder = None
+        
 
     def update(self, args=[], kwargs={}):
         self.track_info  = client.get_current_track_info()
@@ -34,10 +36,30 @@ class SpotifyCmd(PictureScrollBaseCmd):
         return super().update(args, kwargs)
 
     def render_no_track(self):
-        width = get_total_matrix_width()
-        height = get_total_matrix_height()
-        img = Image.new("RGB", (width, height), color=(0, 0, 0))
-        return img
+        if self.cached_placeholder is None:
+            font = self.getFont("6x12.pil")
+            font5 = self.getFont("5x7.pil")
+    
+            width = get_total_matrix_width()
+            height = get_total_matrix_height()
+            img = Image.new("RGB", (width, height), color=(0, 0, 0))
+            
+            icon = Image.open(get_icons_dir("spotify/spotify.png")).convert("RGB")      
+            resized_icon = icon.resize((64,64))
+            img.paste(resized_icon, (0,0))
+
+            draw = ImageDraw.Draw(img)
+            text = "No Track"
+            xoffset = 64  + self._compute_text_position(text, font, 128)
+            draw.text((xoffset, 10), text, font=font)
+            
+            text = "playing on Spotify"
+            xoffset = 64  + self._compute_text_position(text, font5, 128)
+            draw.text((xoffset, 30), text, font=font5)
+
+            self.cached_placeholder = img
+
+        return self.cached_placeholder    
     
     def render_track_info(self):
 
@@ -63,8 +85,8 @@ class SpotifyCmd(PictureScrollBaseCmd):
             xoffset = 64  + self._compute_text_position(self.track_info["artist_name"], font, 128)
             draw.text((xoffset, 2), self.track_info["artist_name"], font=font)
 
-            xoffset = 64  + self._compute_text_position(self.track_info["track_name"], font, 128)
-            draw.text((xoffset, 20), self.track_info["track_name"], font=font)
+            xoffset = 64  + self._compute_text_position(self.track_info["track_name"], font5, 128)
+            draw.text((xoffset, 20), self.track_info["track_name"], font=font5)
 
             xoffset = 64  + self._compute_text_position(self.track_info["album_name"], font4, 128)
             draw.text((xoffset, 40), self.track_info["album_name"], font=font4)

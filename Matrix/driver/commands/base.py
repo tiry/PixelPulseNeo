@@ -141,7 +141,7 @@ def trimImage(im, center=True):
         return im
 
 # XXX Check pygame is enabled
-CAPTURE_PYGAME = True
+CAPTURE_PYGAME = False
 CAPTURE_FREQ = 10
 
 class BaseCommand:
