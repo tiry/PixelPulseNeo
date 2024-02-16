@@ -11,3 +11,8 @@ echo "Starting Cmd Server"
 
 sudo -E scripts/start_cmd_server.sh  &> "cmd_server.log" & echo $! > "cmd_server.pid"
 
+# Starting Web/API Server
+echo "Starting Web/API Server"
+
+scripts/api_server.sh &
+
