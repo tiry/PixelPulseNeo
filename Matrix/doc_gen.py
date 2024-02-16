@@ -4,12 +4,16 @@ from Matrix.driver.executor import CommandExecutor
 import datetime
 
 
+commands_to_skip=['scrolltext', 'matrix', 'time', 'faker']
+
 def document_commands(cmds:dict):
     lines = []
 
     lines.append("# Commands")
 
     for cmd in cmds:
+        if cmd["name"] in commands_to_skip:
+            continue
         print(cmd)
         lines.append(f'\n## {cmd["name"]}')
 

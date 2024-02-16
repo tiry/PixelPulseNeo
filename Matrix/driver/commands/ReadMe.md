@@ -1,9 +1,5 @@
 # Commands
 
-## matrix
-
-Displays Picture on Matrix
-
 ## mta
 
 Displays next trains and bus arrival time for a given location
@@ -24,9 +20,13 @@ Render Conway's game of life
 
 <img src="screenshots/conway1.gif"/>
 
-## scrolltext
+## spotify
 
-Displays Text on Matrix
+Displays information related to current played song on Spotify
+
+<img src="screenshots/spotify2.png"/>
+
+<img src="screenshots/spotify1.png"/>
 
 ## citibikes
 
@@ -43,14 +43,6 @@ Displays News from RSS feeds
 <img src="screenshots/news1.png"/>
 
 <img src="screenshots/news3.png"/>
-
-## time
-
-Displays the current time
-
-## faker
-
-Fake command to test input and output
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 14-02-2024 23:19:55.
+Automatically generated using `python -m Matrix.doc_gen` on 15-02-2024 23:08:14.

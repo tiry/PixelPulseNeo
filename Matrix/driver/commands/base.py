@@ -142,6 +142,7 @@ def trimImage(im, center=True):
 
 # XXX Check pygame is enabled
 CAPTURE_PYGAME = True
+CAPTURE_FREQ = 10
 
 class BaseCommand:
 
@@ -166,7 +167,7 @@ class BaseCommand:
                     res = self.render(args=args, kwargs=kwargs)
                     frame_nb+=1
                     time.sleep(self.refresh_timer)
-                    if CAPTURE_PYGAME and frame_nb%100==0:
+                    if CAPTURE_PYGAME and frame_nb%CAPTURE_FREQ==0:
                         self.capture_screen(tag= f"{frame_nb:05d}")
                 return (res, None)
         except Exception as e:
@@ -240,8 +241,6 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         self.scroll = True
         self.refresh = False
         self.image_counter = 0
-
-        self.capture= True
 
 
     def _resize_icon(self, icon: Image, max_height:int = None , max_width:int= None ):
