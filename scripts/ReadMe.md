@@ -17,9 +17,7 @@
 
 ## Start REST API Server
 
-    python -m Matrix.api.server 
-
-    python -m Matrix.api.server  &> "api_server.log" & echo $! > "api_server.pid"
+    scripts/api_server.sh
 
 ## Build the webapp if needed
 
@@ -38,4 +36,8 @@ These files are served via the API Server on
 Alternatively, you can also run the web app in debug:
 
     npm start
+
+# Starting everything as one command
+
+    scripts/serve.sh
 

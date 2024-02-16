@@ -102,7 +102,7 @@ def get(url, max_width, max_height, max_items=6) -> FeedWrapper:
         if thumb is None:
             if "enc_enclosure" in entry.keys():
                 thumb = entry.enc_enclosure["rdf:resource"]
-                print(f"new thumb {thumb}")
+                #print(f"new thumb {thumb}")
                 entry.__setitem__("media_thumbnail", [{"url": thumb}])
             elif "content" in entry.keys():
                 xml = entry.content[0].value
@@ -112,7 +112,7 @@ def get(url, max_width, max_height, max_items=6) -> FeedWrapper:
                     thumb = imgs[0].get("src")
                     entry.__setitem__("media_thumbnail", [{"url": thumb}])
             elif "summary" in entry.keys():
-                print("use summary")
+                #print("use summary")
                 xml = entry.summary
                 soup = BeautifulSoup(xml, 'html.parser')
                 imgs = soup.select("img")
