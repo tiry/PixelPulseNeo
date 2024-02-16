@@ -22,6 +22,7 @@ configure_log(logger, CYAN, "CmdExec")
 
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
+
     def __init__(self, schedule_file="schedule.json"):
         # load commands
         self.commands = self._load_commands()
@@ -282,7 +283,7 @@ if __name__ == "__main__":
             print(f"{command.name} - {command.description}")
         # exit(0)
 
-    if args.listen or is_ipc_enabled():
+    if args.listen or (is_ipc_enabled() and not args.commands):
         executor.serve()
     else:
         if args.commands:
