@@ -36,7 +36,7 @@ class IPCServer:
 
         # Yeark
         if len(args) > 0:
-            if type(args[-1]) == dict and len(kwargs) == 0: # pylint: ignore
+            if type(args[-1]) == dict and len(kwargs) == 0: # type: ignore
                 kwargs = args.pop()
                 if type(args[-1]) == list and len(args[-1]) == 0:
                     args.pop()
