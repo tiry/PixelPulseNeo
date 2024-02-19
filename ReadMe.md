@@ -15,6 +15,13 @@ See [Install.md](Install.md) for installation instructions.
 
 The project is broken down into multiple parts:
 
+
+<img src="pictures/PixelPulseNeo.png" width="800px"/>
+
+ - the Web UI in ReactJS
+ - the API Server in Python/Flask
+ - the CommandExecutor in Python
+
 ## Driver
 
 ### A CommandExecutor for driving the LED Matrix
