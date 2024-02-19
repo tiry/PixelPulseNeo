@@ -9,13 +9,11 @@ import os
 DATA_URL = "http://web.mta.info/developers/data/nyct/subway/google_transit.zip"
 CACHE = "cache/stops.txt"
 
-
 def request_data() -> zipfile.ZipFile:
     """Request the metadata zip file from the MTA."""
     res = requests.get(DATA_URL)
     res.raise_for_status()
     return zipfile.ZipFile(io.BytesIO(res.content))
-
 
 class Resolver(object):
     def __init__(self, refresh=False):

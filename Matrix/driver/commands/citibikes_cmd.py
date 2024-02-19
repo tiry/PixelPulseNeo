@@ -1,4 +1,8 @@
+import argparse
+import threading
+from typing import Any
 from Matrix.driver.commands.citibikes import api
+from Matrix import config
 from Matrix.driver.commands.base import (
     PictureScrollBaseCmd,
     get_icons_dir,
@@ -18,7 +22,7 @@ class CitibikesCmd(PictureScrollBaseCmd):
         self.refresh = False
 
     def update(self, args=[], kwargs={}) -> None:
-        citibike_info: list = api.getStationInfo(["Columbia", "Carroll"])
+        citibike_info: list = api.getStationInfo(config.CITIBIKES)
         self.citibike_info = citibike_info[0]
         print(f" Citi Bike info {self.citibike_info}")
         super().update(args, kwargs)
@@ -59,3 +63,27 @@ class CitibikesCmd(PictureScrollBaseCmd):
         draw.text((x + 32 + 2, 40), str(self.citibike_info["empty"]), font=font)
 
         return img
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+
+    parser.add_argument(
+        "-q", "--query", nargs="+", help="list of commands to execute"
+    )
+
+
+
+    #parser.add_argument("-e", "--emotions", help="execute emotions", action="store_true")
+    
+    args = parser.parse_args()
+    
+    if args.query:
+        res:list[dict[Any, Any]] = api.getStationInfo(args.query)
+        for station in res:
+            print(f" Station : {station['name']}")
+    else:
+        cmd = CitibikesCmd()
+        print("Execute Citibike Command in main thread")
+        cmd.execute(threading.Event(), timeout=60)

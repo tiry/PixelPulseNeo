@@ -17,6 +17,10 @@ Displays Weather forcast from wttr.in
 
 <img src="screenshots/meteo1.gif"/>
 
+## eyes
+
+Simple Eyes rendering
+
 ## conway
 
 Render Conway's game of life
@@ -38,6 +42,9 @@ More details and configuration, see [spotify/ReadMe.md](spotify/ReadMe.md)
 
 Displays information about the closest Citibike Station
 
+
+More details and configuration, see [citibikes/ReadMe.md](citibikes/ReadMe.md)
+
 <img src="screenshots/citibikes.gif"/>
 
 ## news
@@ -51,4 +58,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 18-02-2024 18:58:09.
+Automatically generated using `python -m Matrix.doc_gen` on 19-02-2024 13:47:52.

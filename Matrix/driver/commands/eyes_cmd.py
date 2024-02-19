@@ -44,6 +44,7 @@ class EyesCmd(PictureScrollBaseCmd):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
+
     parser.add_argument("--commands", help="execute commands", action="store_true")
     parser.add_argument("-k", "--keyframes", help="execute keyframes", action="store_true")
     parser.add_argument("-e", "--emotions", help="execute emotions", action="store_true")

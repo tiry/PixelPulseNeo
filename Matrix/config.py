@@ -47,3 +47,16 @@ DEFAULT_REFRESH = 1 / 60.0
 # USE_EMULATOR = True
 # USE_IPC = True
 # RUN_AS_ROOT = False
+
+################################################
+# Commands Confiiguration
+
+
+CITIBIKES: list[str] = ["Columbia", "Carroll"]
+
+MTA_SUBWAY_STATION:str = "Carroll"
+MTA_SUBWAY_DIRECTION:str = "N"
+MTA_SUBWAY_ROUTES:list[str] = ["F","G"]
+
+MTA_BUS_STATION:str = "Carroll"
+MTA_BUS_LINE:str = "B61"

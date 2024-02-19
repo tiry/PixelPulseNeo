@@ -1,5 +1,6 @@
 import threading
 import argparse
+from typing import Any
 from PIL import Image
 from PIL import ImageDraw
 from Matrix.driver.commands.base import (
@@ -8,7 +9,9 @@ from Matrix.driver.commands.base import (
     get_total_matrix_width,
     get_total_matrix_height,
 )
+from Matrix import config
 import Matrix.driver.commands.mta.route as route
+from Matrix.driver.commands.mta.stops import stopResolverSingleton
 import Matrix.driver.commands.mta.bus as bus
 
 
@@ -20,9 +23,7 @@ def truncate(s, length):
     else:
         return s
 
-
-PAUSED_FRAMES = 60 * 3
-
+PAUSED_FRAMES = 60 * 5
 
 class MtaCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
@@ -41,11 +42,11 @@ class MtaCmd(PictureScrollBaseCmd):
 
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         next_trains: dict = route.getNextTrainsToward(
-            Direction="N", Routes=["F", "G"], Station="Carroll"
+            direction=config.MTA_SUBWAY_DIRECTION, routes=config.MTA_SUBWAY_ROUTES, station=config.MTA_SUBWAY_STATION
         )
         # print(f"Next trains {next_trains}")
         self.next_trains = next_trains
-        self.next_buses = bus.get_stop_info("B61", "Carroll")
+        self.next_buses = bus.get_stop_info(config.MTA_BUS_LINE, config.MTA_BUS_STATION)
         # print(f"Next Buses {self.next_buses}")
         super().update(args, kwargs)
 
@@ -83,7 +84,7 @@ class MtaCmd(PictureScrollBaseCmd):
         icon = Image.open(get_icons_dir("mta/png/MTA_NYC_LOGO.png")).convert("RGB")
         icon = icon.resize((40, 40), Image.Resampling.LANCZOS)
         img.paste(icon, (1, 64 + 4))
-        draw.text((6, 64 + 44), "B61", font=font9)
+        draw.text((6, 64 + 44), config.MTA_BUS_LINE, font=font9)
         idx = 0
         if self.next_buses:
             for bus_stop in self.next_buses:
@@ -97,11 +98,11 @@ class MtaCmd(PictureScrollBaseCmd):
                     fill=(0, 128, 255),
                 )
 
-            times = " ".join(self.next_buses[bus_stop][:4])
-            _, _, text_width, text_height = font6.getbbox(times)
-            xoffset = int((64 * 3 - text_width - 42) / 2)
-            draw.text((42 + xoffset, 64 + 16 * (idx + 1)), times, font=font6)
-            idx += 2
+                times = " ".join(self.next_buses[bus_stop][:4])
+                _, _, text_width, text_height = font6.getbbox(times)
+                xoffset = int((64 * 3 - text_width - 42) / 2)
+                draw.text((42 + xoffset, 64 + 16 * (idx + 1)), times, font=font6)
+                idx += 2
 
         return img
 
@@ -125,9 +126,52 @@ class MtaCmd(PictureScrollBaseCmd):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
+    
+    parser = argparse.ArgumentParser()    
+    parser.add_argument(
+        "-r", "--route", nargs="+", help="list of routes to query"
+    )
+    parser.add_argument("-d", "--direction", help="direction N/S", default="N")
+    parser.add_argument("-s", "--station", help="Statcion name")
+    parser.add_argument("-b", "--bus", help="query for bus")
+    
     args = parser.parse_args()
-    cmd = MtaCmd()
-    print("Execute MTA Command in main thread")
-    cmd.execute(threading.Event(), timeout=60)
+    
+    if args.bus:
+        if args.station is None:
+            print("search bus line")
+            found_bus_line: str | None = bus.find_route(args.bus)
+            if found_bus_line is None:
+                print("No bus line found")
+            else: 
+                print(f"Found {found_bus_line}")
+        else:    
+            print("search bus stop line")
+            buses: dict[str, list[str]] | None = bus.get_stop_info(args.bus, args.station)
+            if buses is None:
+                print("No match")
+            else:
+                for station in buses.keys():
+                    print(f"{station}:")
+                    for ts in buses[station]:
+                        print(f"    {ts}")
+            
+    elif args.station and not args.route:
+        stations:list[dict[str, Any]] = stopResolverSingleton.findStopByName(args.station)
+        for station in stations:
+            print(f" stop_name = {station['stop_name']} ({station['stop_id']})")
+    
+    elif args.route:
+        
+        trains: dict = route.getNextTrainsToward(
+            direction=args.direction, routes=args.route, station=args.station
+        )
+        for route in trains.keys():
+            times:list[str] = trains[route]
+            print(f" Next trains for {route} station {args.station} on direction {args.direction}")
+            for t in times:
+                print(f"     {t}")   
+    else:
+        cmd = MtaCmd()
+        print("Execute MTA Command in main thread")
+        cmd.execute(threading.Event(), timeout=60)
