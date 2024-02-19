@@ -1,3 +1,4 @@
+from typing import Any
 import json
 from pydantic import BaseModel
 
@@ -17,7 +18,7 @@ def loadModel(json_str, pydantic_model):
     return pydantic_model.model_validate_json(json_str)
 
 
-def deepcopy(obj):
+def deepcopy(obj:Any)-> Any:
     if isinstance(obj, BaseModel):
         return obj.model_copy(deep=True)
     else:

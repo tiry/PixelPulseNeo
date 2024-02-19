@@ -4,6 +4,7 @@ import tempfile
 import os
 import json
 from Matrix.driver.executor import CommandExecutor
+from Matrix.models.Commands import CommandExecutionLog
 from Matrix.models.Commands import ScheduleCatalog, ScheduleModel
 from Matrix.models.encode import loadModel
 
@@ -95,10 +96,10 @@ class TestEnqueeCmd(unittest.TestCase):
         return temp_file.name
 
     def test_catalog_from_json(self):
-        schedule_file = self.get_test_schedule_file()
+        schedule_file: str = self.get_test_schedule_file()
         with open(schedule_file) as f:
-            json_str = f.read()
-            catalog = loadModel(json_str, ScheduleCatalog)
+            json_str: str = f.read()
+            catalog: ScheduleCatalog = loadModel(json_str, ScheduleCatalog)
 
             self.assertIsNotNone(catalog)
             self.assertTrue(isinstance(catalog, ScheduleCatalog))
@@ -114,11 +115,11 @@ class TestEnqueeCmd(unittest.TestCase):
         # wait for the scheduler to start and to run at least 2 cmds
         executor._wait_for_executions(2)
 
-        schedule = executor.get_schedule()
+        schedule: ScheduleModel | None = executor.get_schedule()
         #print(schedule)
         self.assertIsNotNone(schedule)
 
-        log = executor.get_audit_log()
+        log: list[CommandExecutionLog] = executor.get_audit_log()
         print(f"LOGS =>{log}")
         self.assertTrue(len(log) >= 2)
 
@@ -131,7 +132,7 @@ class TestEnqueeCmd(unittest.TestCase):
 
         executor = CommandExecutor(schedule_file=schedule_file)
         executor._load_schedule("slow")
-        schedule = executor.get_schedule()
+        schedule: ScheduleModel | None = executor.get_schedule()
         print(schedule)
 
         time.sleep(1)
@@ -146,7 +147,7 @@ class TestEnqueeCmd(unittest.TestCase):
         # wait for the scheduler to start and to run at least 2 cmds
         executor._wait_for_executions(2)
 
-        log = executor.get_audit_log()
+        log: list[CommandExecutionLog] = executor.get_audit_log()
 
         self.assertEqual(10, log[1].command.duration)
         self.assertLess(log[1].effective_duration, 10)
@@ -160,13 +161,13 @@ class TestEnqueeCmd(unittest.TestCase):
         os.remove(schedule_file)
 
     def test_default_schedule(self):
-        schedule_file = self.get_test_schedule_file()
+        schedule_file: str = self.get_test_schedule_file()
 
         executor = CommandExecutor(schedule_file=schedule_file)
         executor._load_schedule("smoke_test")
         executor._wait_for_executions(6, timeout_seconds=120)
 
-        log = executor.get_audit_log()
+        log: list[CommandExecutionLog] = executor.get_audit_log()
 
         for entry in log:
             self.assertIsNone(entry.error)

@@ -4,6 +4,9 @@
 
 Displays next trains and bus arrival time for a given location
 
+
+More details and configuration, see [mta/ReadMe.md](mta/ReadMe.md)
+
 <img src="screenshots/mta2.gif"/>
 
 <img src="screenshots/mta1.gif"/>
@@ -23,6 +26,9 @@ Render Conway's game of life
 ## spotify
 
 Displays information related to current played song on Spotify
+
+
+More details and configuration, see [spotify/ReadMe.md](spotify/ReadMe.md)
 
 <img src="screenshots/spotify2.png"/>
 
@@ -45,4 +51,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 15-02-2024 23:08:14.
+Automatically generated using `python -m Matrix.doc_gen` on 18-02-2024 18:58:09.

@@ -1,24 +1,24 @@
-from flask import Flask, jsonify, make_response, request, send_file
-from flask_restx import Api, Resource
-from flask_cors import CORS
 import json
 import argparse
 import signal
 import os
 import sys
+import logging
+import traceback
+from typing import Any
+from pydantic import BaseModel
+from flask import Flask, jsonify, make_response, request, send_file, send_from_directory
+from flask_restx import Api, Resource
+from flask_cors import CORS
 from Matrix.models.Commands import ScheduleModel
 from Matrix.models.resthelper import pydantic_to_restx_model
 from Matrix.config import is_ipc_enabled
-from pydantic import BaseModel
 from Matrix.driver.utilz import configure_log, YELLOW
 from Matrix.driver.factory import CommandExecutorSingleton, IPCClientSingleton
-from Matrix.driver.ipc.client import IPCClient
-import logging
-import traceback
-from flask import send_from_directory
+from Matrix.driver.ipc.client import IPCClient, IPCClientExecutor
+from Matrix.driver.executor import CommandExecutor
 
-
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
 
 app = Flask(__name__)  # Creates a Flask application instance with the given name
@@ -35,9 +35,9 @@ The following endpoints are available:
 """
 
 
-executor = None
+executor: IPCClientExecutor | CommandExecutor | None  = None
 
-def get_executor():
+def get_executor() -> IPCClientExecutor | CommandExecutor:
 
     global executor
     if executor is None:
@@ -104,7 +104,7 @@ class Commands(Resource):
 class Schedules(Resource):
     def get(self):
         """Returns a JSON array of the names of all available schedules / playlists."""
-        result = get_executor().list_schedules()
+        result: list[str] = get_executor().list_schedules()
         return jsonify(result)
 
 
@@ -117,11 +117,11 @@ class Screenshot(Resource):
         based on the file extension, and returns the file contents. Returns
         a 404 if the command or screenshot is not found.
         """
-        command = get_executor().get_command(command_name)
+        command: dict[str, Any] | None = get_executor().get_command(command_name)
         if command is None:
             return jsonify({"error": "Command not found"}), 404
 
-        screenshot_path = get_executor().get_command_screenshot(
+        screenshot_path: Any | str | None = get_executor().get_command_screenshot(
             command_name, screenshot_name
         )
         if screenshot_path is None:
@@ -175,12 +175,12 @@ class Command(Resource):
         """
 
         # Access the duration query parameter with a default value if it's not provided
-        duration = request.args.get("duration", default=10, type=int)
-        interrupt = request.args.get("interupt", default="false", type=bool)
+        duration: float = request.args.get("duration", default=10, type=float)
+        interrupt:str | bool = request.args.get("interupt", default="false", type=bool)
 
         try:
             # result is async and only accessible via audit log
-            get_executor().execute_now(command_name, duration, interrupt=interrupt)
+            get_executor().execute_now(command_name, duration, interrupt=interrupt) #type: ignore
             return jsonify({"message": f"Command '{command_name}' executed"})
         except Exception as e:
             print(f"Error during command execution for {command_name}")
@@ -188,13 +188,13 @@ class Command(Resource):
             return make_response(jsonify({"error": str(e)}), 500)
 
 
-rest_schedule = pydantic_to_restx_model(api, ScheduleModel)
+rest_schedule = pydantic_to_restx_model(api, ScheduleModel)# type: ignore
 
 
 @api.route("/schedule", defaults={"playlist_name": None})
 @api.route("/schedule/<playlist_name>")
 class Schedule(Resource):
-    def get(self, playlist_name=None):
+    def get(self, playlist_name:str|None=None):
         """Returns the executor's current schedule.
 
         The schedule is returned as a JSON array containing dictionaries
@@ -203,7 +203,7 @@ class Schedule(Resource):
         - `name`: The name of the scheduled command
         - `interval`: The interval in seconds between runs of this command
         """
-        schedule = get_executor().get_schedule(playlist_name)
+        schedule: ScheduleModel | None = get_executor().get_schedule(playlist_name)
         if not schedule:
             return make_response(
                 jsonify({"error": f"Schedule '{playlist_name}' not found"}), 404
@@ -223,8 +223,12 @@ class Schedule(Resource):
         executor's current schedule with it. Validates that the named commands
         exist before updating the schedule.
         """
-        payload = request.json
+        payload: dict[str,Any] | None = request.json
 
+        if not payload:
+            print(f"payload is None")   
+            return make_response(jsonify({"error": "No Payload"}), 500)
+        
         print(f"payload type {type(payload)} content: {payload}")
 
         # convert back to SchedulModel // Sanitize
@@ -258,7 +262,7 @@ class Shutdown(Resource):
             logger.info("API Server shutting down Executor")
             executor.stop(interrupt=True)
             if issubclass(executor.__class__, IPCClient):
-                executor.disconnect()
+                executor.disconnect() # type: ignore
                 # executor.kill_server()
             executor = None
             logger.info("API Server: executor shutdown completed")
@@ -272,8 +276,9 @@ class Shutdown(Resource):
         logger.info("Bye !")
         return "server exit"
 
+@app.route('/web/')
 @app.route('/web/<path:path>')
-def send_report(path):
+def send_report(path=None):
     if path is None or path == "":
         path="index.html"
     return send_from_directory('../../pixel-pulse-neo-client/build/', path)

@@ -1,13 +1,13 @@
+import random
+from PIL import Image
 from Matrix.driver.commands.base import (
     PictureScrollBaseCmd,
     get_total_matrix_width,
     get_total_matrix_height,
 )
-from PIL import Image
 from Matrix.driver.commands.simu.conway import runStep, randomGrid, ON
-import random
 
-palettes = [
+palettes: list[list[str]] = [
     # fire
     [
         "03071e",
@@ -67,7 +67,7 @@ palettes = [
 ]
 
 
-def hex_to_rgb(hex_color):
+def hex_to_rgb(hex_color) -> tuple[int, int, int]:
     # Check if the input is valid
     if len(hex_color) != 6:
         raise ValueError("Invalid hex color format. Please use the format RRGGBB.")
@@ -80,54 +80,52 @@ def hex_to_rgb(hex_color):
     return (r, g, b)
 
 
-_palette = None
-
-
-def getPalette():
+_palette : list | None = None
+def getPalette() -> list[str]:
     global _palette
     if not _palette:
         _palette = palettes[random.randint(0, len(palettes) - 1)]
     return _palette
 
 
-def getColor(idx):
+def getColor(idx) -> tuple[int, int, int]:
     return hex_to_rgb(getPalette()[idx])
 
 
 class ConwayCmd(PictureScrollBaseCmd):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("conway", "Render Conway's game of life")
         self.refresh_timer = 1 / 60.0
         self.scroll = False
         self.refresh = True
         self.background = None
-        self.tailLength = len(getPalette())
+        self.tailLength: int = len(getPalette())
 
     def update(self, args=[], kwargs={}):
         model = randomGrid(get_total_matrix_width(), get_total_matrix_height())
         # print(model)
-        self.models = [model]
+        self.models: list = [model]
         super().update(args, kwargs)
 
-    def renderArray(self, model, img, color=(255, 255, 255)):
+    def renderArray(self, model, img, color=(255, 255, 255)) -> None:
         width, height = model.shape
         for x in range(width):
             for y in range(height):
                 if model[x][y] == ON:
                     img.putpixel((x, y), color)
 
-    def updateModel(self):
+    def updateModel(self) -> None:
         last_model = self.models[-1]
         self.models.append(runStep(last_model))
         if len(self.models) > self.tailLength:
             self.models.pop(0)
 
-    def generate_image(self, args=[], kwargs={}):
-        width, height = self.models[-1].shape
-        img = Image.new("RGB", (width, height), color=(0, 0, 0))
+    def generate_image(self, args:list=[], kwargs:dict={}) -> Image.Image:
+        width, height= self.models[-1].shape
+        img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
 
         for idx, model in enumerate(self.models):
-            c = getColor(idx)
+            c: tuple[int, int, int] = getColor(idx)
             self.renderArray(model, img, c)
 
         self.updateModel()

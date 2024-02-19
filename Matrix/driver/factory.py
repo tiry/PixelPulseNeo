@@ -7,11 +7,11 @@ class CommandExecutorSingleton:
     Wrap the CommandExecutor Class to provide a singleton in a threadsafe manner
     """
 
-    _instance = None
-    _lock = threading.Lock()
+    _instance: CommandExecutor | None= None
+    _lock: threading.Lock = threading.Lock()
 
     @classmethod
-    def instance(cls):
+    def instance(cls) -> CommandExecutor:
         if cls._instance is None: 
             with cls._lock:
                 if not cls._instance:
@@ -19,9 +19,9 @@ class CommandExecutorSingleton:
         return cls._instance
     
     @classmethod
-    def release(cls):
+    def release(cls) -> None:
         with cls._lock:
-            cls.instance = None
+            cls._instance = None
 
 
 class IPCClientSingleton:
@@ -29,13 +29,13 @@ class IPCClientSingleton:
     Wrap the IPCClientExecutor Class to provide a singleton in a threadsafe manner
     """
 
-    _instance = None
-    _lock = threading.Lock()
+    _instance: IPCClientExecutor | None = None
+    _lock: threading.Lock = threading.Lock()
 
     start_server_if_needed=False
 
     @classmethod
-    def instance(cls):
+    def instance(cls) -> IPCClientExecutor:
         if cls._instance is None: 
             with cls._lock:
                 if not cls._instance:
@@ -43,8 +43,8 @@ class IPCClientSingleton:
         return cls._instance
     
     @classmethod
-    def release(cls):
+    def release(cls) -> None:
         with cls._lock:
-            cls.instance = None
+            cls._instance = None
 
 

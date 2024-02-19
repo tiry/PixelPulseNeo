@@ -51,7 +51,7 @@ class FlaskServerTestCase(unittest.TestCase):
         print("Tear down test: asking server to shut down")
         # Shutdown the Flask server after tests
         requests.get(
-            "http://localhost:5000/shutdown", timeout=5
+            "http://localhost:5000/api/shutdown", timeout=5
         )  # Assuming you have a shutdown route
         print("Tear down test: wait for server to exit")
         cls.server_process.terminate()
@@ -66,7 +66,7 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing commands API")
 
-        response = requests.get("http://localhost:5000/commands", timeout=5)
+        response = requests.get("http://localhost:5000/api/commands", timeout=5)
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
 
@@ -83,7 +83,7 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing schedules API")
 
-        response = requests.get("http://localhost:5000/schedules",timeout=5)
+        response = requests.get("http://localhost:5000/api/schedules",timeout=5)
         response.raise_for_status()
 
         self.assertEqual(response.status_code, 200)
@@ -97,7 +97,7 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing command API")
 
-        response = requests.get("http://localhost:5000/commands", timeout=5)
+        response = requests.get("http://localhost:5000/api/commands", timeout=5)
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         cmds = response.json()
@@ -110,7 +110,7 @@ class FlaskServerTestCase(unittest.TestCase):
             # now download the images
             for name in cmd["screenshots"]:
                 response = requests.get(
-                    f"http://localhost:5000/screenshots/{target_command}/{name}", timeout=5
+                    f"http://localhost:5000/api/screenshots/{target_command}/{name}", timeout=5
                 )
                 self.assertEqual(response.status_code, 200)
                 i = Image.open(BytesIO(response.content))
@@ -121,7 +121,7 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing command API")
 
-        response = requests.post(f"http://localhost:5000/command/{target_command}", timeout=5)
+        response = requests.post(f"http://localhost:5000/api/command/{target_command}", timeout=5)
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         res = response.json()
@@ -149,7 +149,7 @@ class FlaskServerTestCase(unittest.TestCase):
         headers = {"content-type": "application/json"}
 
         response = requests.post(
-            f"http://localhost:5000/schedule/{schedule_name}",
+            f"http://localhost:5000/api/schedule/{schedule_name}",
             headers=headers,
             data=json.dumps(src_schedule_json), timeout=5
         )
@@ -158,7 +158,7 @@ class FlaskServerTestCase(unittest.TestCase):
 
         # now get the schedule back
 
-        response = requests.get(f"http://localhost:5000/schedule/{schedule_name}", timeout=5)
+        response = requests.get(f"http://localhost:5000/api/schedule/{schedule_name}", timeout=5)
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         new_schedule_json = response.json()

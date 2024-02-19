@@ -15,7 +15,7 @@ def isMatch(keywords, name):
     return True
 
 
-def getStationInfo(keywords=["Columbia"]):
+def getStationInfo(keywords=["Columbia"]) -> list[dict]:    
     # Send the GET request
     response = requests.get(NYC_ENDPOINT, headers=headers)
 
@@ -39,3 +39,5 @@ def getStationInfo(keywords=["Columbia"]):
         return matches
     else:
         print(f"Failed to retrieve data: Status code {response.status_code}")
+        return []
+

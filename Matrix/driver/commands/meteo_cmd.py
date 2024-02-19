@@ -1,3 +1,4 @@
+from typing import Any
 from PIL import Image
 from PIL import ImageDraw
 from Matrix.driver.commands.base import (
@@ -13,70 +14,76 @@ from Matrix.driver.commands.wttr.weather import getTodayWeather
 
 
 class MeteoCmd(PictureScrollBaseCmd):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("meteo", "Displays Weather forcast from wttr.in")
         self.refresh_timer = 1 / 60.0
         self.scroll = True
         self.refresh = True
-        self.background = None
+        self.background: Image.Image | None = None
+        self.weather: dict[Any, Any] | None = None
 
-    def update(self, args=[], kwargs={}):
+    def update(self, args:list=[], kwargs:dict={}) -> None:
         self.weather = getTodayWeather()
         # print(f"weather = {self.weather}")
         super().update(args=[], kwargs={})
 
     def getWeatherBackground(self):
         if not self.background:
-            weatherLabel = self.weather["weatherLabel"]
-            #tempFull = self.weather["tempFull"]
-            temp = self.weather["temp"]
-            tempFeelsLike = self.weather["tempFeelsLike"]
+            if self.weather:
+                weatherLabel:str = self.weather["weatherLabel"]
+                #tempFull = self.weather["tempFull"]
+                temp = self.weather["temp"]
+                tempFeelsLike = self.weather["tempFeelsLike"]
 
-            # get weather icon
-            weatherIcon = Image.open(
-                get_icons_dir(f"wttr_codes/128/{weatherLabel}.png")
-            ).convert("RGB")
-            weatherIcon = weatherIcon.resize((48, 48), Image.LANCZOS)
+                # get weather icon
+                weatherIcon: Image.Image = Image.open(
+                    get_icons_dir(f"wttr_codes/128/{weatherLabel}.png")
+                ).convert("RGB")
+                weatherIcon = weatherIcon.resize((48, 48), Image.Resampling.LANCZOS)
 
-            width = get_total_matrix_width()
-            height = get_total_matrix_height()
+                width: int = get_total_matrix_width()
+                height: int = get_total_matrix_height()
 
-            img = Image.new("RGB", (width, height), color=(0, 0, 0))
+                img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
 
-            img.paste(weatherIcon, (8, 8))
-            draw = ImageDraw.Draw(img)
+                img.paste(weatherIcon, (8, 8))
+                draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
 
-            font5 = self.getFont("5x7.pil")
-            font6 = self.getFont("6x12.pil")
+                font5 = self.getFont("5x7.pil")
+                font6 = self.getFont("6x12.pil")
 
-            tempPos = (10 + weatherIcon.size[0], 20)
-            draw.text(tempPos, temp, font=font6)
+                tempPos: tuple[int, int] = (10 + weatherIcon.size[0], 20)
+                draw.text(tempPos, temp, font=font6)
 
-            date_str = format_date()
+                date_str: str = format_date()
 
-            draw.text(
-                (tempPos[0] + 2, tempPos[1] + 12),
-                tempFeelsLike,
-                font=font5,
-                fill=(150, 150, 150),
-            )
-            _, _, text_width, text_height = font6.getbbox(date_str)
+                draw.text(
+                    (tempPos[0] + 2, tempPos[1] + 12),
+                    tempFeelsLike,
+                    font=font5,
+                    fill=(150, 150, 150),
+                )
+                _, _, text_width, text_height = font6.getbbox(date_str)
 
-            draw.text((width / 2 - text_width / 2, 5), date_str, font=font6)
+                draw.text((width / 2 - text_width / 2, 5), date_str, font=font6)
 
-            self.tempPos = tempPos
-            self.background = img
+                self.tempPos: tuple[int, int] = tempPos
+                self.background = img
+                
+        if self.background:
+            return self.background.copy()
+        else:
+            return None
 
-        return self.background.copy()
-
-    def generate_image(self, args=[], kwargs={}):
+    def generate_image(self, args=[], kwargs={}) -> Image.Image | None:
         # get background
-        img = self.getWeatherBackground()
+        img: Image.Image | None = self.getWeatherBackground()
 
-        # add time to background
-        draw = ImageDraw.Draw(img)
-        font = self.getFont("9x18B.pil")
-        time_str = format_time()
-        draw.text((self.tempPos[0] + 30, 24), time_str, font=font)
+        if img:
+            # add time to background
+            draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
+            font = self.getFont("9x18B.pil")
+            time_str: str = format_time()
+            draw.text((self.tempPos[0] + 30, 24), time_str, font=font)
 
         return img

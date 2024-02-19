@@ -1,3 +1,5 @@
+import logging
+from typing import Any, Callable
 import threading
 import time
 import importlib
@@ -11,46 +13,45 @@ from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
 from Matrix.driver.utilz import configure_log, CYAN
 from Matrix.config import is_ipc_enabled
-
-import logging
+from Matrix.models.Commands import ScheduleModel, CommandEntry, ScheduleCatalog
 
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, CYAN, "CmdExec")
 
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
 
-    def __init__(self, schedule_file="schedule.json"):
+    def __init__(self, schedule_file:str | None ="schedule.json"):
         # load commands
-        self.commands = self._load_commands()
+        self.commands:dict[str, Any] = self._load_commands()
 
         # init scheduler and load playlists
         self.scheduler = Scheduler(schedule_file=schedule_file)
 
         self.stop_current = threading.Event()
         self.stop_scheduler = threading.Event()
-        self.schedule_thread = None
+        self.schedule_thread: threading.Thread | None = None
         print("starting schedule thread")
         self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
         self.schedule_thread.start()
 
-        self.audit_log = []
+        self.audit_log:list[CommandExecutionLog] = []
         self.execution_counter = 0
 
-    def _load_commands(self):
-        commands = {}
-        current_directory = self.get_current_directory()
+    def _load_commands(self) -> dict:
+        commands: dict[str, Any] = {}
+        current_directory: str = self.get_current_directory()
         for file in os.listdir(f"{current_directory}/commands"):
             if file.endswith("_cmd.py") and file != "base.py":
                 try:
-                    module_name = file[:-3]
+                    module_name: str = file[:-3]
                     module = importlib.import_module(
                         f"Matrix.driver.commands.{module_name}"
                     )
-                    class_name = f"{file[:-7].capitalize()}Cmd"
+                    class_name: str = f"{file[:-7].capitalize()}Cmd"
                     command_class = getattr(module, class_name)
                     command_instance = command_class()
                     commands[command_instance.name] = command_instance
@@ -60,50 +61,52 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         return commands
 
     @synchronized_method
-    def list_commands(self):
+    def list_commands(self) -> list[str]:
         return list(self.commands.keys())
 
     @synchronized_method
-    def get_commands(self):
-        result = []
+    def get_commands(self) -> list[dict[str, Any]]:
+        result: list[dict[str, Any]] = []
         for name in self.commands:
-            result.append(self.get_command(name))
+            res: dict[str, Any] | None = self.get_command(name)
+            if res:
+                result.append(res)
         return result
 
     @synchronized_method
-    def get_command(self, name):
+    def get_command(self, name)-> dict[str, Any] | None:
         cmd = self.commands.get(name, None)
         if cmd:
             return {
                 "name": cmd.name,
                 "description": cmd.description,
-                "screenshots": cmd.getScreenShots(),
+                "screenshots": cmd.get_screenshots(),
             }
         return None
         
     @synchronized_method
-    def get_command_screenshot(self, name, screenshot_name):
+    def get_command_screenshot(self, name, screenshot_name) -> str | None:
         cmd = self.commands.get(name, None)
         if cmd:
-            return cmd.getScreenShot(screenshot_name)
+            return cmd.get_screenshot(screenshot_name)
         return None
 
-    def _load_schedule(self, name):
+    def _load_schedule(self, name) -> None:
         self.scheduler.load_playlist(name)
 
     @synchronized_method
-    def get_schedule(self, playlist_name=None):
+    def get_schedule(self, playlist_name:str|None=None) -> ScheduleModel | None:
         if playlist_name is None:
             return self.scheduler.get_current_stack()
         else:
             return self.scheduler.get_playlist(playlist_name)
 
     @synchronized_method
-    def list_schedules(self):
+    def list_schedules(self) -> list[str]:
         return self.scheduler.get_playlist_names()
 
     @synchronized_method
-    def set_schedule(self, schedule, playlist_name=None):
+    def set_schedule(self, schedule:ScheduleModel, playlist_name:str|None =None) -> None:
         if playlist_name is not None:
             self.scheduler.save_playlist(schedule, playlist_name)
         else:
@@ -113,9 +116,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def save_schedule(self, schedule_file=None):
         self.scheduler.save(schedule_file=schedule_file)
 
-    def _scheduler_loop(self):
+    def _scheduler_loop(self) -> None:
         while not self.stop_scheduler.is_set():
-            command_entry = self.scheduler.fetch_next_command()
+            command_entry: CommandEntry | None = self.scheduler.fetch_next_command()
             if not self.stop_scheduler.is_set():
                 if command_entry:
                     self._run_command(command_entry)
@@ -123,31 +126,31 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                     time.sleep(BUSY_WAIT)
         print("SCHEDULER EXITED FOR REAL")
 
-    def _add_log(self, log_entry):
+    def _add_log(self, log_entry: CommandExecutionLog) -> None:
         logger.debug(f" [AUDIT] {log_entry}")
         self.audit_log.append(log_entry)
         if len(self.audit_log) > MAX_AUDIT_SIZE:
             try:
-                self.audit_log.remove(0)
+                self.audit_log.pop(0)
             except Exception:
                 pass
 
-    def _log_exec(self, log_entry):
+    def _log_exec(self, log_entry:CommandExecutionLog) -> None:
         self._add_log(log_entry)
         self.execution_counter += 1  # unbounded int in python3
 
-    def get_audit_log(self):
+    def get_audit_log(self) -> list[CommandExecutionLog]:
         return self.audit_log
 
-    def get_execution_count(self):
+    def get_execution_count(self) -> int:
         return self.execution_counter
 
-    def _wait_for_executions(self, num_executions, timeout_seconds=10):
-        t0 = time.time()
-        c0 = self.get_execution_count()
+    def _wait_for_executions(self, num_executions, timeout_seconds=10) -> list[CommandExecutionLog]:
+        t0: float = time.time()
+        c0: int = self.get_execution_count()
         while (time.time() - t0) < timeout_seconds:
             time.sleep(BUSY_WAIT)
-            c_now = self.get_execution_count()
+            c_now: int = self.get_execution_count()
             if c_now - c0 >= num_executions:
                 break
         return self.get_audit_log()[:]
@@ -155,9 +158,13 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def _run_command(self, command_entry):
         try:
             self.stop_current.clear()
-            executable_command = self.commands.get(command_entry.command_name)
+            executable_command: Any | None = self.commands.get(command_entry.command_name)
 
-            t0 = time.time()
+            if not executable_command:
+                print(f"ERROR >> Command {command_entry.command_name} not found")
+                return None
+            
+            t0: float = time.time()
             res, err = executable_command.execute(
                 self.stop_current,
                 command_entry.duration,
@@ -189,7 +196,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self._add_log(log_entry)
 
     @synchronized_method
-    def execute_now(self, command_name, duration, interrupt=False, args=[], kwargs={}):
+    def execute_now(self, command_name:str, duration:float, interrupt=False, args:list=[], kwargs:dict={}) -> None:
         self.scheduler.append_next(
             CommandEntry(
                 command_name=command_name, duration=duration, args=args, kwargs=kwargs
@@ -199,7 +206,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self.stop_current.set()
 
     @synchronized_method
-    def stop(self, interrupt=False):
+    def stop(self, interrupt=False) -> None:
         logger.info("Stop request received")
 
         self.stop_scheduler.set()
@@ -208,10 +215,11 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self.stop_current.set()
             time.sleep(BUSY_WAIT * 5)
         logger.debug("waiting for scheduler thread to exit")
-        self.schedule_thread.join(timeout=2)
+        if self.schedule_thread is not None and self.schedule_thread.is_alive():
+            self.schedule_thread.join(timeout=2)
         logger.info("Scheduler shutdown completed, exiting")
 
-    def get_valid_commands(self):
+    def get_valid_commands(self) -> dict[str, Callable]:
         # make remote commands list explicit
         return {
             "ls": self.list_commands,
@@ -226,13 +234,13 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "stop": self.stop,
         }
 
-    def connected(self):
+    def connected(self) -> bool:
         return True
 
 
 ###################################
 # Helper to manage as singleton
-singleton = None
+singleton:CommandExecutor | None = None
 
 def instance():
     global singleton

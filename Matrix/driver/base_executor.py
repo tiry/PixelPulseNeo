@@ -1,4 +1,6 @@
+import traceback
 import logging
+from typing import Any
 from threading import RLock
 from functools import wraps
 import os
@@ -6,11 +8,11 @@ from typing import List, Dict
 from abc import ABC, abstractmethod
 from Matrix.driver.utilz import configure_log
 from Matrix.models.Commands import ScheduleModel
-import traceback
+
 
 BUFFER_SIZE = 1024 * 10
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, level=logging.INFO)
 
 
@@ -48,7 +50,7 @@ class BaseCommandExecutor(ABC, Base):
         ABC (_type_): _description_
         Base (_type_): _description_
     """
-    
+
     def __init__(self):
         """
         Constructor method
@@ -66,7 +68,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def get_commands(self) -> list(Dict[str,str]):
+    def get_commands(self) -> list[dict[str, Any]]:
         """
         Get all available commands
         
@@ -76,7 +78,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def get_command(self, name: str) -> Dict[str,str]:
+    def get_command(self, name: str) -> Dict[str,Any] | None:
         """
         Get a command by name
         
@@ -110,7 +112,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def get_schedule(self, playlist_name: str) -> ScheduleModel:
+    def get_schedule(self, playlist_name:str|None ) -> ScheduleModel:
         """
         Get a playlist schedule
         
@@ -123,7 +125,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def set_schedule(self, schedule: ScheduleModel, playlist_name: str) -> None:
+    def set_schedule(self, schedule:ScheduleModel, playlist_name:str|None) -> None:
         """
         Set a playlist schedule
         
@@ -134,7 +136,7 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def execute_now(self, command_name: str, duration: int, interrupt: bool = False, args: List = [], kwargs: Dict = {}) -> None:
+    def execute_now(self, command_name: str, duration: float, interrupt: bool = False, args: List = [], kwargs: Dict = {}) -> None:
         """
         Execute a command immediately
         

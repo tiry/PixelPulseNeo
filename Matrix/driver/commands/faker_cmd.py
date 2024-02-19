@@ -3,7 +3,7 @@ import time
 
 
 class FakerCmd(BaseCommand):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__("faker", "Fake command to test input and output")
 
     def render(self, args=[], kwargs={}):
@@ -16,6 +16,6 @@ class FakerCmd(BaseCommand):
             elif mock_type == "EchoArgs":
                 return args
 
-        ts = time.time()
+        ts: float = time.time()
         # print(ts)
         return ts

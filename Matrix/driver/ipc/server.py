@@ -3,29 +3,30 @@ import json
 import socket
 import os
 import sys
-from Matrix.models.encode import json_dumps
-from Matrix.driver.base_executor import synchronized_method
-import threading
-from Matrix.driver.utilz import configure_log, GREEN
 import logging
 import traceback
+import threading
+from typing import Any, Callable
+from Matrix.models.encode import json_dumps
+from Matrix.driver.base_executor import synchronized_method
+from Matrix.driver.utilz import configure_log, GREEN
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, GREEN, "Server")
 
 IPC_PORT = 6000
 
 class IPCServer:
 
-    def method_echo(self, *args, **kwargs):
+    def method_echo(self, *args, **kwargs) -> str:
         return "\n".join(["OK", str(args), str(kwargs)])
 
-    def get_valid_commands(self):
+    def get_valid_commands(self) -> dict[str, Callable]:
         return {"echo": self.method_echo}
 
     @synchronized_method
-    def execute_ipc_request(self, command, args, kwargs):
-        response_wrapper = {"success": False, "error": None, "response": None}
+    def execute_ipc_request(self, command:str, args:list, kwargs:dict) -> dict[str, Any]:
+        response_wrapper:dict[str, Any] = {"success": False, "error": None, "response": None}
 
         # Yeark 
         if len(args)>0:
@@ -40,7 +41,7 @@ class IPCServer:
             response_wrapper["response"] = "pong"
             response_wrapper["success"] = True
         else:
-            cmds = self.get_valid_commands()
+            cmds:dict[str, Callable] = self.get_valid_commands()
             if command in cmds:
                 logger.debug(f"Command :{command} is valid => execute")
                 try:
@@ -58,17 +59,18 @@ class IPCServer:
 
         return response_wrapper
 
-    def handle_client(self, client_socket, addr):
+    def handle_client(self, client_socket, addr) -> None:
         connected=True
+        response_wrapper:dict[str, Any] = {}
         while connected:
-            json_str = client_socket.recv(1024).decode()
+            json_str:str = client_socket.recv(1024).decode()
             if len(json_str) == 0:
                 time.sleep(0.2)
                 continue
             response_wrapper = {"success": False, "error": None, "response": None}
             try:
                 logger.debug(f" received message: {json_str}")
-                command, args, kwargs = json.loads(json_str)
+                command , args, kwargs = json.loads(json_str)
                 if command == "disconnect":
                     logger.debug(" closing connection")
                     client_socket.close()
@@ -89,9 +91,9 @@ class IPCServer:
                 ] = f"Error trying to execute command {command} : {e}"
                 logger.debug(f" while executing command {command} {e}")
 
-            json_response = json_dumps(response_wrapper)
+            json_response: str = json_dumps(response_wrapper)
             logger.debug(f" Send response {json_response}")
-            response_payload = json_response.encode()
+            response_payload: bytes = json_response.encode()
             client_socket.send(response_payload)
 
 

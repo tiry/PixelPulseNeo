@@ -1,43 +1,51 @@
 import os
 import json
-from Matrix.driver.utilz import configure_log
-from datetime import datetime
+import logging
+from typing import List
 import shutil
+from datetime import datetime
+from Matrix.driver.utilz import configure_log
 from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
 from Matrix.models.encode import deepcopy, loadModel
 from Matrix.driver.base_executor import Base
-import logging
-from typing import List
-logger = logging.getLogger(__name__)
+
+logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, level=logging.INFO)
 
 
 class Scheduler(Base):
-    def __init__(self, schedule_file="schedule.json"):
-        self.schedule_file = schedule_file
+    def __init__(self, schedule_file:str | None="schedule.json") -> None:
+        self.schedule_file: str | None = schedule_file
+        self.catalog: ScheduleCatalog | None = None
         if schedule_file is not None:
             logger.debug("loading schedule catalog")
             self.load()
         else:
             self.catalog = ScheduleCatalog()
 
-        self.current_stack = ScheduleModel(commands=[])
+        self.current_stack: ScheduleModel = ScheduleModel(commands=[])
         cname = self.get_next_catalog()
         if cname:
             self.load_playlist(cname)
 
-    def make_empty(self):
+    def make_empty(self) -> None:
         self.catalog = ScheduleCatalog()
         self.current_stack = ScheduleModel(commands=[])
 
-    def get_next_catalog(self):
+    def get_next_catalog(self) -> str | None:
+        if self.catalog is None:
+            return None
+        
         if "default" in self.catalog.playlists.keys():
             return "default"
         return None
 
-    def load(self, schedule_file=None):
+    def load(self, schedule_file:str|None=None) -> ScheduleCatalog | None:
         if not schedule_file:
             schedule_file = self.schedule_file
+        if not schedule_file:
+            logger.error("No schedule file to load")
+            return
         if not os.path.exists(schedule_file):
             schedule_file = self.get_current_directory() + "/" + schedule_file
 
@@ -52,42 +60,48 @@ class Scheduler(Base):
             logger.error(e, exc_info=True)
         return self.catalog
 
-    def save(self, schedule_file=None):
+    def save(self, schedule_file:str | None =None) -> None:
         if not schedule_file:
             schedule_file = self.schedule_file
-
+        if not schedule_file:
+            logger.error("No schedule file to save to")
+            return
+        if self.catalog is None:
+            print("No schedule to save")
+            return None
+        
         if os.path.exists(schedule_file):
             # Create backup directory if it doesn't exist
-            backup_dir = self.get_current_directory() + "/backups"
+            backup_dir: str = self.get_current_directory() + "/backups"
             # logger.debug(f"backup dir = {backup_dir}")
             if not os.path.exists(backup_dir):
                 os.makedirs(backup_dir)
 
             # Get current timestamp for backup file name
-            now = datetime.now().strftime("%Y%m%d%H%M%S")
+            now: str = datetime.now().strftime("%Y%m%d%H%M%S")
 
             # Construct backup file path
-            backup_file = backup_dir + "/schedule_" + now + ".bak"
+            backup_file: str = backup_dir + "/schedule_" + now + ".bak"
 
             # Copy current schedule file to backup
             shutil.copy(schedule_file, backup_file)
 
             # Delete old backups, keeping last 5
-            backup_files = sorted(os.listdir(backup_dir))
+            backup_files: list[str] = sorted(os.listdir(backup_dir))
             if len(backup_files) > 5:
                 for old_file in backup_files[:-5]:
                     os.remove(backup_dir + "/" + old_file)
 
         # Save new schedule
         with open(schedule_file, "w") as file:
-            json_str = self.catalog.json()
-            pretty = json.dumps(json.loads(json_str), indent=4)
+            json_str: str = self.catalog.model_dump_json()
+            pretty: str = json.dumps(json.loads(json_str), indent=4)
             file.write(pretty)
 
-    def get_current_stack(self):
+    def get_current_stack(self) -> ScheduleModel | None:
         return self.current_stack
 
-    def update_current_stack(self, schedule):
+    def update_current_stack(self, schedule) -> None:
         self.current_stack = schedule
 
     def append_next(self, command_entry: CommandEntry):
@@ -112,22 +126,36 @@ class Scheduler(Base):
                 return None
         return self.current_stack.commands.pop(0)
 
-    def create_playlist(self, name):
+    def create_playlist(self, name) -> ScheduleModel | None:
+        if self.catalog is None:
+            return None
         self.catalog.playlists[name] = deepcopy(self.current_stack)
         return self.get_playlist(name)
 
-    def save_playlist(self, schedule, name):
+    def save_playlist(self, schedule, name) -> ScheduleModel | None:
+        if self.catalog is None:
+            return None
         self.catalog.playlists[name] = deepcopy(schedule)
         return self.get_playlist(name)
 
     def get_playlist_names(self) -> List[str]:
+        if self.catalog is None:
+            return []
         return [name for name in self.catalog.playlists.keys()]
 
-    def get_playlists(self):
+    def get_playlists(self) -> list[ScheduleModel]:
+        if self.catalog is None:
+            return []
         return deepcopy(self.catalog.playlists)
 
-    def get_playlist(self, name):
+    def get_playlist(self, name) -> ScheduleModel | None:
+        if self.catalog is None:
+            return None
         return self.catalog.playlists.get(name, None)
 
-    def load_playlist(self, name):
-        self.current_stack = ScheduleModel(commands=self.get_playlist(name).commands[:])
+    def load_playlist(self, name) -> None:
+        playlist: ScheduleModel | None = self.get_playlist(name)
+        if playlist is None:
+            logger.error(f"Playlist {name} not found")
+            return None
+        self.current_stack = ScheduleModel(commands=playlist.commands[:])

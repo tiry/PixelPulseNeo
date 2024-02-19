@@ -1,29 +1,31 @@
 import time
 import json
 import socket
+from typing import Any
 import subprocess
 import sys
+import traceback
 from pathlib import Path
 import argparse
+import logging
+import signal
+
 from Matrix.driver.base_executor import BaseCommandExecutor, BUFFER_SIZE
 from Matrix.driver.ipc.server import IPC_PORT
 from Matrix.models.Commands import ScheduleModel
-import traceback
 from Matrix.driver.utilz import configure_log, BLUE
-import logging
-import signal
 from Matrix.models.encode import json_dumps
 from Matrix.driver.base_executor import synchronized_method
-import traceback
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, BLUE, "Client")
 
 
 class IPCClient:
-    def __init__(self, start_server_if_needed=True):
-        self.server_process = None
-        self.client = None 
+    
+    def __init__(self, start_server_if_needed:bool=True) -> None:
+        self.server_process: subprocess.Popen | None = None
+        self.client: socket.socket | None = None 
         try:
             self.connect()
         except ConnectionRefusedError as e:
@@ -36,42 +38,46 @@ class IPCClient:
             else:
                 logger.info("start_server_if_needed=False => we can not continue, exiting")
 
-    def get_shell_command(self):
+    def get_shell_command(self) -> str:
         return "python -m Matrix.driver.ipc.server"
 
-    def start_server_process(self):
-        current_dir = Path(__file__).parent
+    def start_server_process(self) -> None:
+        current_dir: Path = Path(__file__).parent
         # Get the root
-        root_dir = current_dir.parent.parent
+        root_dir: Path = current_dir.parent.parent
 
-        cmd = self.get_shell_command()
-        cmd_line = f'export PYTHONPATH="{root_dir}/"; {cmd}'
+        cmd:str = self.get_shell_command()
+        cmd_line: str = f'export PYTHONPATH="{root_dir}/"; {cmd}'
 
         logger.debug(f"shell command = {cmd_line}")
 
         self.server_process = subprocess.Popen(cmd_line, shell=True)
         time.sleep(1)  # Wait for the server to start
 
-    def connect(self):
+    def connect(self) -> None:
         # connect
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client_socket.connect(("localhost", IPC_PORT))
         self.client = client_socket
         logger.debug(f"Connected via socket {client_socket}")
 
-    def disconnect(self):
+    def disconnect(self) -> None:
         if self.client:
             logger.debug("Disconnect from server")
             self.send_command("disconnect")
             self.client.close()
 
-    def send_command(self, command, *args, **kwargs):
+    def send_command(self, command:str, *args, **kwargs) -> Any:
         p = [command, args, kwargs]
-        json_call = json_dumps(p)
+        json_call: str = json_dumps(p)
 
+        if not self.client:
+            print(f"No client socket to send command {command}")
+            return None
+        
         logger.debug(f"Send command call : {json_call}")
         self.client.send(json_call.encode())
-        response = None
+        response : str | None = None
         response = self.client.recv(BUFFER_SIZE).decode()
 
         logger.debug(f"received response : {response}")
@@ -86,10 +92,11 @@ class IPCClient:
 
         return json_response
 
-    def shutdown_server(self):
+    def shutdown_server(self) -> None:
         logger.debug("Send Exit command to server and disconnecting")
         self.send_command("exit")
-        self.client.close()
+        if self.client:
+            self.client.close()
 
     def kill_server(self):
         self.disconnect()
@@ -98,57 +105,58 @@ class IPCClient:
 
 
 class IPCClientExecutor(IPCClient, BaseCommandExecutor):
-    def __init__(self, run_as_root=False, start_server_if_needed=True):
-        self.run_as_root = run_as_root
+    
+    def __init__(self, run_as_root:bool=False, start_server_if_needed:bool=True):
+        self.run_as_root: bool = run_as_root
         IPCClient.__init__(self, start_server_if_needed=start_server_if_needed)
         BaseCommandExecutor.__init__(self)
 
-    def get_shell_command(self):
-        prefix = ""
+    def get_shell_command(self) -> str:
+        prefix:str = ""
         if self.run_as_root:
             prefix = "sudo "
 
         return f"{prefix}python -m Matrix.driver.executor --scheduler --listen"
 
     @synchronized_method
-    def send_command(self, command, *args, **kwargs):
-        json_response = IPCClient.send_command(self, command, *args, **kwargs)
-        response = json_response["response"]
+    def send_command(self, command, *args, **kwargs) -> Any | None:
+        json_response:Any = IPCClient.send_command(self, command, *args, **kwargs)
+        response:Any = json_response["response"]
         if response:
             return response
         else:
             return None
         
     @synchronized_method
-    def list_commands(self):
-        return self.send_command("ls")
+    def list_commands(self) -> list[str]:
+        return self.send_command("ls") # type: ignore
 
     @synchronized_method
-    def get_commands(self):
+    def get_commands(self) ->list[dict[str, Any]] | None:
         return self.send_command("get_commands")
 
     @synchronized_method
-    def get_command(self, name):
+    def get_command(self, name) -> dict[str, Any] | None:
         return self.send_command("get_command", name)
 
     @synchronized_method
-    def get_command_screenshot(self, name, screenshot_name):
+    def get_command_screenshot(self, name, screenshot_name) -> Any | None:
         return self.send_command("get_command_screenshot", name, screenshot_name)
 
     @synchronized_method
-    def list_schedules(self):
-        return self.send_command("list_schedules")
+    def list_schedules(self) -> list[str]:
+        return self.send_command("list_schedules") # type:ignore
 
     @synchronized_method
-    def get_schedule(self, playlist_name):
+    def get_schedule(self, playlist_name:str|None) -> ScheduleModel | None:
         return self.send_command("get_schedule", playlist_name)
 
     @synchronized_method
-    def set_schedule(self, schedule, playlist_name):
+    def set_schedule(self, schedule:ScheduleModel, playlist_name:str|None) -> Any | None:
         return self.send_command("set_schedule", schedule, playlist_name)
 
     @synchronized_method
-    def execute_now(self, command_name, duration, interrupt=False, args=[], kwargs={}):
+    def execute_now(self, command_name:str, duration:float, interrupt=False, args:list=[], kwargs:dict={}) -> Any | None:
         kwargs["interrupt"] = interrupt
         kwargs["duration"] = duration
         return self.send_command(
@@ -156,15 +164,15 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
         )
     
     @synchronized_method
-    def save_schedule(self):
+    def save_schedule(self) -> Any | None:
         return self.send_command("save_schedule")
 
     @synchronized_method
-    def stop(self, interrupt=False):
-        res = self.send_command("stop", interrupt=interrupt)
+    def stop(self, interrupt=False) -> Any | None:
+        res: Any | None = self.send_command("stop", interrupt=interrupt)
         return res
     
-    def connected(self):
+    def connected(self) -> bool:
         if self.client is None:
             return False
         else:
@@ -174,21 +182,21 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
 
 class InteractiveRemoteCLI:
-    def __init__(self):
+    def __init__(self) -> None:
         self.client = IPCClientExecutor(start_server_if_needed=False)
         signal.signal(signal.SIGTERM, self.shutdown_cleanly)
         signal.signal(signal.SIGINT, self.shutdown_cleanly)
         signal.signal(signal.SIGQUIT, self.shutdown_cleanly)
 
-    def run(self):
+    def run(self) -> None:
         try:
             while True:
                 cmd = input("remote cmd executor>")  # Python 3
                 # print(cmd)
                 res = None
-                cmds = cmd.split(" ")
-                cmd = cmds[0]
-                args = cmds[1:]
+                cmds: list[str] = cmd.split(" ")
+                cmd: str = cmds[0]
+                args: list[str] = cmds[1:]
                 if cmd == "exit":
                     self.client.disconnect()
                     break
@@ -200,7 +208,7 @@ class InteractiveRemoteCLI:
                         continue
                     else:
                         if args[0] == "commands":
-                            res = self.client.list_commands()
+                            res: Any | None = self.client.list_commands()
                         elif args[0] == "schedules":
                             res = self.client.list_schedules()
                         else:
@@ -220,20 +228,20 @@ class InteractiveRemoteCLI:
                             "missing argument: run <command_name> <duration(=10)> <interrupt(=False)>"
                         )
                         continue
-                    cmd_name = args[0]
+                    cmd_name: str = args[0]
                     duration = 10
                     interrupt = False
                     if len(args) > 1:
                         duration = int(args[1])
                     if len(args) > 2:
-                        interrupt = args[2].lower() == "true"
+                        interrupt: bool = args[2].lower() == "true"
                     res = self.client.execute_now(cmd_name, duration, interrupt)
                 elif cmd == "set_schedule":
                     if len(args) < 2:
                         print("missing argument: set_schedule <schedule_name> <json>")
                         continue
-                    schedule_name = args[0]
-                    data = " ".join(args[1:])
+                    schedule_name: str = args[0]
+                    data: str = " ".join(args[1:])
                     data = data.replace("'", '"')
                     json_data = json.loads(data)
                     schedule = ScheduleModel(**json_data)
