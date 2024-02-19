@@ -63,10 +63,16 @@ module box(width, height, depth, thickness,
         translate([t, -e]) panel2d(2*t, t);
       }
     } else {
-      cut_top() panel2d(w, d);
+      cut_top() 
+          panel2d(w, d);
+          
     }
   }
-  module bottom() { cut_bottom() panel2d(w, d); }
+  module bottom() { cut_bottom() 
+      difference() {
+      panel2d(w, d);
+         translate([width/2, 2*margin +height /2 ]) square([0.7*width, 0.7 * height], true);
+      } }
   module ears_outer(is_front) {
     translate([is_front ? 0 : w, h]) 
       circle(ears_radius, [0, 0]);
@@ -87,8 +93,8 @@ module box(width, height, depth, thickness,
       }
       union()
       { // 11.3 // 9
-      translate([50, 50 ]) circle(d = 40);
-      translate([width-50, 50 ]) circle(d = 40);
+      translate([50, 50 ]) circle(d = 30, $fn=24);
+      translate([width-50, 50 ]) circle(d = 30, $fn=24);
       
       translate([width/2, height /2 + 30 ]) square([0.7*width, 20], true);
           
@@ -143,11 +149,18 @@ module box(width, height, depth, thickness,
       { // 11.3 // 9
         holes_distance = 113;
         for (i = [ 0 : 3 ]) {
-            translate([margin + (i*2+1)* panel_size/2,panel_size/2 + margin + holes_distance/2]) circle(d = bolt_dia);
-            translate([margin + (i*2+1)* panel_size/2,panel_size/2 + margin - holes_distance/2]) circle(d = bolt_dia);
+            translate([margin + (i*2+1)* panel_size/2,panel_size/2 + margin + holes_distance/2]) circle(d = bolt_dia, $fn=24);
+            translate([margin + (i*2+1)* panel_size/2,panel_size/2 + margin - holes_distance/2]) circle(d = bolt_dia, $fn=24);
             
             translate([margin + (i*2+1)* panel_size/2,panel_size/2 + margin] ) square([90,50], true);
-                    
+                
+            // 27 mm vertical  // 114 horizontal
+            holes_space_h=114;
+            holes_space_v=89;
+            translate([margin + (i*2+1)* panel_size/2 - holes_space_h/2, panel_size/2 + margin + holes_space_v/2]) circle(d = bolt_dia, $fn=24);
+            translate([margin + (i*2+1)* panel_size/2 + holes_space_h/2, panel_size/2 + margin + holes_space_v/2]) circle(d = bolt_dia, $fn=24);
+             translate([margin + (i*2+1)* panel_size/2 - holes_space_h/2, panel_size/2 + margin - holes_space_v/2]) circle(d = bolt_dia, $fn=24);
+            translate([margin + (i*2+1)* panel_size/2 + holes_space_h/2, panel_size/2 + margin - holes_space_v/2]) circle(d = bolt_dia, $fn=24);
         }
       }
 /*      if (len(holes) > 0)
