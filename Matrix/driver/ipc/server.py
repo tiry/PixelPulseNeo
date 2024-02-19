@@ -16,8 +16,8 @@ configure_log(logger, GREEN, "Server")
 
 IPC_PORT = 6000
 
-class IPCServer:
 
+class IPCServer:
     def method_echo(self, *args, **kwargs) -> str:
         return "\n".join(["OK", str(args), str(kwargs)])
 
@@ -25,14 +25,20 @@ class IPCServer:
         return {"echo": self.method_echo}
 
     @synchronized_method
-    def execute_ipc_request(self, command:str, args:list, kwargs:dict) -> dict[str, Any]:
-        response_wrapper:dict[str, Any] = {"success": False, "error": None, "response": None}
+    def execute_ipc_request(
+        self, command: str, args: list, kwargs: dict
+    ) -> dict[str, Any]:
+        response_wrapper: dict[str, Any] = {
+            "success": False,
+            "error": None,
+            "response": None,
+        }
 
-        # Yeark 
-        if len(args)>0:
-            if type(args[-1])==dict and len(kwargs)==0:
+        # Yeark
+        if len(args) > 0:
+            if type(args[-1]) == dict and len(kwargs) == 0: # pylint: ignore
                 kwargs = args.pop()
-                if type(args[-1])==list and len(args[-1])==0:
+                if type(args[-1]) == list and len(args[-1]) == 0:
                     args.pop()
 
         logger.debug(f" Execute command {command} {args} {kwargs}")
@@ -41,7 +47,7 @@ class IPCServer:
             response_wrapper["response"] = "pong"
             response_wrapper["success"] = True
         else:
-            cmds:dict[str, Callable] = self.get_valid_commands()
+            cmds: dict[str, Callable] = self.get_valid_commands()
             if command in cmds:
                 logger.debug(f"Command :{command} is valid => execute")
                 try:
@@ -60,17 +66,17 @@ class IPCServer:
         return response_wrapper
 
     def handle_client(self, client_socket, addr) -> None:
-        connected=True
-        response_wrapper:dict[str, Any] = {}
+        connected = True
+        response_wrapper: dict[str, Any] = {}
         while connected:
-            json_str:str = client_socket.recv(1024).decode()
+            json_str: str = client_socket.recv(1024).decode()
             if len(json_str) == 0:
                 time.sleep(0.2)
                 continue
             response_wrapper = {"success": False, "error": None, "response": None}
             try:
                 logger.debug(f" received message: {json_str}")
-                command , args, kwargs = json.loads(json_str)
+                command, args, kwargs = json.loads(json_str)
                 if command == "disconnect":
                     logger.debug(" closing connection")
                     client_socket.close()
@@ -78,7 +84,7 @@ class IPCServer:
                     break
                 elif command == "exit":
                     logger.debug(" Server shuting down")
-                    self.shutdown_requested=True
+                    self.shutdown_requested = True
                     self.server_socket.shutdown(socket.SHUT_RD)
                     client_socket.close()
                     sys.exit()
@@ -96,7 +102,6 @@ class IPCServer:
             response_payload: bytes = json_response.encode()
             client_socket.send(response_payload)
 
-
     def serve(self):
         # XXX switch to AF_UNIX
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -109,16 +114,18 @@ class IPCServer:
             user = "root"
         logger.debug(f" IPC Server running as {user} and waiting for commands...")
 
-        client_id=0
+        client_id = 0
 
         self.server_socket = server_socket
-        self.shutdown_requested=False
+        self.shutdown_requested = False
 
-        while not  self.shutdown_requested:
+        while not self.shutdown_requested:
             logger.debug(" wait for incomming connection request")
             client_socket, addr = server_socket.accept()
-            client_id+=1
-            thread = threading.Thread(target=self.handle_client, args=(client_socket, addr))
+            client_id += 1
+            thread = threading.Thread(
+                target=self.handle_client, args=(client_socket, addr)
+            )
             thread.start()
             print(f"client {client_id} handled by thread {thread}")
             time.sleep(0.1)

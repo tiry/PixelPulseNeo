@@ -70,18 +70,18 @@ class TestSchedule(unittest.TestCase):
         scheduler = Scheduler(schedule_file=None)
         schedule: ScheduleModel | None = scheduler.get_current_stack()
         self.assertIsNotNone(schedule)
-        self.assertEqual(0, len(schedule.commands)) # type: ignore
-        self.assertEqual(0, len(schedule.conditions)) # type: ignore
+        self.assertEqual(0, len(schedule.commands))  # type: ignore
+        self.assertEqual(0, len(schedule.conditions))  # type: ignore
 
         scheduler.append(CommandEntry(command_name="cmd01"))
-        self.assertEqual(1, len(schedule.commands)) # type: ignore
+        self.assertEqual(1, len(schedule.commands))  # type: ignore
         scheduler.append(CommandEntry(command_name="cmd02"))
-        self.assertEqual(2, len(schedule.commands)) # type: ignore
-        self.assertEqual("cmd01", schedule.commands[0].command_name) # type: ignore 
+        self.assertEqual(2, len(schedule.commands))  # type: ignore
+        self.assertEqual("cmd01", schedule.commands[0].command_name)  # type: ignore
 
         scheduler.append_next(CommandEntry(command_name="cmd00"))
-        self.assertEqual(3, len(schedule.commands)) # type: ignore
-        self.assertEqual("cmd00", schedule.commands[0].command_name) # type: ignore
+        self.assertEqual(3, len(schedule.commands))  # type: ignore
+        self.assertEqual("cmd00", schedule.commands[0].command_name)  # type: ignore
 
         # print(f"current schedule = {schedule}")
 
@@ -102,25 +102,25 @@ class TestSchedule(unittest.TestCase):
         # print(f"playlists => {playlists}")
 
         schedule = scheduler.get_playlist(PLAYLIST_NAME)
-        self.assertEqual(3, len(schedule.commands)) # type: ignore
-        self.assertEqual("cmd00", schedule.commands[0].command_name) # type: ignore
+        self.assertEqual(3, len(schedule.commands))  # type: ignore
+        self.assertEqual("cmd00", schedule.commands[0].command_name)  # type: ignore
 
         cmd = scheduler.fetch_next_command()
 
-        self.assertEqual("cmd00", cmd.command_name) # type: ignore
+        self.assertEqual("cmd00", cmd.command_name)  # type: ignore
         # did not modify the catalog entry
-        self.assertEqual(3, len(schedule.commands)) # type: ignore
+        self.assertEqual(3, len(schedule.commands))  # type: ignore
 
         # did modify the current playlist
         schedule = scheduler.get_current_stack()
-        self.assertEqual(2, len(schedule.commands)) # type: ignore
-        self.assertEqual("cmd01", schedule.commands[0].command_name) # type: ignore
+        self.assertEqual(2, len(schedule.commands))  # type: ignore
+        self.assertEqual("cmd01", schedule.commands[0].command_name)  # type: ignore
 
         # reload from catalog: should be restored
         scheduler.load_playlist(PLAYLIST_NAME)
         schedule = scheduler.get_current_stack()
-        self.assertEqual(3, len(schedule.commands)) # type: ignore
-        self.assertEqual("cmd00", schedule.commands[0].command_name) # type: ignore
+        self.assertEqual(3, len(schedule.commands))  # type: ignore
+        self.assertEqual("cmd00", schedule.commands[0].command_name)  # type: ignore
 
         scheduler = Scheduler(schedule_file=None)
         schedule = scheduler.get_current_stack()
@@ -171,9 +171,9 @@ class TestSchedule(unittest.TestCase):
         # print(f"stack commands {stack.commands}")
 
         self.assertIsNotNone(stack)
-        self.assertEqual(len(stack.commands), 2) # type: ignore
-        self.assertEqual("mta", stack.commands[0].command_name) # type: ignore
-        self.assertEqual("meteo", stack.commands[1].command_name) # type: ignore
+        self.assertEqual(len(stack.commands), 2)  # type: ignore
+        self.assertEqual("mta", stack.commands[0].command_name)  # type: ignore
+        self.assertEqual("meteo", stack.commands[1].command_name)  # type: ignore
 
     def test_loop_playlists(self):
         schedule_file = self.__class__.temp_file_name
@@ -182,21 +182,21 @@ class TestSchedule(unittest.TestCase):
         self.assertEqual(len(playlists), 2)
 
         stack = scheduler.get_current_stack()
-        self.assertEqual(len(stack.commands), 2) # type: ignore
+        self.assertEqual(len(stack.commands), 2)  # type: ignore
 
         self.assertEqual(len(scheduler.current_stack.commands), 2)
 
         cmd = scheduler.fetch_next_command()
-        self.assertEqual("mta", cmd.command_name) # type: ignore
+        self.assertEqual("mta", cmd.command_name)  # type: ignore
         self.assertEqual(len(scheduler.current_stack.commands), 1)
 
         cmd = scheduler.fetch_next_command()
-        self.assertEqual("meteo", cmd.command_name) # type: ignore
+        self.assertEqual("meteo", cmd.command_name)  # type: ignore
         self.assertEqual(len(scheduler.current_stack.commands), 0)
 
         # it shoud now loop back
         cmd = scheduler.fetch_next_command()
-        self.assertEqual("mta", cmd.command_name) # type: ignore
+        self.assertEqual("mta", cmd.command_name)  # type: ignore
 
 
 if __name__ == "__main__":

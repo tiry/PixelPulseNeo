@@ -80,7 +80,9 @@ def hex_to_rgb(hex_color) -> tuple[int, int, int]:
     return (r, g, b)
 
 
-_palette : list | None = None
+_palette: list | None = None
+
+
 def getPalette() -> list[str]:
     global _palette
     if not _palette:
@@ -120,8 +122,8 @@ class ConwayCmd(PictureScrollBaseCmd):
         if len(self.models) > self.tailLength:
             self.models.pop(0)
 
-    def generate_image(self, args:list=[], kwargs:dict={}) -> Image.Image:
-        width, height= self.models[-1].shape
+    def generate_image(self, args: list = [], kwargs: dict = {}) -> Image.Image:
+        width, height = self.models[-1].shape
         img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
 
         for idx, model in enumerate(self.models):

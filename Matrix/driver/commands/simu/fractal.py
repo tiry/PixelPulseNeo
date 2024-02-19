@@ -52,11 +52,10 @@ def render(xmin, xmax, ymin, ymax, max):
     pixel_density = 64 / (ymax - ymin)
     c = complex_matrix(xmin, xmax, ymin, ymax, pixel_density)
     print(c.shape)
-    w = c.shape[0]
-    l = c.shape[1]
-    res = np.arange(w * l).reshape((w, l))
-    for x in range(0, w):
-        for y in range(0, l):
+    width, height  = c.shape
+    res = np.arange(width * height).reshape((width, height))
+    for x in range(0, width):
+        for y in range(0, height):
             res[x][y] = is_stable(c[x][y], max)
     return res
 

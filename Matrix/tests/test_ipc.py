@@ -5,9 +5,7 @@ from Matrix.driver.ipc.client import IPCClient
 
 
 class TestIPCServer(unittest.TestCase):
-
     def test_execute_server_command(self):
-    
         server = IPCServer()
         # Call with valid command
         response = server.execute_ipc_request("ping", [], {})
@@ -15,18 +13,17 @@ class TestIPCServer(unittest.TestCase):
         self.assertEqual("pong", response["response"])
 
         # Call dynamic command
-        pparams:list = [1, 2, 3]
+        pparams: list = [1, 2, 3]
         nparams: dict[str, int] = {"a": 7}
         response: dict[str, Any] = server.execute_ipc_request("echo", pparams, nparams)
         self.assertTrue(response["success"])
-        res:Any = response["response"].split("\n")
+        res: Any = response["response"].split("\n")
         self.assertEqual("OK", res[0])
         self.assertEqual(str(tuple(pparams)), res[1])
         self.assertEqual(str(nparams), res[2])
-        self.assertTrue(f"{str(tuple(pparams))}" in str(response["response"])) #type: ignore
+        self.assertTrue(f"{str(tuple(pparams))}" in str(response["response"]))  # type: ignore
 
     def test_invalid_command(self):
-    
         server = IPCServer()
 
         # Call with invalid command
@@ -36,7 +33,6 @@ class TestIPCServer(unittest.TestCase):
 
 
 class TestIPCClientServer(unittest.TestCase):
-
     def test_execute_server_command(self):
         client = IPCClient()
 
@@ -47,9 +43,9 @@ class TestIPCClientServer(unittest.TestCase):
         # Call dynamic command
         pparams: list[int] = [1, 2, 3]
         nparams: dict[str, int] = {"a": 7}
-        response:Any = client.send_command("echo", *pparams, **nparams)
+        response: Any = client.send_command("echo", *pparams, **nparams)
         self.assertTrue(response["success"])
-        res:Any = response["response"].split("\n")
+        res: Any = response["response"].split("\n")
         self.assertEqual("OK", res[0])
         self.assertEqual(str(tuple(pparams)), res[1])
         self.assertEqual(str(nparams), res[2])
@@ -57,7 +53,7 @@ class TestIPCClientServer(unittest.TestCase):
         # client.send_command("dummy2", 1, foo ="beer")
 
         client.send_command("exit")
-        #client.disconnect()
+        # client.disconnect()
 
 
 if __name__ == "__main__":

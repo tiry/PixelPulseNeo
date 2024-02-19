@@ -44,15 +44,16 @@ def add_key(url) -> str:
     return add_parameter(url, "API_KEY", get_API_key())
 
 
-def get_from_cache_or_url(url:str, cache_file:str, format:str="json", refresh=False) -> Any:
-    
+def get_from_cache_or_url(
+    url: str, cache_file: str, format: str = "json", refresh=False
+) -> Any:
     dir_path: str = os.path.dirname(os.path.realpath(__file__))
 
     cache_file = f"{dir_path}/{cache_file}"
     if os.path.isfile(cache_file) and not refresh:
         # print("get Data from cache")
         with open(cache_file) as cache:
-            data_txt:Any = io.StringIO(cache.read())
+            data_txt: Any = io.StringIO(cache.read())
     else:
         # print("get Data from url")
         url = add_key(url)
@@ -72,12 +73,14 @@ def get_from_cache_or_url(url:str, cache_file:str, format:str="json", refresh=Fa
     return None
 
 
-def get_routes(refresh=False)-> dict[str, dict[str,str]]:
-    routes:dict[str,dict[str,str]] = {}
-    tree:ElementTree.ElementTree = get_from_cache_or_url(ROUTES_URL, ROUTES_CACHE, "xml", refresh)
+def get_routes(refresh=False) -> dict[str, dict[str, str]]:
+    routes: dict[str, dict[str, str]] = {}
+    tree: ElementTree.ElementTree = get_from_cache_or_url(
+        ROUTES_URL, ROUTES_CACHE, "xml", refresh
+    )
     root: ElementTree.Element = tree.getroot()
     for route in root.findall("./data/list/route"):
-        r_data:dict[str,str] = {}
+        r_data: dict[str, str] = {}
         for tag in route:
             if tag.text:
                 r_data[tag.tag] = tag.text
@@ -96,7 +99,7 @@ def find_route(name, refresh=False) -> str | None:
     return None
 
 
-def get_stops_for_route(route:str | None, refresh=False) -> Any | None:
+def get_stops_for_route(route: str | None, refresh=False) -> Any | None:
     route = find_route(route)
     if not route:
         return None
@@ -109,11 +112,11 @@ def get_stops_for_route(route:str | None, refresh=False) -> Any | None:
     return json_data["references"]["stops"]
 
 
-def find_stops(route:str, name:str, refresh=False) -> list[dict[str, str]] | None:
+def find_stops(route: str, name: str, refresh=False) -> list[dict[str, str]] | None:
     stops: Any | None = get_stops_for_route(route, refresh)
     if not stops:
         return None
-    matches:list[dict[str,str]] = []
+    matches: list[dict[str, str]] = []
     name = urllib.parse.quote(name)
     for stop in stops:
         if name.lower() in stop["name"].lower():
@@ -128,13 +131,13 @@ def find_stops(route:str, name:str, refresh=False) -> list[dict[str, str]] | Non
     return matches
 
 
-def extract_time(time_str:str) -> str:
+def extract_time(time_str: str) -> str:
     time_str = time_str.split("T")[1]
     t_comp: list[str] = time_str.split(":")
     return f"{t_comp[0]}:{t_comp[1]}"
 
 
-def get_stop_info(route:str |None , stop_name:str) -> dict[str, Any] | None:
+def get_stop_info(route: str | None, stop_name: str) -> dict[str, Any] | None:
     route = find_route(route)
     if not route:
         print("Unable to find route")
@@ -144,7 +147,7 @@ def get_stop_info(route:str |None , stop_name:str) -> dict[str, Any] | None:
         print(f"Unable to find stops for route = {route}")
         return None
 
-    infos:dict[str,Any] = {}
+    infos: dict[str, Any] = {}
     for stop in stops:
         stop_id: str = stop["id"]
         url: str = add_parameter(STOPS_MONITORING_URL, "STOP_ID", stop_id)
@@ -154,13 +157,15 @@ def get_stop_info(route:str |None , stop_name:str) -> dict[str, Any] | None:
         response: requests.Response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
-            monitoring_data = data["Siri"]["ServiceDelivery"]["StopMonitoringDelivery"][0]
+            monitoring_data = data["Siri"]["ServiceDelivery"]["StopMonitoringDelivery"][
+                0
+            ]
             # print(f"CALL {monitoring_data}")
             if "MonitoredStopVisit" not in monitoring_data:
                 infos["???"] = ["???"]
             else:
                 stop_data: list[dict] = monitoring_data["MonitoredStopVisit"]
-                #print(stop_data)
+                # print(stop_data)
                 for entry in stop_data:
                     entry = entry["MonitoredVehicleJourney"]
                     direction = entry["DestinationName"]

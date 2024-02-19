@@ -12,7 +12,7 @@ class CommandEntry(BaseModel):
 
 class CommandExecutionLog(BaseModel):
     command: CommandEntry
-    result: str|None
+    result: str | None
     error: Optional[str] = None
     execution_date: Optional[str] = datetime.now().strftime("%d/%m/%Y")
     execution_time: Optional[str] = datetime.now().strftime("%H:%M:%S")

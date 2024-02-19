@@ -1,10 +1,10 @@
 from flask_restx import fields, Model
 from pydantic import BaseModel
-from typing import get_type_hints, List, Dict, Optional, Type, Tuple, Union, get_args
 
 
 # XXX this code is broken because of a version missmatch on pydntic
 # => to be revisited
+
 
 def pydantic_to_restx_model(api, pydantic_model: BaseModel) -> Model:
     command = api.model(

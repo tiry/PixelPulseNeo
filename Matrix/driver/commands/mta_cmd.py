@@ -1,6 +1,5 @@
 import threading
 import argparse
-import time
 from PIL import Image
 from PIL import ImageDraw
 from Matrix.driver.commands.base import (
@@ -11,7 +10,6 @@ from Matrix.driver.commands.base import (
 )
 import Matrix.driver.commands.mta.route as route
 import Matrix.driver.commands.mta.bus as bus
-
 
 
 def truncate(s, length):
@@ -38,16 +36,16 @@ class MtaCmd(PictureScrollBaseCmd):
         self.tempoframes = PAUSED_FRAMES
         self.pause_duration = PAUSED_FRAMES
         self.direction = -1
-        self.next_trains:dict | None = None
-        self.next_buses:dict | None = None
+        self.next_trains: dict | None = None
+        self.next_buses: dict | None = None
 
-    def update(self, args:list=[], kwargs:dict={}) -> None:
+    def update(self, args: list = [], kwargs: dict = {}) -> None:
         next_trains: dict = route.getNextTrainsToward(
             Direction="N", Routes=["F", "G"], Station="Carroll"
         )
         # print(f"Next trains {next_trains}")
         self.next_trains = next_trains
-        self.next_buses  = bus.get_stop_info("B61", "Carroll")
+        self.next_buses = bus.get_stop_info("B61", "Carroll")
         # print(f"Next Buses {self.next_buses}")
         super().update(args, kwargs)
 
@@ -55,7 +53,7 @@ class MtaCmd(PictureScrollBaseCmd):
             self.tempoframes = int(kwargs["pause_frames"])
             self.pause_duration: int = self.tempoframes
 
-    def generate_image(self, args:list=[], kwargs:dict={}) -> Image.Image:
+    def generate_image(self, args: list = [], kwargs: dict = {}) -> Image.Image:
         width: int = get_total_matrix_width()
         height: int = get_total_matrix_height() * 2
 
@@ -70,7 +68,9 @@ class MtaCmd(PictureScrollBaseCmd):
         # display train info
         if self.next_trains:
             for train in self.next_trains:
-                icon:Image.Image = Image.open(get_icons_dir(f"mta/png/{train}.png")).convert("RGB")
+                icon: Image.Image = Image.open(
+                    get_icons_dir(f"mta/png/{train}.png")
+                ).convert("RGB")
                 icon = icon.resize((25, 25), Image.Resampling.LANCZOS)
 
                 img.paste(icon, (7, 4 + idx * 32))
@@ -122,8 +122,6 @@ class MtaCmd(PictureScrollBaseCmd):
                 self.speed_y = 0
             elif self.ypos == 0:
                 self.speed_y = 0
-
-
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import time
 from Matrix.driver.commands.base import BaseCommand
 
+
 class TimeCmd(BaseCommand):
     def __init__(self) -> None:
         super().__init__("time", "Displays the current time")

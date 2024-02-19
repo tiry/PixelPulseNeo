@@ -5,9 +5,10 @@ import datetime
 from Matrix.driver.executor import CommandExecutor
 
 
-commands_to_skip=['scrolltext', 'matrix', 'time', 'faker']
+commands_to_skip = ["scrolltext", "matrix", "time", "faker"]
 
-def document_commands(cmdlist:list[dict[str, Any]]):
+
+def document_commands(cmdlist: list[dict[str, Any]]):
     lines = []
 
     lines.append("# Commands")
@@ -23,8 +24,10 @@ def document_commands(cmdlist:list[dict[str, Any]]):
         folder = os.path.dirname(os.path.realpath(__file__))
         ReadMePath = f"{folder}/driver/commands/{cmd['name']}/ReadMe.md"
         if os.path.exists(ReadMePath):
-            lines.append(f'\n\nMore details and configuration, see [{cmd["name"]}/ReadMe.md]({cmd["name"]}/ReadMe.md)')
-    
+            lines.append(
+                f'\n\nMore details and configuration, see [{cmd["name"]}/ReadMe.md]({cmd["name"]}/ReadMe.md)'
+            )
+
         for screenshot in cmd["screenshots"]:
             lines.append(f'\n<img src="screenshots/{screenshot}"/>')
 
@@ -55,4 +58,3 @@ if __name__ == "__main__":
         file.write(ReadMeContent)
 
     executor.stop()
-

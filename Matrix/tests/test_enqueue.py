@@ -116,7 +116,7 @@ class TestEnqueeCmd(unittest.TestCase):
         executor._wait_for_executions(2)
 
         schedule: ScheduleModel | None = executor.get_schedule()
-        #print(schedule)
+        # print(schedule)
         self.assertIsNotNone(schedule)
 
         log: list[CommandExecutionLog] = executor.get_audit_log()

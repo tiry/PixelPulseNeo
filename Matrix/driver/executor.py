@@ -13,7 +13,7 @@ from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
 from Matrix.driver.utilz import configure_log, CYAN
 from Matrix.config import is_ipc_enabled
-from Matrix.models.Commands import ScheduleModel, CommandEntry, ScheduleCatalog
+from Matrix.models.Commands import ScheduleModel
 
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
@@ -23,10 +23,9 @@ configure_log(logger, CYAN, "CmdExec")
 
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
-
-    def __init__(self, schedule_file:str | None ="schedule.json"):
+    def __init__(self, schedule_file: str | None = "schedule.json"):
         # load commands
-        self.commands:dict[str, Any] = self._load_commands()
+        self.commands: dict[str, Any] = self._load_commands()
 
         # init scheduler and load playlists
         self.scheduler = Scheduler(schedule_file=schedule_file)
@@ -38,7 +37,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
         self.schedule_thread.start()
 
-        self.audit_log:list[CommandExecutionLog] = []
+        self.audit_log: list[CommandExecutionLog] = []
         self.execution_counter = 0
 
     def _load_commands(self) -> dict:
@@ -74,7 +73,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         return result
 
     @synchronized_method
-    def get_command(self, name)-> dict[str, Any] | None:
+    def get_command(self, name) -> dict[str, Any] | None:
         cmd = self.commands.get(name, None)
         if cmd:
             return {
@@ -83,7 +82,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 "screenshots": cmd.get_screenshots(),
             }
         return None
-        
+
     @synchronized_method
     def get_command_screenshot(self, name, screenshot_name) -> str | None:
         cmd = self.commands.get(name, None)
@@ -95,7 +94,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.scheduler.load_playlist(name)
 
     @synchronized_method
-    def get_schedule(self, playlist_name:str|None=None) -> ScheduleModel | None:
+    def get_schedule(self, playlist_name: str | None = None) -> ScheduleModel | None:
         if playlist_name is None:
             return self.scheduler.get_current_stack()
         else:
@@ -106,7 +105,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         return self.scheduler.get_playlist_names()
 
     @synchronized_method
-    def set_schedule(self, schedule:ScheduleModel, playlist_name:str|None =None) -> None:
+    def set_schedule(
+        self, schedule: ScheduleModel, playlist_name: str | None = None
+    ) -> None:
         if playlist_name is not None:
             self.scheduler.save_playlist(schedule, playlist_name)
         else:
@@ -135,7 +136,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             except Exception:
                 pass
 
-    def _log_exec(self, log_entry:CommandExecutionLog) -> None:
+    def _log_exec(self, log_entry: CommandExecutionLog) -> None:
         self._add_log(log_entry)
         self.execution_counter += 1  # unbounded int in python3
 
@@ -145,7 +146,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def get_execution_count(self) -> int:
         return self.execution_counter
 
-    def _wait_for_executions(self, num_executions, timeout_seconds=10) -> list[CommandExecutionLog]:
+    def _wait_for_executions(
+        self, num_executions, timeout_seconds=10
+    ) -> list[CommandExecutionLog]:
         t0: float = time.time()
         c0: int = self.get_execution_count()
         while (time.time() - t0) < timeout_seconds:
@@ -158,12 +161,14 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def _run_command(self, command_entry):
         try:
             self.stop_current.clear()
-            executable_command: Any | None = self.commands.get(command_entry.command_name)
+            executable_command: Any | None = self.commands.get(
+                command_entry.command_name
+            )
 
             if not executable_command:
                 print(f"ERROR >> Command {command_entry.command_name} not found")
                 return None
-            
+
             t0: float = time.time()
             res, err = executable_command.execute(
                 self.stop_current,
@@ -196,7 +201,14 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self._add_log(log_entry)
 
     @synchronized_method
-    def execute_now(self, command_name:str, duration:float, interrupt=False, args:list=[], kwargs:dict={}) -> None:
+    def execute_now(
+        self,
+        command_name: str,
+        duration: float,
+        interrupt=False,
+        args: list = [],
+        kwargs: dict = {},
+    ) -> None:
         self.scheduler.append_next(
             CommandEntry(
                 command_name=command_name, duration=duration, args=args, kwargs=kwargs
@@ -240,7 +252,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
 
 ###################################
 # Helper to manage as singleton
-singleton:CommandExecutor | None = None
+singleton: CommandExecutor | None = None
+
 
 def instance():
     global singleton

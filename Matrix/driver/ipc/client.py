@@ -22,10 +22,9 @@ configure_log(logger, BLUE, "Client")
 
 
 class IPCClient:
-    
-    def __init__(self, start_server_if_needed:bool=True) -> None:
+    def __init__(self, start_server_if_needed: bool = True) -> None:
         self.server_process: subprocess.Popen | None = None
-        self.client: socket.socket | None = None 
+        self.client: socket.socket | None = None
         try:
             self.connect()
         except ConnectionRefusedError as e:
@@ -36,7 +35,9 @@ class IPCClient:
                 self.start_server_process()
                 self.connect()
             else:
-                logger.info("start_server_if_needed=False => we can not continue, exiting")
+                logger.info(
+                    "start_server_if_needed=False => we can not continue, exiting"
+                )
 
     def get_shell_command(self) -> str:
         return "python -m Matrix.driver.ipc.server"
@@ -46,7 +47,7 @@ class IPCClient:
         # Get the root
         root_dir: Path = current_dir.parent.parent
 
-        cmd:str = self.get_shell_command()
+        cmd: str = self.get_shell_command()
         cmd_line: str = f'export PYTHONPATH="{root_dir}/"; {cmd}'
 
         logger.debug(f"shell command = {cmd_line}")
@@ -67,17 +68,17 @@ class IPCClient:
             self.send_command("disconnect")
             self.client.close()
 
-    def send_command(self, command:str, *args, **kwargs) -> Any:
+    def send_command(self, command: str, *args, **kwargs) -> Any:
         p = [command, args, kwargs]
         json_call: str = json_dumps(p)
 
         if not self.client:
             print(f"No client socket to send command {command}")
             return None
-        
+
         logger.debug(f"Send command call : {json_call}")
         self.client.send(json_call.encode())
-        response : str | None = None
+        response: str | None = None
         response = self.client.recv(BUFFER_SIZE).decode()
 
         logger.debug(f"received response : {response}")
@@ -105,14 +106,13 @@ class IPCClient:
 
 
 class IPCClientExecutor(IPCClient, BaseCommandExecutor):
-    
-    def __init__(self, run_as_root:bool=False, start_server_if_needed:bool=True):
+    def __init__(self, run_as_root: bool = False, start_server_if_needed: bool = True):
         self.run_as_root: bool = run_as_root
         IPCClient.__init__(self, start_server_if_needed=start_server_if_needed)
         BaseCommandExecutor.__init__(self)
 
     def get_shell_command(self) -> str:
-        prefix:str = ""
+        prefix: str = ""
         if self.run_as_root:
             prefix = "sudo "
 
@@ -120,19 +120,19 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
     @synchronized_method
     def send_command(self, command, *args, **kwargs) -> Any | None:
-        json_response:Any = IPCClient.send_command(self, command, *args, **kwargs)
-        response:Any = json_response["response"]
+        json_response: Any = IPCClient.send_command(self, command, *args, **kwargs)
+        response: Any = json_response["response"]
         if response:
             return response
         else:
             return None
-        
-    @synchronized_method
-    def list_commands(self) -> list[str]:
-        return self.send_command("ls") # type: ignore
 
     @synchronized_method
-    def get_commands(self) ->list[dict[str, Any]] | None:
+    def list_commands(self) -> list[str]:
+        return self.send_command("ls")  # type: ignore
+
+    @synchronized_method
+    def get_commands(self) -> list[dict[str, Any]] | None:
         return self.send_command("get_commands")
 
     @synchronized_method
@@ -145,24 +145,31 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
 
     @synchronized_method
     def list_schedules(self) -> list[str]:
-        return self.send_command("list_schedules") # type:ignore
+        return self.send_command("list_schedules")  # type:ignore
 
     @synchronized_method
-    def get_schedule(self, playlist_name:str|None) -> ScheduleModel | None:
+    def get_schedule(self, playlist_name: str | None) -> ScheduleModel | None:
         return self.send_command("get_schedule", playlist_name)
 
     @synchronized_method
-    def set_schedule(self, schedule:ScheduleModel, playlist_name:str|None) -> Any | None:
+    def set_schedule(
+        self, schedule: ScheduleModel, playlist_name: str | None
+    ) -> Any | None:
         return self.send_command("set_schedule", schedule, playlist_name)
 
     @synchronized_method
-    def execute_now(self, command_name:str, duration:float, interrupt=False, args:list=[], kwargs:dict={}) -> Any | None:
+    def execute_now(
+        self,
+        command_name: str,
+        duration: float,
+        interrupt=False,
+        args: list = [],
+        kwargs: dict = {},
+    ) -> Any | None:
         kwargs["interrupt"] = interrupt
         kwargs["duration"] = duration
-        return self.send_command(
-            "execute_now", command_name, args, kwargs
-        )
-    
+        return self.send_command("execute_now", command_name, args, kwargs)
+
     @synchronized_method
     def save_schedule(self) -> Any | None:
         return self.send_command("save_schedule")
@@ -171,14 +178,13 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
     def stop(self, interrupt=False) -> Any | None:
         res: Any | None = self.send_command("stop", interrupt=interrupt)
         return res
-    
+
     def connected(self) -> bool:
         if self.client is None:
             return False
         else:
             # XXX Ping Server
             return True
-    
 
 
 class InteractiveRemoteCLI:
@@ -252,10 +258,10 @@ class InteractiveRemoteCLI:
                     print(f"Command {cmd} not supportted by client")
                     continue
 
-                if isinstance(res,dict) and "error" in res and len(res["error"]) > 0:
+                if isinstance(res, dict) and "error" in res and len(res["error"]) > 0:
                     print(f'Server returned an Error : {res["error"]}')
                 else:
-                    if isinstance(res,list):
+                    if isinstance(res, list):
                         for item in res:
                             print(item)
                     else:

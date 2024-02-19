@@ -10,7 +10,6 @@ from PIL import ImageDraw
 
 
 class CitibikesCmd(PictureScrollBaseCmd):
-    
     def __init__(self) -> None:
         super().__init__(
             "citibikes", "Displays information about the closest Citibike Station"
@@ -24,7 +23,7 @@ class CitibikesCmd(PictureScrollBaseCmd):
         print(f" Citi Bike info {self.citibike_info}")
         super().update(args, kwargs)
 
-    def generate_image(self, args:list=[], kwargs:dict={}) -> Image.Image:
+    def generate_image(self, args: list = [], kwargs: dict = {}) -> Image.Image:
         width: int = get_total_matrix_width()
         height: int = get_total_matrix_height()
 
@@ -32,17 +31,23 @@ class CitibikesCmd(PictureScrollBaseCmd):
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         font = self.getFont("7x14.pil")
 
-        icon: Image.Image = Image.open(get_icons_dir("citibike/logo_wide_small.png")).convert("RGB")
+        icon: Image.Image = Image.open(
+            get_icons_dir("citibike/logo_wide_small.png")
+        ).convert("RGB")
         img.paste(icon, (int((3 * 64 - 94) / 2), 2))
 
         x = 10
-        iconElec:Image.Image = Image.open(get_icons_dir("citibike/elec.png")).convert("RGB")
+        iconElec: Image.Image = Image.open(get_icons_dir("citibike/elec.png")).convert(
+            "RGB"
+        )
         iconElec = iconElec.resize((32, 32), Image.Resampling.LANCZOS)
         img.paste(iconElec, (x, 32))
         draw.text((x + 32 + 2, 40), str(self.citibike_info["ebikes"]), font=font)
 
         x = 70
-        iconFree:Image.Image = Image.open(get_icons_dir("citibike/normal.png")).convert("RGB")
+        iconFree: Image.Image = Image.open(
+            get_icons_dir("citibike/normal.png")
+        ).convert("RGB")
         iconFree = iconFree.resize((30, 30), Image.Resampling.LANCZOS)
         img.paste(iconFree, (x, 32))
         draw.text((x + 32 + 2, 40), str(self.citibike_info["free_bikes"]), font=font)

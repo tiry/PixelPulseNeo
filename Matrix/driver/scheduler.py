@@ -14,7 +14,7 @@ configure_log(logger, level=logging.INFO)
 
 
 class Scheduler(Base):
-    def __init__(self, schedule_file:str | None="schedule.json") -> None:
+    def __init__(self, schedule_file: str | None = "schedule.json") -> None:
         self.schedule_file: str | None = schedule_file
         self.catalog: ScheduleCatalog | None = None
         if schedule_file is not None:
@@ -35,12 +35,12 @@ class Scheduler(Base):
     def get_next_catalog(self) -> str | None:
         if self.catalog is None:
             return None
-        
+
         if "default" in self.catalog.playlists.keys():
             return "default"
         return None
 
-    def load(self, schedule_file:str|None=None) -> ScheduleCatalog | None:
+    def load(self, schedule_file: str | None = None) -> ScheduleCatalog | None:
         if not schedule_file:
             schedule_file = self.schedule_file
         if not schedule_file:
@@ -60,7 +60,7 @@ class Scheduler(Base):
             logger.error(e, exc_info=True)
         return self.catalog
 
-    def save(self, schedule_file:str | None =None) -> None:
+    def save(self, schedule_file: str | None = None) -> None:
         if not schedule_file:
             schedule_file = self.schedule_file
         if not schedule_file:
@@ -69,7 +69,7 @@ class Scheduler(Base):
         if self.catalog is None:
             print("No schedule to save")
             return None
-        
+
         if os.path.exists(schedule_file):
             # Create backup directory if it doesn't exist
             backup_dir: str = self.get_current_directory() + "/backups"

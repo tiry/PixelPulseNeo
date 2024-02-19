@@ -22,7 +22,7 @@ class MeteoCmd(PictureScrollBaseCmd):
         self.background: Image.Image | None = None
         self.weather: dict[Any, Any] | None = None
 
-    def update(self, args:list=[], kwargs:dict={}) -> None:
+    def update(self, args: list = [], kwargs: dict = {}) -> None:
         self.weather = getTodayWeather()
         # print(f"weather = {self.weather}")
         super().update(args=[], kwargs={})
@@ -30,8 +30,8 @@ class MeteoCmd(PictureScrollBaseCmd):
     def getWeatherBackground(self):
         if not self.background:
             if self.weather:
-                weatherLabel:str = self.weather["weatherLabel"]
-                #tempFull = self.weather["tempFull"]
+                weatherLabel: str = self.weather["weatherLabel"]
+                # tempFull = self.weather["tempFull"]
                 temp = self.weather["temp"]
                 tempFeelsLike = self.weather["tempFeelsLike"]
 
@@ -69,7 +69,7 @@ class MeteoCmd(PictureScrollBaseCmd):
 
                 self.tempPos: tuple[int, int] = tempPos
                 self.background = img
-                
+
         if self.background:
             return self.background.copy()
         else:

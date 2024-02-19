@@ -18,9 +18,10 @@ configure_log(logger, level=logging.INFO)
 
 def synchronized_method(method):
     """Decorator to lock and synchronize methods across threads."""
+
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        if not hasattr(self, '_lock'):
+        if not hasattr(self, "_lock"):
             self._lock = RLock()
         with self._lock:
             try:
@@ -31,8 +32,9 @@ def synchronized_method(method):
                 print(f"kwargs = {kwargs} ")
                 traceback.print_exc()
                 raise e
-            
+
     return wrapper
+
 
 class Base:
     """
@@ -41,7 +43,8 @@ class Base:
 
     def get_current_directory(self) -> str:
         return os.path.dirname(os.path.realpath(__file__))
-    
+
+
 class BaseCommandExecutor(ABC, Base):
     """
     Base Class for Command Executor : defines the expected interface
@@ -61,7 +64,7 @@ class BaseCommandExecutor(ABC, Base):
     def list_commands(self) -> List[str]:
         """
         List all registered available commands
-        
+
         Returns:
             List[str]: List of command names
         """
@@ -71,22 +74,22 @@ class BaseCommandExecutor(ABC, Base):
     def get_commands(self) -> list[dict[str, Any]]:
         """
         Get all available commands
-        
+
         Returns:
            Dict[str, Command]: Dictionary of command name to command object
         """
         pass
 
     @abstractmethod
-    def get_command(self, name: str) -> Dict[str,Any] | None:
+    def get_command(self, name: str) -> Dict[str, Any] | None:
         """
         Get a command by name
-        
+
         Args:
             name (str): Name of the command
-            
+
         Returns:
-            Command: Command object 
+            Command: Command object
         """
         pass
 
@@ -94,7 +97,7 @@ class BaseCommandExecutor(ABC, Base):
     def get_command_screenshot(self, name: str, screenshot_name: str) -> str:
         """
         Get a screenshot for a command
-        
+
         Args:
             name (str): Name of the command
             screenshot_name (str): name of the screenshot
@@ -105,30 +108,30 @@ class BaseCommandExecutor(ABC, Base):
     def list_schedules(self) -> list[str]:
         """
         List all scheduled playlists
-        
+
         Returns:
             List[str]: List of playlist names
         """
         pass
 
     @abstractmethod
-    def get_schedule(self, playlist_name:str|None ) -> ScheduleModel:
+    def get_schedule(self, playlist_name: str | None) -> ScheduleModel:
         """
         Get a playlist schedule
-        
+
         Args:
             playlist_name (str): Name of the playlist
-            
+
         Returns:
             Schedule: Schedule object
         """
         pass
 
     @abstractmethod
-    def set_schedule(self, schedule:ScheduleModel, playlist_name:str|None) -> None:
+    def set_schedule(self, schedule: ScheduleModel, playlist_name: str | None) -> None:
         """
         Set a playlist schedule
-        
+
         Args:
             schedule (Schedule): Schedule object
             playlist_name (str): Name of the playlist
@@ -136,10 +139,17 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
-    def execute_now(self, command_name: str, duration: float, interrupt: bool = False, args: List = [], kwargs: Dict = {}) -> None:
+    def execute_now(
+        self,
+        command_name: str,
+        duration: float,
+        interrupt: bool = False,
+        args: List = [],
+        kwargs: Dict = {},
+    ) -> None:
         """
         Execute a command immediately
-        
+
         Args:
             command_name (str): Name of the command
             duration (int): Duration in seconds
@@ -160,7 +170,7 @@ class BaseCommandExecutor(ABC, Base):
     def stop(self, interrupt: bool = False) -> None:
         """
         Stop the CommandExecutor
-        
+
         Args:
             interrupt (bool): Force stop by interrupting
         """
@@ -170,9 +180,8 @@ class BaseCommandExecutor(ABC, Base):
     def connected(self) -> bool:
         """
         Check if executor is connected
-        
+
         Returns:
             bool: True if connected, False otherwise
         """
         pass
-

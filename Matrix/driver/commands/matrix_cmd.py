@@ -9,7 +9,7 @@ class MatrixCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
         super().__init__("matrix", "Displays Picture on Matrix")
 
-    def generate_image(self, args:list=[], kwargs:dict={}) -> Image.Image:
+    def generate_image(self, args: list = [], kwargs: dict = {}) -> Image.Image:
         W = 64 * 8
         H = 64
         image: Image.Image = Image.new("RGB", (W, H))
@@ -25,7 +25,11 @@ class MatrixCmd(PictureScrollBaseCmd):
         x_step: float = image.size[0] / n_steps
         c_step = int(255 / n_steps)
         for i in range(n_steps):
-            c: tuple[int, int, int] = (255 - int(i * c_step), int(i * c_step * 2) % 255, i * c_step)
+            c: tuple[int, int, int] = (
+                255 - int(i * c_step),
+                int(i * c_step * 2) % 255,
+                i * c_step,
+            )
             draw.rectangle(
                 (int(i * x_step), 53, int((i + 1) * x_step), 63),
                 fill=c,

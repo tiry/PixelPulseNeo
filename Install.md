@@ -21,6 +21,7 @@ Command system (`Matrix.driver`)
     pip install spotipy
     pip install pillow
     pip install unidecode
+    pip install beautifulsoup4
 
 Because of `underground` the pydantic version is fixed to 1.9.2
 
@@ -41,7 +42,7 @@ API server (`Matrix.api`)
     pip install matplotlib
     pip install RGBMatrixEmulator
     pip install ruff
-
+    pip install pylint
 
     ruff check --fix Matrix/
     ruff format Matrix

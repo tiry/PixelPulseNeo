@@ -26,7 +26,7 @@ if __name__ == "__main__":
         print("Running test with IPC")
         config.USE_IPC = True
         # Make the IPC Client automatically start the server
-        IPCClientSingleton.start_server_if_needed=True
+        IPCClientSingleton.start_server_if_needed = True
         old_sys_argv = sys.argv
         sys.argv = [old_sys_argv[0]]
     print("################################################")
@@ -83,7 +83,7 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing schedules API")
 
-        response = requests.get("http://localhost:5000/api/schedules",timeout=5)
+        response = requests.get("http://localhost:5000/api/schedules", timeout=5)
         response.raise_for_status()
 
         self.assertEqual(response.status_code, 200)
@@ -110,7 +110,8 @@ class FlaskServerTestCase(unittest.TestCase):
             # now download the images
             for name in cmd["screenshots"]:
                 response = requests.get(
-                    f"http://localhost:5000/api/screenshots/{target_command}/{name}", timeout=5
+                    f"http://localhost:5000/api/screenshots/{target_command}/{name}",
+                    timeout=5,
                 )
                 self.assertEqual(response.status_code, 200)
                 i = Image.open(BytesIO(response.content))
@@ -121,7 +122,9 @@ class FlaskServerTestCase(unittest.TestCase):
         print("################################################")
         print("testing command API")
 
-        response = requests.post(f"http://localhost:5000/api/command/{target_command}", timeout=5)
+        response = requests.post(
+            f"http://localhost:5000/api/command/{target_command}", timeout=5
+        )
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         res = response.json()
@@ -151,14 +154,17 @@ class FlaskServerTestCase(unittest.TestCase):
         response = requests.post(
             f"http://localhost:5000/api/schedule/{schedule_name}",
             headers=headers,
-            data=json.dumps(src_schedule_json), timeout=5
+            data=json.dumps(src_schedule_json),
+            timeout=5,
         )
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
 
         # now get the schedule back
 
-        response = requests.get(f"http://localhost:5000/api/schedule/{schedule_name}", timeout=5)
+        response = requests.get(
+            f"http://localhost:5000/api/schedule/{schedule_name}", timeout=5
+        )
         response.raise_for_status()
         self.assertEqual(response.status_code, 200)
         new_schedule_json = response.json()

@@ -35,21 +35,21 @@ The following endpoints are available:
 """
 
 
-executor: IPCClientExecutor | CommandExecutor | None  = None
+executor: IPCClientExecutor | CommandExecutor | None = None
+
 
 def get_executor() -> IPCClientExecutor | CommandExecutor:
-
     global executor
     if executor is None:
         if is_ipc_enabled():
             executor = IPCClientSingleton.instance()
             logger.info(f"Returning IPC Client {executor}")
-            #logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
-            #executor = IPCClientExecutor(RUN_AS_ROOT, start_server_if_needed=False)
+            # logger.info(f"Creating IPC (socket) client root={RUN_AS_ROOT}")
+            # executor = IPCClientExecutor(RUN_AS_ROOT, start_server_if_needed=False)
         else:
             executor = CommandExecutorSingleton.instance()
             logger.info(f"Returning inproces client {executor}")
-            #executor = instance()
+            # executor = instance()
     return executor
 
 
@@ -77,8 +77,8 @@ api = Api(
     version="1.0",
     title="PixelPulseNeoServer",
     description="REST API to interact with PixelPulseNeoServer",
-    prefix = "/api",
-    default = "PixelPulseNeoAPI",
+    prefix="/api",
+    default="PixelPulseNeoAPI",
     default_label="REST API for PixelPulseNeoServer",
 )
 
@@ -94,7 +94,7 @@ class Commands(Resource):
         - `description`: A description of what the command does
         - `screenshots`: Screenshot URLs demonstrating the visual effect of the command
         """
-        logger.info(f"GET /commands")
+        logger.info("GET /commands")
         result = get_executor().get_commands()
         logger.info(f"result {result}")
         return jsonify(result)
@@ -176,11 +176,11 @@ class Command(Resource):
 
         # Access the duration query parameter with a default value if it's not provided
         duration: float = request.args.get("duration", default=10, type=float)
-        interrupt:str | bool = request.args.get("interupt", default="false", type=bool)
+        interrupt: str | bool = request.args.get("interupt", default="false", type=bool)
 
         try:
             # result is async and only accessible via audit log
-            get_executor().execute_now(command_name, duration, interrupt=interrupt) #type: ignore
+            get_executor().execute_now(command_name, duration, interrupt=interrupt)  # type: ignore
             return jsonify({"message": f"Command '{command_name}' executed"})
         except Exception as e:
             print(f"Error during command execution for {command_name}")
@@ -188,13 +188,13 @@ class Command(Resource):
             return make_response(jsonify({"error": str(e)}), 500)
 
 
-rest_schedule = pydantic_to_restx_model(api, ScheduleModel)# type: ignore
+rest_schedule = pydantic_to_restx_model(api, ScheduleModel)  # type: ignore
 
 
 @api.route("/schedule", defaults={"playlist_name": None})
 @api.route("/schedule/<playlist_name>")
 class Schedule(Resource):
-    def get(self, playlist_name:str|None=None):
+    def get(self, playlist_name: str | None = None):
         """Returns the executor's current schedule.
 
         The schedule is returned as a JSON array containing dictionaries
@@ -223,12 +223,12 @@ class Schedule(Resource):
         executor's current schedule with it. Validates that the named commands
         exist before updating the schedule.
         """
-        payload: dict[str,Any] | None = request.json
+        payload: dict[str, Any] | None = request.json
 
         if not payload:
-            print(f"payload is None")   
+            print("payload is None")
             return make_response(jsonify({"error": "No Payload"}), 500)
-        
+
         print(f"payload type {type(payload)} content: {payload}")
 
         # convert back to SchedulModel // Sanitize
@@ -262,7 +262,7 @@ class Shutdown(Resource):
             logger.info("API Server shutting down Executor")
             executor.stop(interrupt=True)
             if issubclass(executor.__class__, IPCClient):
-                executor.disconnect() # type: ignore
+                executor.disconnect()  # type: ignore
                 # executor.kill_server()
             executor = None
             logger.info("API Server: executor shutdown completed")
@@ -276,13 +276,15 @@ class Shutdown(Resource):
         logger.info("Bye !")
         return "server exit"
 
-@app.route('/web/')
-@app.route('/web/<path:path>')
+
+@app.route("/web/")
+@app.route("/web/<path:path>")
 def send_report(path=None):
     if path is None or path == "":
-        path="index.html"
-    return send_from_directory('../../pixel-pulse-neo-client/build/', path)
-    
+        path = "index.html"
+    return send_from_directory("../../pixel-pulse-neo-client/build/", path)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", help="enable flash debug mode", action="store_true")
