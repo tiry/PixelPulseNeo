@@ -19,6 +19,7 @@ class AnimatedStuff(ABC):
     def __init__(self):
         self.pause_counter:int|None = None        
         self.command_groups:list[list[dict[str, Any]]]=[]
+        self.keyframe_conter:int | None = None
     
     def add_command_group(self, group: list[dict[str, Any]]):
         self.command_groups.append(group)
@@ -36,7 +37,18 @@ class AnimatedStuff(ABC):
         #print("Close command group")
         return self.command_groups.pop(0)
     
+    def get_keyframe_conter(self) -> int | None:
+        return self.keyframe_conter
     
+    def get_or_set_keyframe_conter(self, value:int) -> int:
+        if self.keyframe_conter is None:
+            self.keyframe_conter = value
+        return self.get_keyframe_conter() #type: ignore
+    
+    def increment_keyframe(self) -> None:
+        if self.keyframe_conter is not None:
+            self.keyframe_conter -=1
+
     def execute_command(self, name:str, command:dict[str, Any]) -> Literal[0, 1, -1]:
     
         if name =="pause":
@@ -50,21 +62,28 @@ class AnimatedStuff(ABC):
             self.pause_counter-=1
             return 1
         elif name =="keyframe":
-            remaining_frames:int= command.get("frames", 0)
+            #remaining_frames:int= command.get("frames", 0)
+            remaining_frames:int= self.get_or_set_keyframe_conter(command.get("frames", 0))
             res: int = 0
             if remaining_frames==0:
+                self.keyframe_conter = None
                 return res
             for name in command.keys():
                 if name in ["frames", "target", "name"]:
                     continue
-                cval:int = getattr(self, name)
+                cval:float = getattr(self, name)
                 if abs(cval- command[name])>1:
                     delta = (command[name] - cval)/remaining_frames
                     cval += delta 
                     setattr(self, name, cval)
+                    #if int(delta) < delta:
+                    #    cval = getattr(self, name)
+                    #    print(f"cval = {cval}")
                     res = 1
-            remaining_frames-=1
-            command["frames"] = remaining_frames
+            #remaining_frames-=1
+            #command["frames"] = remaining_frames
+            self.increment_keyframe()
+            print(f"{self.__class__.__name__} remaining frames {remaining_frames}")
             return res
         else:
             return self._execute_command(name, command)

@@ -21,7 +21,10 @@ class Mouth(AnimatedStuff):
         self.radius: int = radius
         self.color: tuple[int, int, int] = color
         self.open: int = open_pct
-        self.tilt:int = 20
+        self.open2: int = 60
+        self.tilt:int = 0
+        self.tilt2:int = 0
+        
   
     def _execute_command(self, name:str, command:dict[str, Any]) -> Literal[0, 1, -1]:
         
@@ -74,7 +77,11 @@ class Mouth(AnimatedStuff):
         end:int = int(90 + (self.open/100)*180)
         #draw.arc((margin, 34,get_total_matrix_width()-margin, 62), self.tilt + 90-angle, self.tilt + 90 + angle, fill=(255,0,0), width=2)
         
-        draw.chord((margin, 34,get_total_matrix_width()-margin, 62), self.tilt + start, self.tilt + end, fill=(200,200,200), width=2)
+        start2:int = int( (1-self.open*self.open2/10000)*180 - 90)  
+        end2:int = int(90 + (self.open*self.open2/10000)*180)
+        
+        draw.chord((margin, 34,get_total_matrix_width()-margin, 62), self.tilt+self.tilt2 + start2, self.tilt+self.tilt2 + end2, fill=(200,200,200), width=2)
+
         draw.arc((margin, 34,get_total_matrix_width()-margin, 62), self.tilt + start, self.tilt + end, fill=(255,220,200), width=2)
         
         #draw.arc((margin, 34,get_total_matrix_width()-margin, 62), start, end , fill=(255,220,200), width=2)

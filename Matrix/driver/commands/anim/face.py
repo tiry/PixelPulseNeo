@@ -9,7 +9,7 @@ class Face():
         
         self.left = Eye(30, 22, 10, (0, 200, 255))
         self.right = Eye(192-30, 22, 10, (0, 200, 255))
-        self.mouth = Mouth(0,0,30, 80, (0, 200, 255))
+        self.mouth = Mouth(0,0,30, 40, (0, 200, 255))
 
     def update_and_draw(self, img:Image.Image):
         self.left.update_and_draw(img)
@@ -36,14 +36,14 @@ class Face():
             for kf in keyframe_group:
                 target:str|None = kf.get("target", None)
                 targets:list[str] = []
-                if target is None:
-                    print(f"Key frame with no target {kf}")
-                    continue
+                #if target is None:
+                #    print(f"Key frame with no target {kf}")
+                #    targets.extend(["left", "right", "mounth"])
                 if target == "eyes":
                     targets.append("left")
                     targets.append("right")
-                elif target == "all":
-                    targets.extend(["left", "right", "mounth"])
+                elif target == "all" or target is None:
+                    targets.extend(["left", "right", "mouth"])
                 else:
                     targets.append(target)
                 for target in targets:
@@ -57,10 +57,10 @@ class Face():
         emotion_dictionnary:dict[str, list[dict[str, Any]]] = {
             "surprised" :  [ 
                 { "target":"eyes", "open": 100},
-                { "target":"mouth", "open": 100, "radius" : 8, "tilt": 0 }],
+                { "target":"mouth", "open": 100,  "open2": 100, "radius" : 8, "tilt": 0 }],
             "neutral" :  [ 
                 { "target":"eyes", "open": 70, "tilt": 0},
-                { "target":"mouth", "open": 50, "radius" : 15, "tilt": 0 }],
+                { "target":"mouth", "open": 30, "open2": 10, "radius" : 45, "tilt": 0 }],
             "wink_left" :  [ 
                 { "target":"left", "open": 0, "tilt": 0},
                 {"target":"right", "open": 80, "tilt": 0},

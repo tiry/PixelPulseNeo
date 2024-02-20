@@ -17,6 +17,7 @@ from Matrix.driver.utilz import configure_log, YELLOW
 from Matrix.driver.factory import CommandExecutorSingleton, IPCClientSingleton
 from Matrix.driver.ipc.client import IPCClient, IPCClientExecutor
 from Matrix.driver.executor import CommandExecutor
+from Matrix.driver.monitor import probe
 
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
@@ -253,6 +254,16 @@ class Schedule(Resource):
 
         return jsonify({"result": "Schedule updated"})
 
+@api.route("/status")
+class Status(Resource):
+    def get(self):
+            """Returns Metrics 
+            """
+            
+            metrics: dict[str, Any] = probe.all_metrics()
+            return jsonify(metrics)
+        
+        
 
 @api.route("/shutdown")
 class Shutdown(Resource):

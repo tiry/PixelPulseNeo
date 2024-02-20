@@ -23,12 +23,10 @@ class EyesCmd(PictureScrollBaseCmd):
         self.scroll = False
         self.refresh = True 
         self.face = Face()
-    
 
     def update(self, args=[], kwargs={}):
         # XXX
         super().update(args, kwargs)
-        
 
     def generate_image(self, args: list = [], kwargs: dict = {}) -> Image.Image:
 
@@ -103,7 +101,6 @@ if __name__ == "__main__":
             ],
             [ {"name":"keyframe", "target":"left", "open": 100, "frames":30},
             ]
-            
         ]     
         
         cmd.face.load_keyframes(kframes)
@@ -115,13 +112,17 @@ if __name__ == "__main__":
         
         kframes.append(cmd.face.get_emotion_keyframe("neutral", 60))
         
-        kframes.append(cmd.face.get_emotion_keyframe("surprised", 60))
+        kframes.append([{"name":"pause", "max": 120}])
+        
+        kframes.append(cmd.face.get_emotion_keyframe("surprised", 30))
 
-        kframes.append(cmd.face.get_emotion_keyframe("neutral", 60))
+        kframes.append([{"name":"pause", "max": 120}])
         
-        kframes.append(cmd.face.get_emotion_keyframe("wink_left", 30))
+        #kframes.append(cmd.face.get_emotion_keyframe("neutral", 60))
         
-        kframes.append(cmd.face.get_emotion_keyframe("neutral", 30))
+        #kframes.append(cmd.face.get_emotion_keyframe("wink_left", 30))
+        
+        #kframes.append(cmd.face.get_emotion_keyframe("neutral", 30))
 
         
         cmd.face.load_keyframes(kframes)

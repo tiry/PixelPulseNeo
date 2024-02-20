@@ -12,7 +12,7 @@ class Eye(AnimatedStuff):
         self.radius: int = radius
         self.color: tuple[int, int, int] = color
         self.background :tuple[int, int, int] = (220, 220, 220)
-        self.open:int = 30
+        self.open:int = 80
         self.tilt:int=0
   
     def _execute_command(self, name:str, command:dict[str, Any]) -> Literal[0, 1, -1]:

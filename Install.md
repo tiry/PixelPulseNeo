@@ -22,6 +22,7 @@ Command system (`Matrix.driver`)
     pip install pillow
     pip install unidecode
     pip install beautifulsoup4
+    pip install psutil
 
 Because of `underground` the pydantic version is fixed to 1.9.2
 

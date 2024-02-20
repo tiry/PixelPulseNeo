@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 //const BASE_URL = 'http://localhost:5000';
-const BASE_URL = '/api';
 //const BASE_URL = 'http://lcddriver.local:5000/api';
-
+const BASE_URL = 'http://localhost:5000/api';
+//const BASE_URL = '/api';
 
 export default class ApiService {
+
+
     static getCommands() {
         return axios.get(`${BASE_URL}/commands`).then(res => res.data);
     }
@@ -45,6 +47,10 @@ export default class ApiService {
 
     }
     
+
+    static getMetrics() {
+        return axios.get(`${BASE_URL}/status`).then(res => res.data);
+    }
 
 }
 
