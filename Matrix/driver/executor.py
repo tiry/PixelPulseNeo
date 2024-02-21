@@ -220,6 +220,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     @synchronized_method
     def stop(self, interrupt=False) -> None:
         logger.info("Stop request received")
+        traceback.print_stack()
+
 
         self.stop_scheduler.set()
         time.sleep(BUSY_WAIT * 5)
@@ -305,6 +307,7 @@ if __name__ == "__main__":
         # exit(0)
 
     if args.listen or (is_ipc_enabled() and not args.commands):
+        print("Starting in Server mode")
         executor.serve()
     else:
         if args.commands:
@@ -316,4 +319,5 @@ if __name__ == "__main__":
                 else:
                     executor.execute_now(cmds[0], int(args.duration))
                 time.sleep(1)
-    executor.stop()
+            # exit after command execution
+            #executor.stop()

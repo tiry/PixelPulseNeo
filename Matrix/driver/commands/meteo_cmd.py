@@ -29,6 +29,9 @@ class MeteoCmd(PictureScrollBaseCmd):
 
     def getWeatherBackground(self):
         if not self.background:
+            width: int = get_total_matrix_width()
+            height: int = get_total_matrix_height()
+            img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
             if self.weather:
                 weatherLabel: str = self.weather["weatherLabel"]
                 # tempFull = self.weather["tempFull"]
@@ -41,11 +44,7 @@ class MeteoCmd(PictureScrollBaseCmd):
                 ).convert("RGB")
                 weatherIcon = weatherIcon.resize((48, 48), Image.Resampling.LANCZOS)
 
-                width: int = get_total_matrix_width()
-                height: int = get_total_matrix_height()
-
-                img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
-
+                
                 img.paste(weatherIcon, (8, 8))
                 draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
 
@@ -69,7 +68,23 @@ class MeteoCmd(PictureScrollBaseCmd):
 
                 self.tempPos: tuple[int, int] = tempPos
                 self.background = img
+            else:
+                print("NO Weather info")
+                deadIcon: Image.Image = Image.open(
+                    get_icons_dir(f"wttr_codes/dead.png")
+                ).convert("RGB")
+                deadIcon = deadIcon.resize((32, 41), Image.Resampling.LANCZOS)
+                img.paste(deadIcon, (0, 8))
 
+                draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
+                font6 = self.getFont("6x12.pil")
+                font5 = self.getFont("5x7.pil")
+                draw.text((40,4), " WTTR.in site is down" , font=font6)
+                draw.text((40,42), "  -- no weather info --" , font=font5)
+                self.background = img
+                self.tempPos: tuple[int, int] = (32, 50)
+
+                
         if self.background:
             return self.background.copy()
         else:

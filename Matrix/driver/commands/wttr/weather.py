@@ -3,18 +3,20 @@ from Matrix.driver.commands.wttr.constants import WWO_CODE, WTTR_BASE
 
 
 def getWeatherSimple():
-    url = f"{WTTR_BASE}?M&format=j1"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        return response.json()
+    url:str = f"{WTTR_BASE}?M&format=j1"
+    try:
+        response: requests.Response = requests.get(url, timeout=15)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        print(f"Unable to get weather info from {WTTR_BASE}, {e}")
     return None
 
 
 def getTodayWeather():
     weather = getWeatherSimple()
     result = {}
-    if weather:
+    if weather is not None:
         weather = weather["current_condition"][0]
 
         result["tempFeelsLike"] = f'{weather["FeelsLikeC"]} °C'
