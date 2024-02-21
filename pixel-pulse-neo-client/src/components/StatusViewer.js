@@ -7,12 +7,6 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import StorageIcon from '@mui/icons-material/Storage';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-import BASE_URL from '../services/ApiService'
-
-//const BASE_URL = 'http://localhost:5000';
-//const BASE_URL = '';
-//const BASE_URL = '/api';
-//const BASE_URL = 'http://lcddriver.local:5000/api';
 
 const metricIcons = {
     cpu_freq: <SpeedIcon />,

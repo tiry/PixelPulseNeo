@@ -308,4 +308,5 @@ if __name__ == "__main__":
     if args.noreload:
         reload = False
 
+    print(f"start API server with debug={debug} and use_reloader={reload}")
     app.run(debug=debug, use_reloader=reload, host="0.0.0.0")

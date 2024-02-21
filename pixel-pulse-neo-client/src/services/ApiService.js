@@ -2,18 +2,17 @@ import axios from 'axios';
 
 //const BASE_URL = 'http://localhost:5000';
 //const BASE_URL = 'http://lcddriver.local:5000/api';
-const BASE_URL = 'http://localhost:5000/api';
-//const BASE_URL = '/api';
+//const BASE_URL = 'http://localhost:5000/api';
+export const BASE_URL = '/api';
 
 export default class ApiService {
-
 
     static getCommands() {
         return axios.get(`${BASE_URL}/commands`).then(res => res.data);
     }
 
-    static executeCmd(name, interupt=false) {
-        return axios.post(`${BASE_URL}/command/` + name + "?interup=" + interupt).then(res => res.data);
+    static executeCmd(name, duration=10, interupt=false) {
+        return axios.post(`${BASE_URL}/command/` + name + "?interup=" + interupt + "&duration=" + duration).then(res => res.data);
     }
     
     static queueCmd(name) {
@@ -47,7 +46,6 @@ export default class ApiService {
 
     }
     
-
     static getMetrics() {
         return axios.get(`${BASE_URL}/status`).then(res => res.data);
     }
