@@ -6,8 +6,8 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-# Path to the virtual environment
-VENV_PATH="./venv"
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+LEDDRIVER_HOME=$(dirname $(realpath $SCRIPT_DIR))
 
 # Check if the virtual environment is already activated
 if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == $(realpath $VENV_PATH) ]]; then
@@ -15,7 +15,7 @@ if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == $(realpath $VENV_PATH) ]]; then
 else
     # Activate the virtual environment
     echo "Activating virtual environment."
-    source "$VENV_PATH/bin/activate"
+    source "$LEDDRIVER_HOME/venv/bin/activate"
 fi
 
 python -m Matrix.api.server &> "api_server.log" & echo $! > "api_server.pid"

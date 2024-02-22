@@ -1,5 +1,8 @@
 #!/bin/bash
-LEDDRIVER_HOME=/home/tiry/dev/PixelPulseNeo
+
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+LEDDRIVER_HOME=$(dirname $(realpath $SCRIPT_DIR))
 
 # Check if the script is run as root
 if [ "$(id -u)" -ne 0 ]; then
