@@ -143,3 +143,7 @@ When using the RGBEmulator the configuration is done via the
 
 The default configuration uses `pygame`, but see [RGBMatrixEmulator configuration-options](https://github.com/ty-porter/RGBMatrixEmulator?tab=readme-ov-file#configuration-options) for more options.
 
+
+## Secrets Management
+
+   sudo vim /etc/bash.bashrc
