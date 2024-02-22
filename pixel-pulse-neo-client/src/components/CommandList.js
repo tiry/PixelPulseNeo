@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ApiService from '../services/ApiService';
-import { List, ListItem, ListItemText, Button, Grid, Card, CardMedia,FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { List, ListItem, ListItemText, Button, Grid, Card, CardHeader, CardActions, CardMedia,FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import {BASE_URL} from '../services/ApiService'
+import QueueIcon from '@mui/icons-material/Queue';
+import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 
 function CommandList() {
@@ -44,10 +47,9 @@ function CommandList() {
         setSelectedDurations({ ...selectedDurations, [commandName]: duration });
     };
 
-
-    const handleExecute = (name) => {
+    const handleExecute = (name, interupt) => {
         const duration = selectedDurations[name] || 10;
-        ApiService.executeCmd(name, duration, true)
+        ApiService.executeCmd(name, duration, interupt)
         .then(response => {
             // Handle the successful response here
             console.log('Schedule updated successfully:', response);
@@ -62,12 +64,25 @@ function CommandList() {
     };
 
     return (
-        <List>
+        <Grid container spacing={2}>
                 {commands.map((command, index) => (
-                    <ListItem key={index}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={4}>
-                                <ListItemText primary={command.name} secondary={command.description} />
+                    <Grid item key={index} xs={12} md={6} lg={4}>
+                            
+                            <Card style={{ margin: '10px' }} title={command.name} subheader={command.description}>
+                            
+                                <CardHeader
+                                    title={command.name}
+                                    subheader={command.description}
+                                />
+                            
+                                {command.screenshots && command.screenshots.length > 0 && (
+                                <CardMedia
+                                    component="img"
+                                    image={`${BASE_URL}/screenshots/${command.name}/${command.screenshots[currentScreenshotIndex[command.name]]}`}
+                                    alt={`Screenshot ${command.screenshots[currentScreenshotIndex[command.name]]}`}
+                                />
+                            )}
+                            <CardActions>
                                 <FormControl fullWidth>
                                     <InputLabel>Duration</InputLabel>
                                     <Select
@@ -85,27 +100,20 @@ function CommandList() {
                                     <MenuItem value={1800}>30 min</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <Button variant="contained" color="primary"
-                                onClick={() => handleExecute(command.name)}>
-                                    Execute Now
+                                <Button variant="contained" color="primary" startIcon={<QueuePlayNextIcon />}
+                                    onClick={() => handleExecute(command.name, false)}>
+                                    Next
                                 </Button>
-                            </Grid>
-                            <Grid item xs={12} md={8}>
-                            {command.screenshots && command.screenshots.length > 0 && (
-                                <Card style={{ maxWidth: 345, margin: '10px' }}>
-                                <CardMedia
-                                    component="img"
-                                    height="140"
-                                    image={`${BASE_URL}/screenshots/${command.name}/${command.screenshots[currentScreenshotIndex[command.name]]}`}
-                                    alt={`Screenshot ${command.screenshots[currentScreenshotIndex[command.name]]}`}
-                                />
-                                </Card>
-                            )}
-                            </Grid>
-                        </Grid>
-                    </ListItem>
+                                <Button variant="contained" color="primary" startIcon={<PlayArrowIcon />}
+                                onClick={() => handleExecute(command.name, true)}>
+                                    Now
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
                 ))}
-            </List>    );
+        </Grid>
+    );
 }
 
 export default CommandList;

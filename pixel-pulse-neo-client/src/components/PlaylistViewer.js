@@ -64,7 +64,8 @@ function PlaylistViewer() {
     };
 
     const handleCommandNameChange = (index, newValue) => {
-        const updatedSchedule = schedule.map((item, idx) => {
+        const updatedSchedule = { "commands": [], "conditions": schedule.conditions}
+        updatedSchedule.commands = schedule.commands.map((item, idx) => {
             if (idx === index) {
                 return { id: item.id, duration: item.duration, command_name: newValue };
             }
@@ -76,7 +77,8 @@ function PlaylistViewer() {
     };
 
     const handleDurationChange = (index, newValue) => {
-        const updatedSchedule = schedule.map((item, idx) => {
+        const updatedSchedule = { "commands": [], "conditions": schedule.conditions}
+        updatedSchedule.commands = schedule.commands.map((item, idx) => {
             if (idx === index) {
                 return { id: item.id, command_name: item.command_name , duration: newValue };
             }
@@ -86,10 +88,11 @@ function PlaylistViewer() {
     };
 
     const handleSave = () => {
-        ApiService.setSchedule(schedule)
+        ApiService.setSchedule(schedule, selectedPlaylist)
         .then(response => {
             // Handle the successful response here
             console.log('Schedule updated successfully:', response);
+            setEditMode(false);
             // Optionally, you can update the local state with the response if needed
             // setSchedule(response);
         })

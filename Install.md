@@ -64,11 +64,9 @@ One approach is:
 
     cp -R /usr/local/lib/python3.11/dist-packages/rgbmatrix-0.0.1-py3.11-linux-aarch64.egg/rgbmatrix venv/lib/python3.11/site-packages/.
 
-
 # React App
 
 Be sure npm is installed.
-
 
     cd pixel-pulse-neo-client
 
@@ -76,4 +74,6 @@ Be sure npm is installed.
 
     npm run build
 
+# Add startup scripts
 
+See [system/ReadMe.md](system/ReadMe.md)

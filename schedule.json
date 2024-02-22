@@ -4,25 +4,37 @@
             "commands": [
                 {
                     "command_name": "mta",
-                    "duration": 10.0,
+                    "duration": 30.0,
                     "args": [],
                     "kwargs": {}
                 },
                 {
                     "command_name": "meteo",
-                    "duration": 10.0,
+                    "duration": 30.0,
                     "args": [],
                     "kwargs": {}
                 },
                 {
                     "command_name": "citibikes",
-                    "duration": 10.0,
+                    "duration": 15.0,
                     "args": [],
                     "kwargs": {}
                 },
                 {
                     "command_name": "news",
-                    "duration": 10.0,
+                    "duration": 100.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "conway",
+                    "duration": 20.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "spotify",
+                    "duration": 20.0,
                     "args": [],
                     "kwargs": {}
                 }
@@ -84,7 +96,7 @@
                     "command_name": "time",
                     "duration": 1.0,
                     "args": [
-                        "token1707279541.755147"
+                        "token1708296078.769251"
                     ],
                     "kwargs": {}
                 }

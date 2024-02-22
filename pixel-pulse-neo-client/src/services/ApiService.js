@@ -37,7 +37,7 @@ export default class ApiService {
             post= axios.post(`${BASE_URL}/schedule/` + name , schedule)
         else
             post =axios.post(`${BASE_URL}/schedule`, schedule)
-        post.then(response => response.data)
+        return post.then(response => response.data)
         .catch(error => {
             // Handle errors here, such as displaying a notification to the user
             console.error('Error updating schedule:', error);

@@ -16,7 +16,7 @@ We are declating 2 Systemd Units/Services:
 
  - `pixel-pulse-neo.service`: the command server
     - run as ROOT
- - `pixel-pulse-neo-api.service`: the web server (Rest API + WEb UI)
+ - `pixel-pulse-neo-api.service`: the web server (Rest API + Web UI)
     - run as unpriviledged user (`tiry`)
 
 `pixel-pulse-neo-api.service` has a dependency on `pixel-pulse-neo.service`
