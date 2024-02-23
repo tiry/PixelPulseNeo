@@ -3,7 +3,7 @@ import threading
 from typing import Any, Literal
 from PIL import Image, ImageDraw
 from abc import ABC, abstractmethod
-
+import json
 
 from Matrix.driver.commands.base import (
     PictureScrollBaseCmd,
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
 
-    parser.add_argument("--commands", help="execute commands", action="store_true")
+    parser.add_argument("-c", "--commands", help="execute commands", action="store_true")
     parser.add_argument("-k", "--keyframes", help="execute keyframes", action="store_true")
     parser.add_argument("-e", "--emotions", help="execute emotions", action="store_true")
     
@@ -54,40 +54,40 @@ if __name__ == "__main__":
     if args.commands:    
         
         command_grps: list[list[dict[str, Any]]] = [
-                [{"name":"pause", "max": 60}]
+                [{ "target":"eyes", "name":"pause", "max": 60}]
                 ,           
-                [{"name":"shut", "speed": 2}]
+                [{ "target":"eyes", "name":"shut", "speed": 2}]
                 ,
-                [{"name" : "open", "max": 70, "speed": 3}]
+                [{ "target":"eyes", "name" : "open", "max": 70, "speed": 3}]
                 ,
-                [{"name" : "shut", "min": 50, "speed" : 3}]
+                [{ "target":"eyes", "name" : "shut", "min": 50, "speed" : 3}]
                 ,
-                [{"name" : "move", "speed": 3}]
+                [{ "target":"eyes", "name" : "move", "speed": 3}]
                 , 
-                [{"name":"pause", "max": 60}]
+                [{ "target":"eyes", "name":"pause", "max": 60}]
                 ,
-                [{"name" : "open", "max": 70, "speed": 4}]
+                [{ "target":"eyes", "name" : "open", "max": 70, "speed": 4}]
                 ,
-                [{"name" : "move", "speed": -15}]
+                [{ "target":"eyes", "name" : "move", "speed": -15}]
                 , 
-                [{"name" : "shut", "min": 50, "speed" : 3}, {"name" : "move", "speed": 15, "max": 0}]
+                [{ "target":"eyes", "name" : "shut", "min": 50, "speed" : 3}, {"name" : "move", "speed": 15, "max": 0}]
                 ,
-                [{"name" : "open", "max": 100, "speed": 5}]
+                [{ "target":"eyes", "name" : "open", "max": 100, "speed": 5}]
                 
                 ]
-            
-        cmd.face.load_eyes_command_group(command_grps)        
+        
+        cmd.face.load_cmds(command_grps)    
         mouth_cmds: list[list[dict[str, Any]]] = [
-                [{"name":"open", "max": 100}, {"name":"tilt", "speed": 2}]
+                [{ "target":"mouth", "name":"open", "max": 100}, {"name":"tilt", "speed": 2}]
                 ,           
-                [{"name":"open", "speed": -1, "min": 80}, {"name":"tilt", "speed": -1, "min": 0}]
+                [{"target":"mouth","name":"open", "speed": -1, "min": 80}, {"name":"tilt", "speed": -1, "min": 0}]
                 ,
-                [{"name":"pause", "max": 60}],
+                [{"target":"mouth","name":"pause", "max": 60}],
                 
-                [{"name":"radius", "speed": -1, "min": 10},{"name":"open", "speed": 1, "max": 100}]
+                [{"target":"mouth", "name":"radius", "speed": -1, "min": 10},{"name":"open", "speed": 1, "max": 100}]
             ]
-        cmd.face.load_mouth_command_group(mouth_cmds)
-    
+        cmd.face.load_cmds(mouth_cmds)    
+        
     elif args.keyframes:
         
         kframes:list[list[dict[str, Any]]] =  [
@@ -103,29 +103,23 @@ if __name__ == "__main__":
             ]
         ]     
         
-        cmd.face.load_keyframes(kframes)
+        cmd.face.load_cmds(kframes)
     
     elif args.emotions:
         
-        kframes:list[list[dict[str, Any]]] =  [
-        ]     
-        
-        kframes.append(cmd.face.get_emotion_keyframe("neutral", 60))
-        
-        kframes.append([{"name":"pause", "max": 120}])
-        
-        kframes.append(cmd.face.get_emotion_keyframe("surprised", 30))
-
-        kframes.append([{"name":"pause", "max": 120}])
-        
-        #kframes.append(cmd.face.get_emotion_keyframe("neutral", 60))
-        
-        #kframes.append(cmd.face.get_emotion_keyframe("wink_left", 30))
-        
-        #kframes.append(cmd.face.get_emotion_keyframe("neutral", 30))
-
-        
-        cmd.face.load_keyframes(kframes)
+        cmd.face.play_emotion("neutral", 5, 10)
+        cmd.face.play_emotion("happy", 30, 20)
+        cmd.face.play_emotion("surprised", 15, 20)
+        cmd.face.play_emotion("neutral", 15, 20)
+        cmd.face.play_emotion("happy", 30, 20)
+        cmd.face.play_emotion("wink_left", 10)
+        cmd.face.play_emotion("happy", 10, 20)
+        cmd.face.play_emotion("suspicious", 15, 20)
     
-    print("Execute MTA Command in main thread")
+    else:
+        
+        cmd.face.random_behavior()
+        
+        
+    print("ExecuteCommand in main thread")
     cmd.execute(threading.Event(), timeout=60)

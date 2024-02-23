@@ -2,7 +2,7 @@
 
 # Define the configuration directory and file paths
 config_dir="/etc/PixelPulseNeo"
-config_file="${config_dir}/secret.conf"
+config_file="${config_dir}/secrets.conf"
 
 # Check if the configuration directory exists, create it if not
 if [ ! -d "$config_dir" ]; then
@@ -22,4 +22,4 @@ SPOTIPY_CLIENT_SECRET
 
 EOF
 
-echo "Configuration file initialized successfully."
+echo "Configuration file initialized"

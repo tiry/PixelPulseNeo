@@ -21,11 +21,23 @@ Displays Weather forcast from wttr.in
 
 Simple Eyes rendering
 
+<img src="screenshots/eyes1.png"/>
+
+<img src="screenshots/eyes2.png"/>
+
 ## conway
 
 Render Conway's game of life
 
+<img src="screenshots/conway2.png"/>
+
 <img src="screenshots/conway1.gif"/>
+
+## splash
+
+Displays News from RSS feeds
+
+<img src="screenshots/splash1.png"/>
 
 ## spotify
 
@@ -58,4 +70,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 19-02-2024 13:47:52.
+Automatically generated using `python -m Matrix.doc_gen` on 23-02-2024 02:26:31.
