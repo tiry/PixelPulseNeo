@@ -34,6 +34,18 @@ def execute_process(cmd_line:str) -> tuple[bool, str]:
         return (False, error_output)
 
 
+def git_metrics() -> dict[str, Any]:
+    
+    metrics:dict[str, Any] = {}
+    cmd:str ="git rev-parse HEAD"
+    ok, data = execute_process(cmd)
+    if ok:
+        lines: list[str] = data.split("\n")
+        metrics["git_rev"] = lines[0]
+    else:
+        print(f"ERROR {data}")
+    return metrics
+    
 def system_metrics() -> dict[str, Any]:
     
     metrics:dict[str, Any] = {}
@@ -72,6 +84,10 @@ def all_metrics() -> dict[str, Any]:
     metrics: dict[str, Any] = system_metrics()
     p_metrics: dict[str, Any] = python_metrics()
     metrics.update(p_metrics)
+    
+    g_metrics: dict[str, Any] = git_metrics()
+    metrics.update(g_metrics)
+    
     return metrics
 
 if __name__ == "__main__":

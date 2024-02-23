@@ -148,7 +148,7 @@ def trim_image(im: Image.Image, center: bool = True) -> Image.Image:
 
 
 # XXX Check pygame is enabled
-CAPTURE_PYGAME = True
+CAPTURE_PYGAME = False
 CAPTURE_FREQ = 60
 
 

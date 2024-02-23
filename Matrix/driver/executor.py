@@ -30,6 +30,11 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         # init scheduler and load playlists
         self.scheduler = Scheduler(schedule_file=schedule_file)
 
+        self.scheduler.append_next(
+            CommandEntry(
+                command_name="splash", duration=6, args=[], kwargs={}
+            )
+        )
         self.stop_current = threading.Event()
         self.stop_scheduler = threading.Event()
         self.schedule_thread: threading.Thread | None = None
