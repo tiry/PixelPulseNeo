@@ -13,6 +13,14 @@ def get_cmd()->str:
     absolute_path: str = os.path.abspath(relative_path)
     return f"{absolute_path}"
 
+def get_git_cmd()->str:
+    current_directory: str = os.path.dirname(os.path.realpath(__file__))
+    relative_path: str = os.path.join(current_directory, "../../../")
+    absolute_path: str = os.path.abspath(relative_path)
+    
+    return f"git -C {absolute_path} rev-parse HEAD"
+
+
 def execute_process(cmd_line:str) -> tuple[bool, str]:
     
     # Start the process
@@ -37,7 +45,7 @@ def execute_process(cmd_line:str) -> tuple[bool, str]:
 def git_metrics() -> dict[str, Any]:
     
     metrics:dict[str, Any] = {}
-    cmd:str ="git rev-parse HEAD"
+    cmd:str = get_git_cmd()
     ok, data = execute_process(cmd)
     if ok:
         lines: list[str] = data.split("\n")
