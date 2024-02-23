@@ -146,4 +146,31 @@ The default configuration uses `pygame`, but see [RGBMatrixEmulator configuratio
 
 ## Secrets Management
 
-   sudo vim /etc/bash.bashrc
+### Manual run
+
+If you are running this in interactive mode, you can simply populate the environment from your `~/.basshrc` file
+
+    export MTA_API_KEY=XXXX
+    export MTA_SIRI_API_KEY=YYYY
+
+    export SPOTIPY_CLIENT_ID=ZZZZZ
+    export SPOTIPY_CLIENT_SECRET=XTZ
+    export SPOTIPY_REDIRECT_URI=http://127.0.0.1:3099
+
+As documented in  [scripts/ReadMe.nd](scripts/ReadMe.md) as long as you start the scripts using `sudo -E`, this should be good enough.
+
+### SystemD run
+
+If you are using the SystemD packaging to run the service, you need to save the secret in `/etc/PixelPulseNeo/secrets.conf`
+
+You can use [system/ini-config.sh](system/ini-config.sh) to initialize the configuration file from a template.
+
+Then you fill need to edit this file and add the missing entries:
+
+    MTA_API_KEY=
+    MTA_SIRI_API_KEY=
+
+    SPOTIPY_CLIENT_ID=
+    SPOTIPY_CLIENT_SECRET=
+    SPOTIPY_REDIRECT_URI=http://127.0.0.1:3099
+

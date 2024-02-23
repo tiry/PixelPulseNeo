@@ -52,6 +52,7 @@ def git_metrics() -> dict[str, Any]:
         metrics["git_rev"] = lines[0]
     else:
         print(f"ERROR {data}")
+        metrics["git_rev"] = "???"
     return metrics
     
 def system_metrics() -> dict[str, Any]:
