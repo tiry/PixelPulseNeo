@@ -1,7 +1,7 @@
-from typing import Any, Literal
+from typing import Any
 import copy
 import random
-from PIL import Image, ImageDraw
+from PIL import Image
 from Matrix.driver.commands.anim.eye import Eye
 from Matrix.driver.commands.anim.mouth import Mouth
 
@@ -16,12 +16,22 @@ emotion_dictionnary:dict[str, list[dict[str, Any]]] = {
                 { "target":"left", "open": 0, "tilt": 0},
                 {"target":"right", "open": 80, "tilt": 0},
                 { "target":"mouth", "open": 30, "radius" : 45, "tilt": 30 }],
+            "wink_right" :  [ 
+                { "target":"right", "open": 0, "tilt": 0},
+                {"target":"left", "open": 80, "tilt": 0},
+                { "target":"mouth", "open": 30, "radius" : 45, "tilt": -30 }],
             "happy" :  [ 
                 { "target":"eyes", "open": 70},
                 { "target":"mouth", "open": 40, "tilt": 10, "radius" : 30 }],
             "suspicious" :  [ 
-                { "target":"eyes", "open": 40},
-                { "target":"mouth", "open": 5, "tilt": 0, "radius" : 45 }]
+                { "target":"eyes", "open": 30, "tilt": 100},
+                { "target":"mouth", "open": 5, "tilt": 0, "radius" : 45 }],
+            "look_left" :  [ 
+                { "target":"eyes", "open": 70, "tilt": -100},
+                { "target":"mouth", "open": 25, "tilt": -10, "radius" : 45 }],
+            "look_right" :  [ 
+                { "target":"eyes", "open": 70, "tilt": 100},
+                { "target":"mouth", "open": 25, "tilt": 10, "radius" : 45 }]
 
         }
    
@@ -102,6 +112,12 @@ class Face():
         for i in range(10):
             
             emotion = emotions[random.randint(0, len(emotions)-1)]
-            self.play_emotion(emotion, frames=random.randint(10, 90), pause = random.randint(0, 30))
-        
+            self.play_emotion(emotion, frames=random.randint(5, 60), pause = random.randint(0, 30))
+    
+    def is_active(self) -> bool:
+        for actor_name in self._get_actors():
+            actor = getattr(self, actor_name)
+            if len(actor.command_groups)>0:
+                return True
+        return False
         

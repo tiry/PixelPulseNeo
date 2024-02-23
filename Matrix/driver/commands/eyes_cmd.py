@@ -1,9 +1,7 @@
 import argparse
 import threading
-from typing import Any, Literal
-from PIL import Image, ImageDraw
-from abc import ABC, abstractmethod
-import json
+from typing import Any
+from PIL import Image
 
 from Matrix.driver.commands.base import (
     PictureScrollBaseCmd,
@@ -34,8 +32,10 @@ class EyesCmd(PictureScrollBaseCmd):
         height: int = get_total_matrix_height()
 
         img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
-        #self.eye_left.update_and_draw(img)
-        #self.eye_right.update_and_draw(img)
+        
+        if not self.face.is_active():
+            self.face.random_behavior()
+        
         self.face.update_and_draw(img)
         return img
 
@@ -117,6 +117,8 @@ if __name__ == "__main__":
         cmd.face.play_emotion("suspicious", 15, 20)
     
     else:
+
+        #cmd.face.play_emotion("look_left", 15, 20)
         
         cmd.face.random_behavior()
         
