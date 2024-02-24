@@ -3,7 +3,7 @@ import os
 from typing import Any
 import datetime
 from Matrix.driver.executor import CommandExecutor
-from Matrix.driver.commands.base import TEST_ONLY_COMMANDS
+from Matrix.driver.commands.index import TEST_ONLY_COMMANDS
 
 def document_commands(cmdlist: list[dict[str, Any]]):
     lines = []

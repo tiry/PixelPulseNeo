@@ -18,9 +18,6 @@ from Matrix.config import (
     DEFAULT_REFRESH,
 )
 
-TEST_ONLY_COMMANDS: list[str] = ["scrolltext", "matrix", "time", "faker"]
-
-
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, DARKCYAN, "Command", logging.INFO)
 

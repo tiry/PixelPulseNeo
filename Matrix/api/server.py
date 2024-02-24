@@ -18,7 +18,7 @@ from Matrix.driver.factory import CommandExecutorSingleton, IPCClientSingleton
 from Matrix.driver.ipc.client import IPCClient, IPCClientExecutor
 from Matrix.driver.executor import CommandExecutor
 from Matrix.driver.monitor import probe
-from Matrix.driver.commands.base import TEST_ONLY_COMMANDS
+from Matrix.driver.commands.index import TEST_ONLY_COMMANDS
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
 
