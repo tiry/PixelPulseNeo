@@ -18,7 +18,7 @@ from Matrix.driver.factory import CommandExecutorSingleton, IPCClientSingleton
 from Matrix.driver.ipc.client import IPCClient, IPCClientExecutor
 from Matrix.driver.executor import CommandExecutor
 from Matrix.driver.monitor import probe
-
+from Matrix.driver.commands.base import TEST_ONLY_COMMANDS
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, YELLOW, "API> ")
 
@@ -94,11 +94,21 @@ class Commands(Resource):
         - `name`: The name of the command
         - `description`: A description of what the command does
         - `screenshots`: Screenshot URLs demonstrating the visual effect of the command
+        - `recommended_duration`: recommended duration in s
+
         """
         logger.info("GET /commands")
-        result = get_executor().get_commands()
+        result: list[dict[str, Any]] | None = get_executor().get_commands()
         logger.info(f"result {result}")
-        return jsonify(result)
+        if result is None:
+            return jsonify([])
+        filtered : list[dict[str, Any]]= []
+        
+        for cmd in result:
+            if cmd["name"] not in TEST_ONLY_COMMANDS:
+                filtered.append(cmd)
+        logger.info(f"filtered result {filtered}")
+        return jsonify(filtered)
 
 
 @api.route("/schedules")

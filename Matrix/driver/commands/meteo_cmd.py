@@ -21,6 +21,7 @@ class MeteoCmd(PictureScrollBaseCmd):
         self.refresh = True
         self.background: Image.Image | None = None
         self.weather: dict[Any, Any] | None = None
+        self.recommended_duration = 20
 
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         self.weather = getTodayWeather()

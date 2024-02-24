@@ -167,8 +167,8 @@ class TestSchedule(unittest.TestCase):
         self.assertEqual(len(playlists), 2)
 
         stack = scheduler.get_current_stack()
-        # print(f"stack {stack}")
-        # print(f"stack commands {stack.commands}")
+        print(f"stack {stack}")
+        #print(f"stack commands {stack.commands}")
 
         self.assertIsNotNone(stack)
         self.assertEqual(len(stack.commands), 2)  # type: ignore

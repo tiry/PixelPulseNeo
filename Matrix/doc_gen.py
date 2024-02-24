@@ -3,10 +3,7 @@ import os
 from typing import Any
 import datetime
 from Matrix.driver.executor import CommandExecutor
-
-
-commands_to_skip = ["scrolltext", "matrix", "time", "faker"]
-
+from Matrix.driver.commands.base import TEST_ONLY_COMMANDS
 
 def document_commands(cmdlist: list[dict[str, Any]]):
     lines = []
@@ -14,7 +11,7 @@ def document_commands(cmdlist: list[dict[str, Any]]):
     lines.append("# Commands")
 
     for cmd in cmdlist:
-        if cmd["name"] in commands_to_skip:
+        if cmd["name"] in TEST_ONLY_COMMANDS:
             continue
         print(cmd)
         lines.append(f'\n## {cmd["name"]}')

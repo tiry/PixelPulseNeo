@@ -1,4 +1,3 @@
-import random
 from PIL import Image
 from PIL import ImageDraw
 from Matrix.driver.commands.base import (
@@ -6,22 +5,17 @@ from Matrix.driver.commands.base import (
     get_total_matrix_width,
     get_total_matrix_height,
     get_icons_dir,
-    format_date_short,
-    format_time,
 )
-from Matrix.driver.commands.news import feed
 from Matrix.driver.monitor import probe
 
 class SplashCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
-        super().__init__("splash", "Displays News from RSS feeds")
+        super().__init__("splash", "Simple Splash Screen")
         self.scroll = False
         self.refresh = True
         self.speed_x = 0
         self.speed_y = 0
         self.pre_rendered :Image.Image | None = None
-
- 
  
     def update(self, args: list = [], kwargs: dict = {}) -> str:
  
@@ -30,9 +24,7 @@ class SplashCmd(PictureScrollBaseCmd):
         img:Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
 
         self.add_logo(img, 2)
-
         self.pre_rendered = img
-
         return super().update(args, kwargs)
 
     def add_logo(self, img:Image.Image, variant:int = 0):
@@ -50,7 +42,6 @@ class SplashCmd(PictureScrollBaseCmd):
         git_rev= probe.git_metrics()["git_rev"][:10]
         draw.text((5, 55), f"V:{git_rev}", font=font5)
         
-
     def generate_image(self, args=[], kwargs={}) -> Image.Image | None:
 
         if self.pre_rendered is None:

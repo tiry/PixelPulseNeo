@@ -86,12 +86,13 @@ function CommandList() {
                                 <FormControl fullWidth>
                                     <InputLabel>Duration</InputLabel>
                                     <Select
-                                    value={selectedDurations[command.name] || ''}
+                                    value={selectedDurations[command.name] || command.recommended_duration}
                                     label="Duration"
                                     onChange={(e) => handleDurationChange(command.name, e.target.value)}
                                     displayEmpty
                                     >
                                     <MenuItem value={10}>10s</MenuItem>
+                                    <MenuItem value={20}>20s</MenuItem>
                                     <MenuItem value={30}>30s</MenuItem>
                                     <MenuItem value={60}>1 min</MenuItem>
                                     <MenuItem value={120}>2 min</MenuItem>

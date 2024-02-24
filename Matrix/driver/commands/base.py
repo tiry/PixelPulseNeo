@@ -18,6 +18,9 @@ from Matrix.config import (
     DEFAULT_REFRESH,
 )
 
+TEST_ONLY_COMMANDS: list[str] = ["scrolltext", "matrix", "time", "faker"]
+
+
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, DARKCYAN, "Command", logging.INFO)
 
@@ -158,8 +161,13 @@ class BaseCommand:
         self.name: str = name
         self.description: str = description
 
+        self.recommended_duration:int=10
+        
         logger.debug(f"Load command with name {name}")
 
+    def get_recommended_duration(self) -> int:
+        return self.recommended_duration
+    
     def execute(
         self,
         stop_event: threading.Event,

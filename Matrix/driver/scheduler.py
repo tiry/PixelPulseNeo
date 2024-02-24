@@ -3,11 +3,13 @@ import json
 import logging
 from typing import List
 import shutil
+import random
 from datetime import datetime
 from Matrix.driver.utilz import configure_log
 from Matrix.models.Commands import CommandEntry, ScheduleModel, ScheduleCatalog
 from Matrix.models.encode import deepcopy, loadModel
 from Matrix.driver.base_executor import Base
+from Matrix.driver import context
 
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, level=logging.INFO)
@@ -32,12 +34,33 @@ class Scheduler(Base):
         self.catalog = ScheduleCatalog()
         self.current_stack = ScheduleModel(commands=[])
 
+    def get_valid_playlists(self) -> list[str]:
+        result:list[str] = []
+
+        if self.catalog is None:
+            return result
+
+        for name in self.catalog.playlists.keys():
+            model: ScheduleModel = self.catalog.playlists[name]
+            valid:bool = True
+            if model.conditions is not None:
+                for condition in model.conditions:
+                    valid = valid and context.eval_condition(condition)
+            if valid is True:
+                result.append(name)
+        return result
+        
     def get_next_catalog(self) -> str | None:
         if self.catalog is None:
             return None
-
-        if "default" in self.catalog.playlists.keys():
-            return "default"
+        valid_playlists: list[str] = self.get_valid_playlists()
+        if len(valid_playlists)==0:
+            if "default" in self.catalog.playlists.keys():
+                return "default"
+        elif len(valid_playlists)==1:
+            return valid_playlists[0]
+        else:
+            return valid_playlists[random.randint(0, len(valid_playlists)-1)]
         return None
 
     def load(self, schedule_file: str | None = None) -> ScheduleCatalog | None:

@@ -102,6 +102,7 @@ class ConwayCmd(PictureScrollBaseCmd):
         self.refresh = True
         self.background = None
         self.tailLength: int = len(getPalette())
+        self.recommended_duration = 60
 
     def update(self, args=[], kwargs={}):
         model = randomGrid(get_total_matrix_width(), get_total_matrix_height())

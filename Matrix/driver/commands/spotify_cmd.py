@@ -31,6 +31,7 @@ class SpotifyCmd(PictureScrollBaseCmd):
         self.cached_track_id: str | None = None
         self.track_info: dict[str, Any] | None = None
         self.cached_placeholder: Image.Image | None = None
+        self.recommended_duration = 15*60
 
     def update(self, args=[], kwargs={}) -> str:
         self.track_info = client.get_current_track_info()

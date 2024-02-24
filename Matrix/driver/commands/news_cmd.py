@@ -78,6 +78,7 @@ class NewsCmd(PictureScrollBaseCmd):
         self.speed_y = 0
         self.feed: feed.FeedWrapper | None = None
         self.feed_definition: dict[str, str] | None = None
+        self.recommended_duration = 120
 
     def update(self, args: list = [], kwargs: dict = {}) -> str:
         self.feed_definition = get_feed_definition()

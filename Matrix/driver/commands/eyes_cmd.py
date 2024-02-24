@@ -21,6 +21,7 @@ class EyesCmd(PictureScrollBaseCmd):
         self.scroll = False
         self.refresh = True 
         self.face = Face()
+        self.recommended_duration = 60
 
     def update(self, args=[], kwargs={}):
         # XXX

@@ -39,6 +39,7 @@ class MtaCmd(PictureScrollBaseCmd):
         self.direction = -1
         self.next_trains: dict | None = None
         self.next_buses: dict | None = None
+        self.recommended_duration = 30
 
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         next_trains: dict = route.getNextTrainsToward(

@@ -20,6 +20,7 @@ class CitibikesCmd(PictureScrollBaseCmd):
         )
         self.scroll = False
         self.refresh = False
+        self.recommended_duration = 10
 
     def update(self, args=[], kwargs={}) -> None:
         citibike_info: list = api.getStationInfo(config.CITIBIKES)

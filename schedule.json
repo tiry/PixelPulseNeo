@@ -62,46 +62,7 @@
                     "kwargs": {}
                 }
             ],
-            "conditions": []
-        },
-        "bitou": {
-            "commands": [
-                {
-                    "command_name": "mta",
-                    "duration": 6.0,
-                    "args": [],
-                    "kwargs": {}
-                }
-            ],
-            "conditions": [
-                ""
-            ]
-        },
-        "bitou2": {
-            "commands": [
-                {
-                    "command_name": "time",
-                    "duration": 10.0,
-                    "args": [],
-                    "kwargs": {}
-                }
-            ],
-            "conditions": [
-                ""
-            ]
-        },
-        "testingschedule": {
-            "commands": [
-                {
-                    "command_name": "time",
-                    "duration": 1.0,
-                    "args": [
-                        "token1708296078.769251"
-                    ],
-                    "kwargs": {}
-                }
-            ],
-            "conditions": []
+            "conditions": ["evening"]
         }
     }
 }

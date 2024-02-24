@@ -1,8 +1,10 @@
 import unittest
 import time
-from Matrix.driver.executor import CommandExecutor
+from Matrix.driver.executor import CommandExecutor, hide_splash_screen
 from Matrix.models.Commands import CommandEntry, CommandExecutionLog
 
+
+hide_splash_screen()
 
 class TestCmdExecutor(unittest.TestCase):
     def test_log_entry(self):
