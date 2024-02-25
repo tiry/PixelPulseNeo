@@ -174,3 +174,27 @@ Then you fill need to edit this file and add the missing entries:
     SPOTIPY_CLIENT_SECRET=
     SPOTIPY_REDIRECT_URI=http://127.0.0.1:3099
 
+
+## Power Management
+
+### Use the Driver to control a power relay
+
+https://www.digital-loggers.com/iot2.html
+
+
+Use [config.py](Matrix/config.py) to configure how to control the Relay Switch
+
+Define the target GPIO pin used by `gpiozero` to control the [iot relay switch](https://www.digital-loggers.com/iot2.html).
+
+The PIN numbers are defined in the [official RaspberryPi documentation](https://projects.raspberrypi.org/en/projects/physical-computing/1)
+
+    POWER_CONTROL_GPIO_PIN = 21
+
+The [iot relay switch](https://www.digital-loggers.com/iot2.html) has 2 types of controlable POWER outlet:
+
+ - normally ON : ON by default, but can be turned off via GPIO
+ - normally OFF: OFF by default, but can be turned on via GPIO
+
+    POWER_SWITCH_NORMALY_ON = False
+
+

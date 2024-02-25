@@ -42,6 +42,13 @@ MATRIX_CHAINED = 3
 # default refresh rate
 DEFAULT_REFRESH = 1 / 60.0
 
+################################################
+# Power Management config
+# 
+# https://www.digital-loggers.com/iot2.html
+# 
+POWER_CONTROL_GPIO_PIN = 21
+POWER_SWITCH_NORMALY_ON = False
 
 ## Test IPC Config
 # USE_EMULATOR = True
