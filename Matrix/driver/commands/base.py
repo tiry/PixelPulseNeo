@@ -10,6 +10,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageChops
 from Matrix.driver.utilz import configure_log, DARKCYAN
+from Matrix.driver import power
 from Matrix.config import (
     MATRIX_CHAINED,
     MATRIX_HEIGHT,
@@ -154,6 +155,10 @@ CAPTURE_FREQ = 60
 
 class BaseCommand:
     def __init__(self, name: str, description: str) -> None:
+        
+        # power on the LED Matrix if needed
+        power.on()
+        
         self.refresh_timer: float = DEFAULT_REFRESH
         self.name: str = name
         self.description: str = description
