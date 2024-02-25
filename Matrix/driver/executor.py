@@ -14,6 +14,7 @@ from Matrix.models.Commands import CommandExecutionLog
 from Matrix.driver.utilz import configure_log, CYAN
 from Matrix.config import is_ipc_enabled
 from Matrix.models.Commands import ScheduleModel
+from Matrix.driver import power
 
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
@@ -29,6 +30,10 @@ def hide_splash_screen():
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
     def __init__(self, schedule_file: str | None = "schedule.json"):
+        
+        # trun on the LED Panel power supply
+        power.on()
+        
         # load commands
         self.commands: dict[str, Any] = self._load_commands()
 
