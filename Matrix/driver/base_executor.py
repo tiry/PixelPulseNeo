@@ -185,3 +185,18 @@ class BaseCommandExecutor(ABC, Base):
             bool: True if connected, False otherwise
         """
         pass
+
+    @abstractmethod
+    def sleep(self) -> None:
+        """
+        Put the executor to sleep
+        """
+        pass
+
+    @abstractmethod
+    def wakeup(self) -> None:
+        """
+        Wake up the executor from sleep
+        """
+        pass
+

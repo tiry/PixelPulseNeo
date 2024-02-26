@@ -15,7 +15,7 @@ from Matrix.driver.utilz import configure_log, CYAN
 from Matrix.config import is_ipc_enabled
 from Matrix.models.Commands import ScheduleModel
 from Matrix.driver import power
-
+from Matrix.driver.monitor import cpu_governor
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
 
@@ -250,6 +250,51 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self.schedule_thread.join(timeout=2)
         logger.info("Scheduler shutdown completed, exiting")
 
+
+    @synchronized_method
+    def sleep(self) -> None:
+        """
+        Put the executor to sleep
+        """
+        logger.info("Entering Sleep mode")
+        
+        logger.info("Stopping Scheduler")
+        
+        self.stop_scheduler.set()
+        time.sleep(BUSY_WAIT * 5)
+        self.stop_current.set()
+        time.sleep(BUSY_WAIT * 5)
+        logger.debug("waiting for scheduler thread to exit")
+        if self.schedule_thread is not None and self.schedule_thread.is_alive():
+            self.schedule_thread.join(timeout=2)
+        logger.info("Scheduler shutdown completed")
+
+        logger.info("Power off LED Matrix")
+        #power.off()
+        
+        logger.info("Set CPU Sleep Mode")
+        cpu_governor.set_cpu_sleep_mode()
+
+    @synchronized_method
+    def wakeup(self) -> None:
+        """
+        Wake up the executor from sleep
+        """        
+        logger.info("Exiting Sleep mode")
+        
+        logger.info("Power off LED Matrix")
+        #power.on()
+        
+        logger.info("Set CPU Mode to normal")
+        cpu_governor.set_cpu_normal_mode()
+        
+        logger.info("Restart Scheduler")
+        self.stop_scheduler.clear()
+        self.stop_current.clear()
+        self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
+        self.schedule_thread.start()
+
+
     def get_valid_commands(self) -> dict[str, Callable]:
         # make remote commands list explicit
         return {
@@ -263,6 +308,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "set_schedule": self.set_schedule,
             "save_schedule": self.save_schedule,
             "stop": self.stop,
+            "sleep": self.sleep,
+            "wakeup": self.wakeup,
+            
         }
 
     def connected(self) -> bool:

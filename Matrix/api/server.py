@@ -275,7 +275,21 @@ class Status(Resource):
         
         
 
-@api.route("/shutdown")
+@api.route("/power/sleep")
+class Sleep(Resource):
+    def get(self):
+        global executor
+        if executor is not None:
+            logger.info("putting the executor to sleep")
+            
+@api.route("/power/wakeup")
+class Wakeup(Resource):
+    def get(self):
+        global executor
+        if executor is not None:
+            logger.info("putting the executor to sleep")
+
+@api.route("/power/shutdown")
 class Shutdown(Resource):
     def get(self):
         global executor

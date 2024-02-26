@@ -186,6 +186,17 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
             # XXX Ping Server
             return True
 
+    @synchronized_method
+    def sleep(self) -> None:
+        """
+        Put the executor to sleep
+        """
+        self.send_command("sleep")
+
+    @synchronized_method
+    def wakeup(self) -> None:
+        self.send_command("wakeup")
+ 
 
 class InteractiveRemoteCLI:
     def __init__(self) -> None:
