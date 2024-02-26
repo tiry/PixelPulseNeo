@@ -1,8 +1,7 @@
 from typing import Any
 import os
 import psutil
-import subprocess
-import sys
+from  Matrix.driver.monitor.base  import execute_process
 import argparse
 import logging
 
@@ -19,27 +18,6 @@ def get_git_cmd()->str:
     absolute_path: str = os.path.abspath(relative_path)
     
     return f"git -C {absolute_path} rev-parse HEAD"
-
-
-def execute_process(cmd_line:str) -> tuple[bool, str]:
-    
-    # Start the process
-    shell_process = subprocess.Popen(cmd_line, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-    # Wait for the process to complete and read stdout and stderr
-    stdout, stderr = shell_process.communicate()
-
-    # Decode the output from bytes to string if necessary (Python 3)
-    output: str = stdout.decode()
-    error_output: str = stderr.decode()
-
-    # Check if the process has any errors
-    if shell_process.returncode == 0:
-        return (True, output)
-    else:
-        print("Process completed with errors. Error Output:")
-        print(error_output)
-        return (False, error_output)
 
 
 def git_metrics() -> dict[str, Any]:

@@ -1,5 +1,9 @@
 # Install the Python code
 
+## System requirements
+
+    sudo apt install cpufrequtils
+
 ## Python3 Virtual env
 
     python3 -m venv venv
@@ -23,6 +27,9 @@ Command system (`Matrix.driver`)
     pip install unidecode
     pip install beautifulsoup4
     pip install psutil
+
+    pip install RPi.GPIO
+    pip install gpiozero
 
 Because of `underground` the pydantic version is fixed to 1.9.2
 
