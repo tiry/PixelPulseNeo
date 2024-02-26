@@ -12,6 +12,7 @@ def is_ipc_enabled():
     return USE_IPC
 
 
+
 # Run CommandExecutor as root
 RUN_AS_ROOT = False
 
@@ -49,6 +50,9 @@ DEFAULT_REFRESH = 1 / 60.0
 # 
 POWER_CONTROL_GPIO_PIN = 21
 POWER_SWITCH_NORMALY_ON = False
+
+POWER_ON_TIME = "07:00"
+POWER_OFF_TIME = "23:00"
 
 ## Test IPC Config
 # USE_EMULATOR = True

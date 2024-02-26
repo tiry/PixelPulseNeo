@@ -1,9 +1,11 @@
 from typing import Any
 import os
 import psutil
-from  Matrix.driver.monitor.base  import execute_process
 import argparse
 import logging
+from  Matrix.driver.monitor.base  import execute_process
+from Matrix.driver.monitor.cpu_governor import get_frequency_governor
+
 
 
 def get_cmd()->str:
@@ -16,8 +18,7 @@ def get_git_cmd()->str:
     current_directory: str = os.path.dirname(os.path.realpath(__file__))
     relative_path: str = os.path.join(current_directory, "../../../")
     absolute_path: str = os.path.abspath(relative_path)
-    
-    return f"git -C {absolute_path} rev-parse HEAD"
+    return f"git -C {absolute_path} rev-parse --short HEAD"
 
 
 def git_metrics() -> dict[str, Any]:
@@ -51,6 +52,11 @@ def system_metrics() -> dict[str, Any]:
                     metrics[parts[0]] = parts[1]
     else:
         print(f"ERROR {data}")
+        
+    governor: str | None =  get_frequency_governor()
+    if governor is not None:
+        governor = governor.split(" ")[-1]
+        metrics["governor"] = governor
 
     return metrics
 
@@ -62,7 +68,7 @@ def python_metrics() -> dict[str, Any]:
     metrics["cpu_load1"] = round(load1,1)
     metrics["cpu_load5"] = round(load5,1)
     metrics["cpu_load15"] = round(load15,1)
-    metrics["python_cpu"] = (load15/os.cpu_count()) * 100 #type: ignore
+    metrics["python_cpu"] = int((load15/os.cpu_count()) * 100) #type: ignore
 
     return metrics
 

@@ -6,7 +6,6 @@ import QueueIcon from '@mui/icons-material/Queue';
 import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
-
 function CommandList() {
     const [commands, setCommands] = useState([]);
     const [selectedDurations, setSelectedDurations] = useState({});

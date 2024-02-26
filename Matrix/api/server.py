@@ -281,11 +281,11 @@ class Sleep(Resource):
         """Activate the Sleep mode.
 
         """
-        global executor
-        if executor is not None:
+        exec = get_executor()
+        if exec is not None:
             logger.info("putting the executor to sleep")
             try:
-                executor.sleep()
+                exec.sleep()
                 return jsonify({"result": "Sleep mode activated"})
             except Exception as e:
                 print(f"Error during sleep command")
@@ -300,11 +300,11 @@ class Wakeup(Resource):
         """Wakeup from the Sleep mode.
 
         """
-        global executor
-        if executor is not None:
+        exec = get_executor()
+        if exec is not None:
             logger.info("Waking up the executor to sleep")
             try:
-                executor.wakeup()
+                exec.wakeup()
                 return jsonify({"result": "Sleep mode de-activated"})
             except Exception as e:
                 print(f"Error during wakup")

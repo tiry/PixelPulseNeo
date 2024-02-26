@@ -1,10 +1,10 @@
 import traceback
 import logging
-from typing import Any
+from typing import Any, List, Dict
 from threading import RLock
 from functools import wraps
 import os
-from typing import List, Dict
+from datetime import datetime, time
 from abc import ABC, abstractmethod
 from Matrix.driver.utilz import configure_log
 from Matrix.models.Commands import ScheduleModel
@@ -35,6 +35,16 @@ def synchronized_method(method):
 
     return wrapper
 
+
+
+def is_time_between(begin_time, end_time, check_time=None):
+    # If check time is not given, default to current local time
+    check_time = check_time or datetime.now().time()
+    if begin_time < end_time:
+        return check_time >= begin_time and check_time <= end_time
+    else: # crosses midnight
+        return check_time >= begin_time or check_time <= end_time
+    
 
 class Base:
     """

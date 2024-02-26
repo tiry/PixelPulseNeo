@@ -6,8 +6,9 @@ import importlib
 import os
 import argparse
 import traceback
+import datetime 
 from Matrix.models.Commands import CommandEntry
-from Matrix.driver.base_executor import BaseCommandExecutor, synchronized_method
+from Matrix.driver.base_executor import BaseCommandExecutor, synchronized_method, is_time_between
 from Matrix.driver.scheduler import Scheduler
 from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
@@ -16,8 +17,10 @@ from Matrix.config import is_ipc_enabled
 from Matrix.models.Commands import ScheduleModel
 from Matrix.driver import power
 from Matrix.driver.monitor import cpu_governor
+from Matrix import config
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
+WATCHDOG_WAIT = 60
 
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, CYAN, "CmdExec")
@@ -48,13 +51,22 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             )
         self.stop_current = threading.Event()
         self.stop_scheduler = threading.Event()
+        self.stop_watchdog = threading.Event()
+
+        logger.info("starting schedule thread")
         self.schedule_thread: threading.Thread | None = None
-        print("starting schedule thread")
         self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
         self.schedule_thread.start()
 
+        logger.info("starting watchdog thread")
+        self.watchdog_thread: threading.Thread | None = None
+        self.watchdog_thread = threading.Thread(target=self._watchdog_loop, args=())
+        self.watchdog_thread.start()
+
+
         self.audit_log: list[CommandExecutionLog] = []
         self.execution_counter = 0
+        self.sleep_mode_activated:bool = False
 
     def _load_commands(self) -> dict:
         commands: dict[str, Any] = {}
@@ -134,6 +146,30 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def save_schedule(self, schedule_file=None):
         self.scheduler.save(schedule_file=schedule_file)
 
+    def _watchdog_loop(self) -> None:
+        
+        PONT= config.POWER_ON_TIME.split(":")
+        POFFT= config.POWER_OFF_TIME.split(":")
+    
+        start_time = datetime.time(int(PONT[0]),int(PONT[1]))
+        end_time = datetime.time(int(POFFT[0]),int(POFFT[1]))
+        
+        while not self.stop_watchdog.is_set():
+        
+            if is_time_between(start_time, end_time):
+                # we should be on
+                if self.sleep_mode_activated is True:
+                    # we should wake up
+                    logger.info("Waking up!!!") 
+            elif is_time_between(end_time, start_time):
+                # we should be off
+                if self.sleep_mode_activated is False:
+                    # we should go sleep
+                    logger.info("Time to sleep")         
+            time.sleep(WATCHDOG_WAIT)
+            
+        logger.info("WatchDog loop exited")
+
     def _scheduler_loop(self) -> None:
         while not self.stop_scheduler.is_set():
             command_entry: CommandEntry | None = self.scheduler.fetch_next_command()
@@ -142,7 +178,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                     self._run_command(command_entry)
                 else:
                     time.sleep(BUSY_WAIT)
-        print("SCHEDULER EXITED FOR REAL")
+        logger.info("Scheduler Loop exited")
 
     def _add_log(self, log_entry: CommandExecutionLog) -> None:
         logger.debug(f" [AUDIT] {log_entry}")
@@ -239,8 +275,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Stop request received")
         traceback.print_stack()
 
-
         self.stop_scheduler.set()
+        self.stop_watchdog.set()
+        
         time.sleep(BUSY_WAIT * 5)
         if interrupt:
             self.stop_current.set()
@@ -248,6 +285,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.debug("waiting for scheduler thread to exit")
         if self.schedule_thread is not None and self.schedule_thread.is_alive():
             self.schedule_thread.join(timeout=2)
+        
         logger.info("Scheduler shutdown completed, exiting")
 
 
@@ -267,6 +305,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.debug("waiting for scheduler thread to exit")
         if self.schedule_thread is not None and self.schedule_thread.is_alive():
             self.schedule_thread.join(timeout=2)
+            self.schedule_thread = None
         logger.info("Scheduler shutdown completed")
 
         logger.info("Power off LED Matrix")
@@ -274,12 +313,17 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         
         logger.info("Set CPU Sleep Mode")
         cpu_governor.set_cpu_sleep_mode()
+        
+        self.sleep_mode_activated=True
 
     @synchronized_method
     def wakeup(self) -> None:
         """
         Wake up the executor from sleep
-        """        
+        """
+        if self.sleep_mode_activated is False:
+            logger.error("Calling Wakup on where Sleep mode is not active ...")
+        
         logger.info("Exiting Sleep mode")
         
         logger.info("Power off LED Matrix")
@@ -291,8 +335,11 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Restart Scheduler")
         self.stop_scheduler.clear()
         self.stop_current.clear()
-        self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
-        self.schedule_thread.start()
+        if self.schedule_thread is None:
+            self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
+            self.schedule_thread.start()
+        
+        self.sleep_mode_activated=False
 
 
     def get_valid_commands(self) -> dict[str, Callable]:

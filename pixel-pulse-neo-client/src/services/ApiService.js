@@ -50,5 +50,12 @@ export default class ApiService {
         return axios.get(`${BASE_URL}/status`).then(res => res.data);
     }
 
+    static sleep() {
+        return axios.get(`${BASE_URL}/power/sleep`).then(res => res.data);
+    }
+
+    static wakeup() {
+        return axios.get(`${BASE_URL}/power/wakeup`).then(res => res.data);
+    }
 }
 
