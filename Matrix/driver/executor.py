@@ -270,7 +270,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Scheduler shutdown completed")
 
         logger.info("Power off LED Matrix")
-        #power.off()
+        power.off()
         
         logger.info("Set CPU Sleep Mode")
         cpu_governor.set_cpu_sleep_mode()
@@ -283,7 +283,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Exiting Sleep mode")
         
         logger.info("Power off LED Matrix")
-        #power.on()
+        power.on()
         
         logger.info("Set CPU Mode to normal")
         cpu_governor.set_cpu_normal_mode()

@@ -304,7 +304,7 @@ class Wakeup(Resource):
         if executor is not None:
             logger.info("Waking up the executor to sleep")
             try:
-                executor.sleep()
+                executor.wakeup()
                 return jsonify({"result": "Sleep mode de-activated"})
             except Exception as e:
                 print(f"Error during wakup")
