@@ -36,7 +36,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.sleep:
-        set_cpu_normal_mode()
+        set_cpu_sleep_mode()
     if args.wakeup:
         set_cpu_normal_mode()
     
