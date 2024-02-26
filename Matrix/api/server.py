@@ -278,16 +278,40 @@ class Status(Resource):
 @api.route("/power/sleep")
 class Sleep(Resource):
     def get(self):
+        """Activate the Sleep mode.
+
+        """
         global executor
         if executor is not None:
             logger.info("putting the executor to sleep")
+            try:
+                executor.sleep()
+                return jsonify({"result": "Sleep mode activated"})
+            except Exception as e:
+                print(f"Error during sleep command")
+                print(e)
+                return make_response(jsonify({"error": str(e)}), 500)
+        else:
+            return make_response(jsonify({"error": f"No Executor found"}), 500)
             
 @api.route("/power/wakeup")
 class Wakeup(Resource):
     def get(self):
+        """Wakeup from the Sleep mode.
+
+        """
         global executor
         if executor is not None:
-            logger.info("putting the executor to sleep")
+            logger.info("Waking up the executor to sleep")
+            try:
+                executor.sleep()
+                return jsonify({"result": "Sleep mode de-activated"})
+            except Exception as e:
+                print(f"Error during wakup")
+                print(e)
+                return make_response(jsonify({"error": str(e)}), 500)
+        else:
+            return make_response(jsonify({"error": f"No Executor found"}), 500)
 
 @api.route("/power/shutdown")
 class Shutdown(Resource):
