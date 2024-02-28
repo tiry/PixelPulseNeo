@@ -13,7 +13,16 @@ function CommandList() {
     const IMG_TEMPO_S=20
 
     useEffect(() => {
-        ApiService.getCommands().then(setCommands);
+        ApiService.getCommands().then(commands => {
+          setCommands(commands);
+          // Initialize selectedDurations for each command
+          const initialSelectedDurations = {};
+          commands.forEach((command, index) => {
+            initialSelectedDurations[command.name] = command.recommended_duration;
+          });
+          setSelectedDurations(initialSelectedDurations);
+        });
+        
     }, []);
 
     useEffect(() => {

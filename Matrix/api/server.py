@@ -7,7 +7,7 @@ import logging
 import traceback
 from typing import Any
 from pydantic import BaseModel
-from flask import Flask, jsonify, make_response, request, send_file, send_from_directory
+from flask import Flask, jsonify, make_response, request, Response, send_file, send_from_directory
 from flask_restx import Api, Resource
 from flask_cors import CORS
 from Matrix.models.Commands import ScheduleModel
@@ -338,11 +338,22 @@ class Shutdown(Resource):
 
 @app.route("/web/")
 @app.route("/web/<path:path>")
-def send_report(path=None):
+def serve_webapp(path=None):
     if path is None or path == "":
         path = "index.html"
-    return send_from_directory("../../pixel-pulse-neo-client/build/", path)
-
+    print(f"serve_webapp for path {path}")
+    try:
+        response: Response =  send_from_directory("../../pixel-pulse-neo-client/build/", path)
+        return response
+    except Exception as e:
+        print(f"Error during serve_webapp for path {path}")
+        print(f"Intercept 404 for path {path}")
+        if path in ["status", "schedule", "commands", "playlists"]:
+            return make_response({}, 304)
+        else:
+            return make_response(jsonify({"error": str(e)}), 500)
+    
+    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
