@@ -3,12 +3,13 @@ import time
 import tempfile
 import os
 import json
-from Matrix.driver.executor import CommandExecutor, hide_splash_screen
+from Matrix.driver.executor import CommandExecutor, hide_splash_screen, disable_watchdog
 from Matrix.models.Commands import CommandExecutionLog
 from Matrix.models.Commands import ScheduleCatalog, ScheduleModel
 from Matrix.models.encode import loadModel
 
 hide_splash_screen()
+disable_watchdog()
 
 class TestEnqueeCmd(unittest.TestCase):
     def get_test_schedule_file(self):

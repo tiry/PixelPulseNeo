@@ -180,8 +180,12 @@ class TestSchedule(unittest.TestCase):
         scheduler = Scheduler(schedule_file=schedule_file)
         playlists = scheduler.get_playlist_names()
         self.assertEqual(len(playlists), 2)
+        self.assertEqual("default", playlists[0])
+        self.assertEqual("bitou", playlists[1])
+                
 
         stack = scheduler.get_current_stack()
+        print(f"Stack BF {stack}")
         self.assertEqual(len(stack.commands), 2)  # type: ignore
 
         self.assertEqual(len(scheduler.current_stack.commands), 2)

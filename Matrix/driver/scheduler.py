@@ -34,7 +34,7 @@ class Scheduler(Base):
         self.catalog = ScheduleCatalog()
         self.current_stack = ScheduleModel(commands=[])
 
-    def get_valid_playlists(self) -> list[str]:
+    def get_conditioned_playlists(self) -> list[str]:
         result:list[str] = []
 
         if self.catalog is None:
@@ -43,9 +43,15 @@ class Scheduler(Base):
         for name in self.catalog.playlists.keys():
             model: ScheduleModel = self.catalog.playlists[name]
             valid:bool = True
-            if model.conditions is not None:
+            if model.conditions is not None and len(model.conditions) > 0:
                 for condition in model.conditions:
-                    valid = valid and context.eval_condition(condition)
+                    if condition is None or condition =="":
+                        valid = False
+                    else:
+                        valid = valid and context.eval_condition(condition)
+            else:
+                # skip non conditioned playlists
+                valid = False
             if valid is True:
                 result.append(name)
         return result
@@ -53,14 +59,15 @@ class Scheduler(Base):
     def get_next_catalog(self) -> str | None:
         if self.catalog is None:
             return None
-        valid_playlists: list[str] = self.get_valid_playlists()
-        if len(valid_playlists)==0:
+        conditioned_playlists: list[str] = self.get_conditioned_playlists()
+        #print(f"conditioned_playlists = {conditioned_playlists}")
+        if len(conditioned_playlists)==0:
             if "default" in self.catalog.playlists.keys():
                 return "default"
-        elif len(valid_playlists)==1:
-            return valid_playlists[0]
+        elif len(conditioned_playlists)==1:
+            return conditioned_playlists[0]
         else:
-            return valid_playlists[random.randint(0, len(valid_playlists)-1)]
+            return conditioned_playlists[random.randint(0, len(conditioned_playlists)-1)]
         return None
 
     def load(self, schedule_file: str | None = None) -> ScheduleCatalog | None:

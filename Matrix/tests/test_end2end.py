@@ -1,5 +1,3 @@
-from Matrix import config
-from Matrix.driver.factory import IPCClientSingleton
 import argparse
 import unittest
 import requests
@@ -10,6 +8,13 @@ from PIL import Image
 from io import BytesIO
 import json
 import sys
+from Matrix import config
+from Matrix.driver.factory import IPCClientSingleton
+from Matrix.driver.executor import hide_splash_screen,disable_watchdog
+
+
+hide_splash_screen()
+disable_watchdog()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

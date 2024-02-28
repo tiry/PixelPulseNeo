@@ -26,10 +26,16 @@ logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, CYAN, "CmdExec")
 
 DISPLAY_SPLASH:bool=True
+WATCHDOG_ON:bool=True
 
 def hide_splash_screen():
     global DISPLAY_SPLASH
     DISPLAY_SPLASH=False
+
+def disable_watchdog():
+    global WATCHDOG_ON
+    WATCHDOG_ON=False
+
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
     def __init__(self, schedule_file: str | None = "schedule.json"):
@@ -58,15 +64,16 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
         self.schedule_thread.start()
 
-        logger.info("starting watchdog thread")
-        self.watchdog_thread: threading.Thread | None = None
-        self.watchdog_thread = threading.Thread(target=self._watchdog_loop, args=())
-        self.watchdog_thread.start()
-
+        self.sleep_mode_activated:bool = False
+        if WATCHDOG_ON is True:
+            logger.info("starting watchdog thread")
+            self.watchdog_thread: threading.Thread | None = None
+            self.watchdog_thread = threading.Thread(target=self._watchdog_loop, args=())
+            self.watchdog_thread.start()
 
         self.audit_log: list[CommandExecutionLog] = []
         self.execution_counter = 0
-        self.sleep_mode_activated:bool = False
+        
 
     def _load_commands(self) -> dict:
         commands: dict[str, Any] = {}
@@ -273,7 +280,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     @synchronized_method
     def stop(self, interrupt=False) -> None:
         logger.info("Stop request received")
-        traceback.print_stack()
+        #traceback.print_stack()
 
         self.stop_scheduler.set()
         self.stop_watchdog.set()

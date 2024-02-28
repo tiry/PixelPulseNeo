@@ -12,6 +12,10 @@ NAMED_CONDITIONS: dict[str, str] = {
     "WEEK":  "datetime.now().weekday()<5",
 }
 
+SHARED_CONTECT: dict[str, Any] = {
+    
+}
+
 def eval_condition(condition:str) -> bool:
     
     if condition is None:
@@ -35,6 +39,7 @@ def eval_expression(code:str) -> bool | None :
     
     globals_d["datetime"] = datetime
     locals_d["result"] = None 
+    globals_d.update(SHARED_CONTECT)
     
     # resolved named conditions
     code = code.strip()
@@ -48,7 +53,7 @@ def eval_expression(code:str) -> bool | None :
         exec(code, globals_d, locals_d)   
         return locals_d["result"]
     except Exception as e:
-        print(traceback.format_exc)
+        print(traceback.format_exc())
         print(e)
         return None
 

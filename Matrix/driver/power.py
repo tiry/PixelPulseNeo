@@ -11,8 +11,7 @@ try:
     power_control = LED(config.POWER_CONTROL_GPIO_PIN)
     USE_GPIO = True
 except Exception as e:
-    print(e)
-    
+    pass
 
 def on():
     if power_control is None:
