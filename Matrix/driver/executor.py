@@ -178,13 +178,19 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("WatchDog loop exited")
 
     def _scheduler_loop(self) -> None:
+        logger.info("****************************************************")
+        logger.info("Scheduler Thread: Begin of scheduler loop")
+        i:int = 0
         while not self.stop_scheduler.is_set():
             command_entry: CommandEntry | None = self.scheduler.fetch_next_command()
+            i+=1
             if not self.stop_scheduler.is_set():
                 if command_entry:
                     self._run_command(command_entry)
                 else:
                     time.sleep(BUSY_WAIT)
+
+            logger.info(f"Scheduler loop iteration: {i}")
         logger.info("Scheduler Loop exited")
 
     def _add_log(self, log_entry: CommandExecutionLog) -> None:
@@ -292,7 +298,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.debug("waiting for scheduler thread to exit")
         if self.schedule_thread is not None and self.schedule_thread.is_alive():
             self.schedule_thread.join(timeout=2)
-        
+                
         logger.info("Scheduler shutdown completed, exiting")
 
 
@@ -312,8 +318,13 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.debug("waiting for scheduler thread to exit")
         if self.schedule_thread is not None and self.schedule_thread.is_alive():
             self.schedule_thread.join(timeout=2)
-            self.schedule_thread = None
+        self.schedule_thread = None
         logger.info("Scheduler shutdown completed")
+
+        from Matrix.driver.commands.base import release_matrix_singleton
+        
+        logger.info("Clear LED Matrix")
+        release_matrix_singleton()
 
         logger.info("Power off LED Matrix")
         power.off()
@@ -321,6 +332,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Set CPU Sleep Mode")
         cpu_governor.set_cpu_sleep_mode()
         
+        logger.info("Mark Sleep mode as active")
         self.sleep_mode_activated=True
 
     @synchronized_method
@@ -345,6 +357,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         if self.schedule_thread is None:
             self.schedule_thread = threading.Thread(target=self._scheduler_loop, args=())
             self.schedule_thread.start()
+            logger.info("New Scheduler thread started")
         
         self.sleep_mode_activated=False
 

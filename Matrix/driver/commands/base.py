@@ -147,11 +147,36 @@ def trim_image(im: Image.Image, center: bool = True) -> Image.Image:
     else:
         return im
 
-
 # XXX Check pygame is enabled
 CAPTURE_PYGAME = False
 CAPTURE_FREQ = 60
 
+# We want a sigleton matrix because we want to share the same matrix between all the commands
+# Failing to do so works with the Matrix emulator but gives super bad result with the real hardware
+# XXX make thread safe
+_matrix_singleton: RGBMatrix | None = None
+_matrix_lock: threading.RLock = threading.RLock()
+
+def get_matrix_singleton() -> RGBMatrix:
+    with _matrix_lock:
+        global _matrix_singleton
+        if _matrix_singleton is None:
+            _matrix_singleton = RGBMatrix(options=getMatrixOptions())
+        return _matrix_singleton
+
+# No Lock version 
+def get_matrix() -> RGBMatrix:
+    global _matrix_singleton
+    if _matrix_singleton is None:
+        return get_matrix_singleton()
+    return _matrix_singleton
+
+def release_matrix_singleton() -> None:
+    with _matrix_lock:
+        global _matrix_singleton
+        if _matrix_singleton is not None:
+            _matrix_singleton.Clear()
+            _matrix_singleton = None    
 
 class BaseCommand:
     def __init__(self, name: str, description: str) -> None:
@@ -235,19 +260,18 @@ class BaseCommand:
         pygame.image.save(screen, target_path)
 
 
-# We want a sigleton matrix because we want to share the same matrix between all the commands
-# Failing to do so works with the Matrix emulator but gives super bad result with the real hardware
-# XXX make thread safe
-matrix_singleton: RGBMatrix = RGBMatrix(options=getMatrixOptions())
-
 
 class MatrixBaseCmd(BaseCommand):
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
 
         self.options: RGBMatrixOptions = getMatrixOptions()
-        self.matrix: RGBMatrix = matrix_singleton
-        # self.matrix = RGBMatrix(options = self.options)
+        
+        
+        # force init, but do not store as member variable
+        get_matrix_singleton()
+
+        
         self.fonts: dict = {}
 
     def getFont(self, name: str):
@@ -312,7 +336,7 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
 
     def update(self, args: list = [], kwargs: dict = {}) -> str:
         self.image = self.generate_image(args, kwargs)
-        self.double_buffer = self.matrix.CreateFrameCanvas()
+        self.double_buffer = get_matrix().CreateFrameCanvas()
 
         if self.scroll and self.speed_x != 0:
             self.xpos = get_total_matrix_width()
@@ -340,7 +364,7 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
             img_width, img_height = self.image.size
             self.double_buffer.SetImage(self.image, self.xpos, self.ypos)
 
-        self.double_buffer = self.matrix.SwapOnVSync(self.double_buffer)
+        self.double_buffer = get_matrix().SwapOnVSync(self.double_buffer)
 
         if self.refresh:
             self.image_counter += 1
@@ -361,7 +385,7 @@ class TextScrollBaseCmd(MatrixBaseCmd):
 
     def update(self, args: list = [], kwargs: dict = {}) -> str | None:
         self.text = self.get_text(args=[], kwargs={})
-        self.double_buffer = self.matrix.CreateFrameCanvas()
+        self.double_buffer = get_matrix().CreateFrameCanvas()
 
         font = graphics.Font()
         font.LoadFont("/home/tiry/dev/rpi-rgb-led-matrix/fonts/9x18B.bdf")
@@ -382,4 +406,4 @@ class TextScrollBaseCmd(MatrixBaseCmd):
         self.pos -= 1
         if length and self.pos + length < 0:
             self.pos = double_buffer.width
-        double_buffer = self.matrix.SwapOnVSync(double_buffer)
+        double_buffer = get_matrix().SwapOnVSync(double_buffer)

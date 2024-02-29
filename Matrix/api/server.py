@@ -286,6 +286,7 @@ class Sleep(Resource):
             logger.info("putting the executor to sleep")
             try:
                 exec.sleep()
+                logger.info("sleep command executed")
                 return jsonify({"result": "Sleep mode activated"})
             except Exception as e:
                 print(f"Error during sleep command")

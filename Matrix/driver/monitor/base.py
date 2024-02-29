@@ -17,6 +17,7 @@ def execute_process(cmd_line:str) -> tuple[bool, str]:
         return (True, output)
     else:
         print("Process completed with errors. Error Output:")
-        print(error_output)
+        print(f"stderr: {error_output}")
+        print(f"stdout: {output}")
         return (False, error_output)
 
