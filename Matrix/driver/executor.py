@@ -162,18 +162,30 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         end_time = datetime.time(int(POFFT[0]),int(POFFT[1]))
         
         while not self.stop_watchdog.is_set():
-        
+            
+            time.sleep(WATCHDOG_WAIT)
+
+            logger.info("WatchDog check in progress")
             if is_time_between(start_time, end_time):
                 # we should be on
+                logger.info("Driver should be ON")
                 if self.sleep_mode_activated is True:
                     # we should wake up
-                    logger.info("Waking up!!!") 
+                    logger.info("Waking up driver")
+                    self.wakeup()
+                else:
+                    logger.info("nothing to do: Driver is already running") 
             elif is_time_between(end_time, start_time):
                 # we should be off
+                logger.info("Driver should be OFF")
                 if self.sleep_mode_activated is False:
                     # we should go sleep
-                    logger.info("Time to sleep")         
-            time.sleep(WATCHDOG_WAIT)
+                    logger.info("Putting the driver in sleep mode") 
+                    self.sleep()
+                else:
+                    logger.info("nothing to do: Driver is already sleeping")
+            else:
+                logger.info("nothing to be done")                            
             
         logger.info("WatchDog loop exited")
 
