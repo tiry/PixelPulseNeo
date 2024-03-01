@@ -155,7 +155,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
 
     def _watchdog_loop(self) -> None:
         
-        calendar = power.OnOffCalendar()
+        calendar = power.OnOffCalendar(config.ONOFF_CALENDDAR)
         while not self.stop_watchdog.is_set():
             
             time.sleep(WATCHDOG_WAIT)

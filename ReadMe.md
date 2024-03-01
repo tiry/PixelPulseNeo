@@ -15,12 +15,15 @@ See [Install.md](Install.md) for installation instructions.
 
 The project is broken down into multiple parts:
 
-
 <img src="pictures/PixelPulseNeo.png" width="800px"/>
 
- - the Web UI in ReactJS
+ - the Progressive Web UI in ReactJS
  - the API Server in Python/Flask
- - the CommandExecutor in Python
+ - the Driver written in Python
+    - CommandExecutor 
+    - IPC remoting Client / Server
+    - CLI
+ - the power management 
 
 ## Driver
 
@@ -70,7 +73,7 @@ Get Swagger-UI from : http://localhost:5000/
 
 The API endpoint is exposed on `http://localhost:5000/api/`
 
-The Web interface is exposed on `http://localhost:5000/web/`
+The Web interface is exposed on `http://localhost:5000/web/` (pass-through for the compiled reactjs resources)
 
 See [Matrix.api](Matrix/api/ReadMe.md) for the source and for more details on the internals.
 
@@ -102,7 +105,22 @@ To run the web app in debug:
 
 For more details see [README.md](pixel-pulse-neo-client/README.md)
 
-<img src="pictures/UI.png" width="200px"/>
+<table border=0>    
+<tr>
+<td>
+<img src="pictures/Mob_UI1.jpg" width="200px"/>
+</td>
+<td>
+<img src="pictures/Mob_UI2.jpg" width="200px"/>
+</td>
+</tr>
+</table>
+
+<img src="pictures/web_ui1.png" width="400px"/>
+<br/>
+<br/>
+<img src="pictures/web_ui2.png" width="400px"/>
+
 
 # Configuration
 
