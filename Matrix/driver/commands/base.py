@@ -148,7 +148,7 @@ def trim_image(im: Image.Image, center: bool = True) -> Image.Image:
         return im
 
 # XXX Check pygame is enabled
-CAPTURE_PYGAME = False
+CAPTURE_PYGAME = True
 CAPTURE_FREQ = 60
 
 # We want a sigleton matrix because we want to share the same matrix between all the commands

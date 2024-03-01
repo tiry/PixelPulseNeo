@@ -36,7 +36,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
 
-    executor = CommandExecutor(schedule_file=None)
+    executor = CommandExecutor(schedule_file=None, no_splash=True, no_watchdog=True)
     cmds: list[dict[str, Any]] = executor.get_commands()
     ReadMeContent = document_commands(cmds)
 

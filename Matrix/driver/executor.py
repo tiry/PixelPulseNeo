@@ -8,7 +8,7 @@ import argparse
 import traceback
 import datetime 
 from Matrix.models.Commands import CommandEntry
-from Matrix.driver.base_executor import BaseCommandExecutor, synchronized_method, is_time_between
+from Matrix.driver.base_executor import BaseCommandExecutor, synchronized_method
 from Matrix.driver.scheduler import Scheduler
 from Matrix.driver.ipc.server import IPCServer
 from Matrix.models.Commands import CommandExecutionLog
@@ -38,7 +38,7 @@ def disable_watchdog():
 
 
 class CommandExecutor(BaseCommandExecutor, IPCServer):
-    def __init__(self, schedule_file: str | None = "schedule.json"):
+    def __init__(self, schedule_file: str | None = "schedule.json", no_watchdog:bool=False, no_splash:bool=False) -> None:
         
         # trun on the LED Panel power supply
         power.on()
@@ -49,7 +49,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         # init scheduler and load playlists
         self.scheduler = Scheduler(schedule_file=schedule_file)
 
-        if DISPLAY_SPLASH is True:
+        if DISPLAY_SPLASH is True and no_splash is False:
             self.scheduler.append_next(
                 CommandEntry(
                     command_name="splash", duration=6, args=[], kwargs={}
@@ -65,7 +65,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         self.schedule_thread.start()
 
         self.sleep_mode_activated:bool = False
-        if WATCHDOG_ON is True:
+        if WATCHDOG_ON is True and no_watchdog is False:
             logger.info("starting watchdog thread")
             self.watchdog_thread: threading.Thread | None = None
             self.watchdog_thread = threading.Thread(target=self._watchdog_loop, args=())
@@ -155,18 +155,14 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
 
     def _watchdog_loop(self) -> None:
         
-        PONT= config.POWER_ON_TIME.split(":")
-        POFFT= config.POWER_OFF_TIME.split(":")
-    
-        start_time = datetime.time(int(PONT[0]),int(PONT[1]))
-        end_time = datetime.time(int(POFFT[0]),int(POFFT[1]))
-        
+        calendar = power.OnOffCalendar()
         while not self.stop_watchdog.is_set():
             
             time.sleep(WATCHDOG_WAIT)
-
+            expected_state: bool = calendar.expected_state()
+            
             logger.info("WatchDog check in progress")
-            if is_time_between(start_time, end_time):
+            if expected_state is True:
                 # we should be on
                 logger.info("Driver should be ON")
                 if self.sleep_mode_activated is True:
@@ -175,7 +171,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                     self.wakeup()
                 else:
                     logger.info("nothing to do: Driver is already running") 
-            elif is_time_between(end_time, start_time):
+            else:
                 # we should be off
                 logger.info("Driver should be OFF")
                 if self.sleep_mode_activated is False:
@@ -184,8 +180,6 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                     self.sleep()
                 else:
                     logger.info("nothing to do: Driver is already sleeping")
-            else:
-                logger.info("nothing to be done")                            
             
         logger.info("WatchDog loop exited")
 
@@ -202,7 +196,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 else:
                     time.sleep(BUSY_WAIT)
 
-            logger.info(f"Scheduler loop iteration: {i}")
+            #logger.info(f"Scheduler loop iteration: {i}")
         logger.info("Scheduler Loop exited")
 
     def _add_log(self, log_entry: CommandExecutionLog) -> None:
@@ -440,7 +434,7 @@ if __name__ == "__main__":
 
     if not args.scheduler:
         # prevent loading of default scheduler file
-        executor = CommandExecutor(schedule_file=None)
+        executor = CommandExecutor(schedule_file=None, no_splash=True, no_watchdog=True)
     else:
         executor = CommandExecutor()
 

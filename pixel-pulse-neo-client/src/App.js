@@ -15,16 +15,16 @@ function App() {
         <Router>
             <AppBar position="static">
                 <Toolbar>
-                    <Button color="inherit" component={Link} to="/web/commands" startIcon={<TouchAppIcon />}>
+                    <Button color="inherit" component={Link} to="/web/commands" startIcon={<TouchAppIcon />} size="small">
                         Commands
                     </Button>
-                    <Button color="inherit" component={Link} to="/web/schedule" startIcon={<TableRowsIcon />}>
+                    <Button color="inherit" component={Link} to="/web/schedule" startIcon={<TableRowsIcon />} size="small">
                         Queue
                     </Button>
-                    <Button color="inherit" component={Link} to="/web/playlists" startIcon={<PlaylistAddCheckIcon />}>
+                    <Button color="inherit" component={Link} to="/web/playlists" startIcon={<PlaylistAddCheckIcon />} size="small">
                         Playlists
                     </Button>
-                    <Button color="inherit" component={Link} to="/web/status" startIcon={<SettingsSuggestIcon />}>
+                    <Button color="inherit" component={Link} to="/web/status" startIcon={<SettingsSuggestIcon />} size="small">
                         System
                     </Button>
                 </Toolbar>

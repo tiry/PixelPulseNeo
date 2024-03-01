@@ -34,6 +34,13 @@ The OpenScan blueprint was send to [SendCutSend](https://sendcutsend.com/) and c
 
 <img src="../pictures/led_panels_assembly.png" width="600px"/>
 
+After a small design update, I ordered a Aluminum version that looks a little but nicer and match the "white" design requirement from my CHO.
+
+
+<img src="../pictures/led_panels_assembly-alu.png" width="600px"/>
+
+<img src="../pictures/white-box.jpg" width="600px"/>
+
 ## Matrix connector
 
 I used the [XICOOLEE RGB Matrix Adapter Board](https://www.amazon.com/gp/product/B0BC8Y447G/ref=ox_sc_act_title_6?smid=AXSDPEI0SD5BE&psc=1):

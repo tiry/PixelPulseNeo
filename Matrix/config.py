@@ -54,6 +54,16 @@ POWER_SWITCH_NORMALY_ON = False
 POWER_ON_TIME = "07:00"
 POWER_OFF_TIME = "23:00"
 
+ONOFF_CALENDDAR: dict[str, tuple[str, str]] = {
+            "Monday": ("8:00", "22:00"),
+            "Tuesday": ("7:00", "23:00"),
+            "Wednesday": ("7:00", "23:00"),
+            "Thursday": ("7:00", "23:00"),
+            "Friday": ("7:00", "1:00"),
+            "Saturday": ("9:00", "02:00"),
+            "Sunday": ("10:00", "23:00"),
+        }
+
 ## Test IPC Config
 # USE_EMULATOR = True
 # USE_IPC = True

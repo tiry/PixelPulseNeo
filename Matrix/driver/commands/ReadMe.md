@@ -35,9 +35,15 @@ Render Conway's game of life
 
 ## splash
 
-Displays News from RSS feeds
+Simple Splash Screen
 
 <img src="screenshots/splash1.png"/>
+
+## kitt
+
+K.I.T.T from the K2000 TV series
+
+<img src="screenshots/kitt1.png"/>
 
 ## spotify
 
@@ -70,4 +76,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 23-02-2024 02:26:31.
+Automatically generated using `python -m Matrix.doc_gen` on 29-02-2024 22:36:37.
