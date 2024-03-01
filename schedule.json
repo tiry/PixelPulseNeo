@@ -45,24 +45,39 @@
             "commands": [
                 {
                     "command_name": "meteo",
-                    "duration": 10.0,
+                    "duration": 30.0,
                     "args": [],
                     "kwargs": {}
                 },
                 {
                     "command_name": "news",
-                    "duration": 10.0,
+                    "duration": 120.0,
                     "args": [],
                     "kwargs": {}
                 },
                 {
                     "command_name": "conway",
-                    "duration": 10.0,
+                    "duration": 20.0,
                     "args": [],
                     "kwargs": {}
                 }
             ],
-            "conditions": ["evening"]
+            "conditions": [
+                "evening"
+            ]
+        },
+        "testingschedule": {
+            "commands": [
+                {
+                    "command_name": "time",
+                    "duration": 1.0,
+                    "args": [
+                        "token1709085153.0021117"
+                    ],
+                    "kwargs": {}
+                }
+            ],
+            "conditions": []
         }
     }
 }
