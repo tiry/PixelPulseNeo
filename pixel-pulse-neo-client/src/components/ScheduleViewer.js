@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ApiService from '../services/ApiService';
-import { List, ListItem, TextField, IconButton, Button, ListItemText } from '@mui/material';
+import { List, ListItem, TextField, IconButton, Button, ListItemText, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -92,7 +92,8 @@ function ScheduleViewer() {
     };
 
     return (
-        <div>          
+        <div style={{padding: 10}}>
+            <Typography variant="h4" component="h4"> Current queue: </Typography>          
             <List>
                 {schedule.commands.map((item, index) => (
                     <ListItem key={item.id}>
@@ -136,14 +137,14 @@ function ScheduleViewer() {
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={handleAdd}
             >
-                Add Item
+                Add Command
             </Button>
             <Button 
                 variant="contained" 
                 color="primary" 
                 onClick={() => setEditMode(!editMode)}
             >
-                {editMode ? 'Stop Editing' : 'Edit'}
+                {editMode ? 'Stop Editing' : 'Edit Playlist'}
             </Button>
             <Button 
                 variant="contained" 

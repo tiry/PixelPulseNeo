@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import ApiService from '../services/ApiService';
-import { List, ListItem, TextField, IconButton, Button, ListItemText, InputLabel, Select, MenuItem } from '@mui/material';
+import { List, ListItem, TextField, IconButton, Button, ListItemText, InputLabel, Select, MenuItem, Typography, Grid } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 function PlaylistViewer() {
     const [playlists, setPlaylists] = useState(["default"]);
     const [selectedPlaylist, setselectPlaylist] = useState("default");
-    const [schedule, setSchedule] = useState({ commands :[]});
+    const [schedule, setSchedule] = useState({ commands :[], conditions:[]});
     const [editMode, setEditMode] = useState(false);
     
     useEffect(() => {
@@ -19,10 +19,10 @@ function PlaylistViewer() {
             const commandWithIds = commands.map((item, index) => ({
                 ...item,
                 id: item.id || `schedule-item-${index}` // Assuming 'id' is the unique identifier
-            }));
+            }));          
             var scheduleWithIds = {}
             scheduleWithIds.commands = commandWithIds
-            scheduleWithIds.conditions = data.conditions 
+            scheduleWithIds.conditions = data.conditions
             setSchedule(scheduleWithIds);
         });
     }, [selectedPlaylist]);
@@ -31,35 +31,45 @@ function PlaylistViewer() {
         ApiService.getPlaylists().then(setPlaylists);
     }, []);
 
-
     const handleSelectedPlaylist = (event) => {
         //console.log(event.target.value)
         setselectPlaylist(event.target.value)
     }
 
+    const handleSelectedCondition = (index, value) => {
+        console.log(index, value);
+        const newSchedule = {}
+        newSchedule.conditions = [...schedule.conditions]
+        newSchedule.commands = [...schedule.commands]
+        newSchedule.conditions[index]=value
+        setSchedule(newSchedule);       
+    }
     const handleAdd = () => {
         const newItem = {
             id: `new-item-${Date.now()}`, 
             command_name: 'new_command',
-            duration: '10' // Assuming the field is 'duration' and not 'schedule'
+            duration: '10' 
         };
     
         schedule.commands.push(newItem)
-        // Create a new array with the old items plus the new item
         setSchedule(schedule);
         setEditMode(true);
     };
 
     const handleDelete = (index) => {
-        const newSchedule = [...schedule];
-        newSchedule.splice(index, 1);
+        const newSchedule = {}
+        newSchedule.conditions = [...schedule.conditions]
+        newSchedule.commands = [...schedule.commands]
+        newSchedule.commands.splice(index, 1)
         setSchedule(newSchedule);
     };
 
     const moveItem = (index, direction) => {
-        const newSchedule = [...schedule];
-        const item = newSchedule.splice(index, 1)[0]; // Remove the item from the array
-        newSchedule.splice(index + direction, 0, item); // Add it back in the new position
+        const newSchedule = {}
+        newSchedule.conditions = [...schedule.conditions]
+        newSchedule.commands = [...schedule.commands]
+        const item = newSchedule.commands.splice(index, 1)[0]; // Remove the item from the array
+        newSchedule.commands.splice(index + direction, 0, item); // Add it back in the new position
         setSchedule(newSchedule);
     };
 
@@ -104,24 +114,38 @@ function PlaylistViewer() {
     };
 
     return (
-        <div>
-            <InputLabel id="combo-box-label">Select Playlist: </InputLabel>
-            <Select
-                labelId="combo-box-label"
-                id="combo-box"
-                value={selectedPlaylist}
-                label="Item"
-                onChange={handleSelectedPlaylist}
-            >
-                {playlists.map((item, index) => (
-                    <MenuItem key={index} value={item}>
-                        {item}
-                    </MenuItem>
-                ))}
-            </Select>
-            <List>
+        <div style={{padding: 10}}>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>    
+                    <Typography variant="h4" component="h4"> Edit Playlist: </Typography>
+                </Grid>
+                <Grid item xs={3} md={2} lg={2}>    
+                    <InputLabel id="combo-box-label">Select Playlist: </InputLabel>
+                </Grid>
+                <Grid item xs={9} md={9} lg={6}>         
+                    <Select
+                        labelId="combo-box-label"
+                        id="combo-box"
+                        value={selectedPlaylist}
+                        label="Item"
+                        onChange={handleSelectedPlaylist}
+                        fullWidth
+                    >
+                        {playlists.map((item, index) => (
+                            <MenuItem key={index} value={item}>
+                                {item}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                    </Grid>
+
+                    <Grid item xs={12}>    
+                        <Typography variant="h5" component="h5"> Commands: </Typography>
+                    </Grid>
+            
                 {schedule.commands.map((item, index) => (
-                    <ListItem key={item.id}>
+                    <Fragment>
+                    <Grid item xs={4}>
                         {editMode ? (
                             <TextField
                                 label="Command Name"
@@ -131,6 +155,8 @@ function PlaylistViewer() {
                         ) : (
                             <ListItemText primary={item.command_name} />
                         )}
+                    </Grid>
+                    <Grid item xs={4}>
                         {editMode ? (
                             <TextField
                                 label="Duration"
@@ -138,8 +164,11 @@ function PlaylistViewer() {
                                 onChange={(e) => handleDurationChange(index, e.target.value)}
                             />
                         ) : (
-                            <ListItemText secondary={`Interval: ${item.duration} seconds`} />
+                            <ListItemText secondary={`Duration: ${item.duration} seconds`} />
                         )}
+                    </Grid>
+                    <Grid item xs={4}>
+                
                         {editMode && (
                                                      <>
                                 <IconButton onClick={() => handleDelete(index)}>
@@ -154,30 +183,69 @@ function PlaylistViewer() {
                             </>
                             
                         )}
-                    </ListItem>
+                    </Grid>
+                    </Fragment>
                 ))}
-            </List>
-            <Button 
-                variant="contained" 
-                startIcon={<AddCircleOutlineIcon />}
-                onClick={handleAdd}
-            >
-                Add Item
-            </Button>
-            <Button 
-                variant="contained" 
-                color="primary" 
-                onClick={() => setEditMode(!editMode)}
-            >
-                {editMode ? 'Stop Editing' : 'Edit'}
-            </Button>
-            <Button 
-                variant="contained" 
-                color="secondary" 
-                onClick={handleSave}
-            >
-                Save Changes
-            </Button>
+            
+                <Grid item xs={12}>
+                <Button 
+                    variant="contained" 
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={handleAdd}
+                >
+                    Add Command
+                </Button>
+                </Grid>
+                <Grid item xs={12}>    
+                    <Typography variant="h5" component="h5"> Conditions: </Typography>
+                </Grid>
+           
+                {schedule.conditions.map((condition, index) => (
+                    <Fragment>
+                    <Grid item xs={3} md={2} lg={2}>    
+                    <InputLabel id="combo-box-label">Condition: </InputLabel>
+                    </Grid>
+                    <Grid item xs={6} md={6} lg={6}>
+                    {editMode ? (
+                            
+                        <Select
+                            value={condition}
+                            label="Item"
+                            onChange={(e) => handleSelectedCondition(index, e.target.value)}
+                            fullWidth   
+                            >
+                                <MenuItem value={""}>No Condition</MenuItem>
+                                <MenuItem value={"morning"}>Morning</MenuItem>
+                                <MenuItem value={"night"}>Night</MenuItem>
+                                <MenuItem value={"evening"}>Evening</MenuItem>
+                                <MenuItem value={"week"}>Week</MenuItem>
+                                <MenuItem value={"weekend"}>Weekend</MenuItem>
+                            </Select>
+                         ) : (
+                            <Typography> {condition}</Typography>
+                        )}
+                    </Grid>
+                    </Fragment>
+                   
+                ))}
+            
+                <Grid item xs={12}>    
+                    <Button 
+                        variant="contained" 
+                        color="primary" 
+                        onClick={() => setEditMode(!editMode)}
+                    >
+                        {editMode ? 'Stop Editing' : 'Edit'}
+                    </Button>
+                    <Button 
+                        variant="contained" 
+                        color="secondary" 
+                        onClick={handleSave}
+                    >
+                        Save Changes
+                    </Button>
+                </Grid>
+            </Grid>
         </div>
     );
 }
