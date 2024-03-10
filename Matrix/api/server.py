@@ -159,9 +159,29 @@ class Screenshot(Resource):
                 500,
             )
 
-
+@api.route("/command", defaults={"command_name": None})
 @api.route("/command/<command_name>")
 class Command(Resource):
+    def get(self, command_name):
+        """Returns a JSON dictionnary representing the requested command.
+
+        - `name`: The name of the command
+        - `description`: A description of what the command does
+        - `screenshots`: Screenshot URLs demonstrating the visual effect of the command
+        - `recommended_duration`: recommended duration in s
+
+        """
+        logger.info(f"GET /command/{command_name}")
+        
+        if command_name is None:
+            return jsonify(get_executor().get_current_command())
+        
+        result: dict[str, Any] | None = get_executor().get_command(command_name)
+        logger.info(f"result {result}")
+        if result is None:
+            return jsonify([])
+        return jsonify(result)
+   
     @api.doc(
         params={
             "duration": {
@@ -176,7 +196,7 @@ class Command(Resource):
                 "default": False,
             },
         }
-    )
+    ) 
     def post(self, command_name):
         """Executes the command with the given name.
 
@@ -184,7 +204,9 @@ class Command(Resource):
 
         - `result`: A message indicating the result of the command execution
         """
-
+        if command_name is None:
+            return make_response(jsonify({"error": "no command name was provided"}), 400)
+            
         # Access the duration query parameter with a default value if it's not provided
         duration: float = request.args.get("duration", default=10, type=float)
         interrupt: str | bool = request.args.get("interupt", default="false", type=bool)
@@ -193,6 +215,40 @@ class Command(Resource):
             # result is async and only accessible via audit log
             get_executor().execute_now(command_name, duration, interrupt=interrupt)  # type: ignore
             return jsonify({"message": f"Command '{command_name}' executed"})
+        except Exception as e:
+            print(f"Error during command execution for {command_name}")
+            print(e)
+            return make_response(jsonify({"error": str(e)}), 500)
+
+
+@api.route("/message/<command_name>")
+class MsgCommand(Resource):
+    @api.doc(
+        params={
+            "message": {
+                "description": "Message content",
+                "type": "string",
+                "required": True,
+            },
+        }
+    )
+    def post(self, command_name):
+        """Sends a messsage to the command with the given name.
+
+        - `result`: 
+        """
+
+        # Access the duration query parameter with a default value if it's not provided
+        message: str| None = request.args.get("message", type=str)
+        if message is None:
+            message:  str | None = request.get_data() # type:ignore 
+            
+        logger.info(f"received Posted message for {command_name} with payload {message}")
+
+        try:
+            # result is async and only accessible via audit log
+            get_executor().send_command_message(command_name, message)  # type: ignore
+            return jsonify({"message": f"Message '{message}' sent to '{command_name}'"})
         except Exception as e:
             print(f"Error during command execution for {command_name}")
             print(e)

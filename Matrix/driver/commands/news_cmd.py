@@ -42,7 +42,11 @@ feeds: list[dict[str, str]] = [
         "name": "science.org",
         "logo": "science.png",
     },
-    {"url": "https://www.wired.com/feed/rss", "name": "wired", "logo": "wired.png"},
+    {
+        "url": "https://www.wired.com/feed/rss", 
+        "name": "wired", 
+        "logo": "wired.png"
+    },
     {
         "url": "https://www.wired.com/feed/category/science/latest/rss",
         "name": "wired science",
@@ -178,3 +182,7 @@ class NewsCmd(PictureScrollBaseCmd):
     def generate_image(self, args=[], kwargs={}) -> Image.Image | None:
         img: Image.Image | None = self.render_news_item()
         return img
+
+    def handle_text_payload(self, msg:str):    
+        if msg.lower() == "next":
+            self.update()

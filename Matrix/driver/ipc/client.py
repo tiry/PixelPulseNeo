@@ -197,6 +197,14 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
     def wakeup(self) -> None:
         self.send_command("wakeup")
  
+    @synchronized_method
+    def get_current_command(self) -> str | None:
+        return self.send_command("get_current_command")  # type:ignore
+
+    @synchronized_method
+    def send_command_message(self, command_name:str, message:str) -> str | None:
+        return self.send_command("send_command_message", command_name, message)  # type:ignore
+ 
 
 class InteractiveRemoteCLI:
     def __init__(self) -> None:

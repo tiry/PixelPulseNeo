@@ -1,6 +1,7 @@
 import os
 import time
 import traceback
+import json
 from datetime import datetime
 from typing import List, Any
 import logging
@@ -8,8 +9,10 @@ from io import BufferedReader
 import threading
 from PIL import Image
 from PIL import ImageFont
+from PIL import ImageDraw
 from PIL import ImageChops
 from Matrix.driver.utilz import configure_log, DARKCYAN
+from Matrix.driver.commands.msg_stack import MessageStack, get_message_stack
 from Matrix.driver import power
 from Matrix.config import (
     MATRIX_CHAINED,
@@ -191,9 +194,16 @@ class BaseCommand:
         self.recommended_duration:int=10
         
         logger.debug(f"Load command with name {name}")
+        
+        self.logger: logging.Logger=logger
+        self.execution_done:bool = False
+        self.reset_state()
 
     def get_recommended_duration(self) -> int:
         return self.recommended_duration
+    
+    def reset_state(self) -> None:
+        self.execution_done=False
     
     def execute(
         self,
@@ -204,6 +214,8 @@ class BaseCommand:
         render: bool = True,
     ) -> tuple | None:
         t0: float = time.time()
+        self.reset_state()
+        
         try:
             logger.debug(
                 f"#######################\n Execute command '{self.name}' {args} {kwargs}\n"
@@ -212,12 +224,16 @@ class BaseCommand:
             if render:
                 res = None
                 frame_nb = 0
-                while not stop_event.is_set() and not (time.time() - t0) > timeout:
+                while not self.execution_done and not stop_event.is_set() and not (time.time() - t0) > timeout:
                     res = self.render(args=args, kwargs=kwargs)
                     frame_nb += 1
                     time.sleep(self.refresh_timer)
+                    
+                    # hack to generate screenshots
                     if CAPTURE_PYGAME and frame_nb % CAPTURE_FREQ == 0:
                         self.capture_screen(tag=f"{frame_nb:05d}")
+                    
+                    self.process_message_if_needed()
                 return (res, None)
         except Exception as e:
             tb: str = traceback.format_exc()
@@ -226,7 +242,35 @@ class BaseCommand:
             self.exception: Exception = e
             self.traceback: str = tb
             return (None, e)
+    
+    def process_message_if_needed(self):
+        msg: dict[str, str] | None = get_message_stack().pop()    
+        if msg is not None:
+            if msg["command_name"] != self.name:
+                logger.debug(f"dropping message: {msg}")
+            else:
+                self.handle_message(msg)
+ 
+    def handle_text_payload(self, msg:str):    
+        pass
+    
+    def handle_json_payload(self, payload:Any):
+        pass        
 
+    def handle_message(self, msg: dict[str, str]) -> None:
+        self.logger.info(f" Received message {msg}")
+        txt: str | None = msg.get("message", None)
+        if txt is not None:
+            try:
+                object = json.loads(txt)
+                self.handle_json_payload(object)
+            except json.JSONDecodeError:
+                if type(txt) == bytes:
+                    txt = txt.decode("utf-8")
+                self.handle_text_payload(txt)    
+            
+                        
+    
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         pass
 
@@ -274,9 +318,12 @@ class MatrixBaseCmd(BaseCommand):
         
         self.fonts: dict = {}
 
-    def getFont(self, name: str):
-        if name not in self.fonts:
-            self.fonts[name] = ImageFont.load(get_fonts_dir(name))
+    def getFont(self, name: str, size:int = 30, refresh:bool = False):
+        if name not in self.fonts or refresh is True:
+            try:
+                self.fonts[name] = ImageFont.load(get_fonts_dir(name))
+            except Exception as e:
+                self.fonts[name] = ImageFont.truetype(get_fonts_dir(name),size=size)
         return self.fonts[name]
 
 
@@ -358,6 +405,8 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
                 self.ypos += self.speed_y
                 if self.ypos < -self.image.size[1]:
                     self.ypos = get_matrix_height()
+                elif self.ypos > self.image.size[1]:
+                    self.ypos = -get_matrix_height()
 
         self.double_buffer.Clear()
         if self.image:
@@ -372,38 +421,68 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
         return f"rendered {self.image_counter} images"
 
 
-class TextScrollBaseCmd(MatrixBaseCmd):
+class TextScrollBaseCmd(PictureScrollBaseCmd):
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
-        self.speed_x: int = 1
-        self.speed_y: int = 0
         self.text: str | None = None
-        self.double_buffer = None
         self.font: Any | None = None
-        self.text_color: graphics.Color = None
-        self.pos: int = 0
-
-    def update(self, args: list = [], kwargs: dict = {}) -> str | None:
-        self.text = self.get_text(args=[], kwargs={})
-        self.double_buffer = get_matrix().CreateFrameCanvas()
-
-        font = graphics.Font()
-        font.LoadFont("/home/tiry/dev/rpi-rgb-led-matrix/fonts/9x18B.bdf")
-        self.font = font
-        self.text_color = graphics.Color(255, 255, 0)
-        self.pos = self.double_buffer.width
-        return None
-
+        self.text_width:int = 0
+        self.text_height: int = 0
+        self.text_offset:int = 0
+        self.text_speed:int = 1
+        self.speed_x = 0
+        self.refresh = True
+        self.font_height:int=32
+        self.background: Image.Image | None = None
+    
+    def _get_background(self) -> Image.Image:
+        if self.background is None:
+            width: int = get_total_matrix_width()
+            height: int = get_total_matrix_height()
+            self.background = Image.new("RGB", (width, height), color=(0, 0, 0))
+        return self.background
+    
+    def get_text_color(self):
+        return (255, 255, 255)
+        
+    
+    def generate_image(self, args: List = [], kwargs: dict = {}) -> Image.Image|None:
+        
+        # generate background if needed
+        background: Image.Image = self._get_background().copy()
+        
+        draw: ImageDraw.ImageDraw = ImageDraw.Draw(background)
+          
+        y_top = int((get_total_matrix_height() - self.text_height) / 2)
+        draw.text((self.text_offset, y_top), self.get_text(), font=self.get_font(), fill=self.get_text_color())
+        
+        self.text_offset-=self.text_speed
+        
+        if self.text_offset < -self.text_width:
+            self.text_offset = get_total_matrix_width()
+        
+        return background
+    
+    def get_font(self, refresh:bool=False): 
+        if self.font is None or refresh:
+            self.logger.info(f"Loading font {self.font_height} px")
+            self.font = self.getFont("BodoniFLF-Bold.ttf", self.font_height, refresh=refresh)
+        return self.font
+           
     def get_text(self, args: list = [], kwargs: dict = {}) -> str:
         raise NotImplementedError
-
-    def render(self, args: list = [], kwargs: dict = {}):
-        double_buffer: Any = self.double_buffer
-        double_buffer.Clear()
-        length: int | None = graphics.DrawText(
-            double_buffer, self.font, self.pos, 10, self.text_color, self.text
-        )
-        self.pos -= 1
-        if length and self.pos + length < 0:
-            self.pos = double_buffer.width
-        double_buffer = get_matrix().SwapOnVSync(double_buffer)
+    
+    
+    def update_text_params(self, text:str):
+        
+        self.text = text
+        _, _, text_width, text_height = self.get_font().getbbox(self.text)
+        self.text_width = text_width
+        self.text_height = text_height    
+        if self.text_offset ==0:
+            self.text_offset = get_total_matrix_width()
+        
+    
+    def update(self, args: list = [], kwargs: dict = {}) -> str:
+        self.update_text_params(self.get_text())        
+        return super().update(args, kwargs)

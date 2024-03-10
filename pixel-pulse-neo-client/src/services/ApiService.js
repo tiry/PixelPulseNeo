@@ -11,6 +11,14 @@ export default class ApiService {
         return axios.get(`${BASE_URL}/commands`).then(res => res.data);
     }
 
+    static getCommand(name) {
+        return axios.get(`${BASE_URL}/command/` + name).then(res => res.data);
+    }
+
+    static getCurrentCommand() {
+        return axios.get(`${BASE_URL}/command`).then(res => res.data);
+    }
+
     static executeCmd(name, duration=10, interupt=false) {
         return axios.post(`${BASE_URL}/command/` + name + "?interup=" + interupt + "&duration=" + duration).then(res => res.data);
     }
@@ -30,6 +38,16 @@ export default class ApiService {
         return axios.get(`${BASE_URL}/schedules`).then(res => res.data);
     }
 
+    static sendCommandMessage(command_name, message) {
+        var post= axios.post(`${BASE_URL}/message/` + command_name , message)
+        return post.then(response => response.data)
+        .catch(error => {
+            console.error('Error updating schedule:', error);
+            throw error; // Re-throw the error for further handling if necessary
+        });
+
+    }
+   
     static setSchedule(schedule, name) {
         console.log("save schedule " + schedule)
         var post

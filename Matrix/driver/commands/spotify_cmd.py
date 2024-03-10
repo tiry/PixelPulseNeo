@@ -72,6 +72,8 @@ class SpotifyCmd(PictureScrollBaseCmd):
         font4 = self.getFont("4x6.pil")
 
         if self.track_info is None:
+            # interrupt execution
+            self.execution_done=True
             return self.render_no_track()
 
         if (

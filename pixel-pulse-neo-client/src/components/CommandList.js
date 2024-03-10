@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ApiService from '../services/ApiService';
 import { List, ListItem, ListItemText, Button, Grid, Card, CardHeader, CardActions, CardMedia,FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import {BASE_URL} from '../services/ApiService'
 import QueueIcon from '@mui/icons-material/Queue';
 import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import ControlCameraIcon from '@mui/icons-material/ControlCamera';
 
 function CommandList() {
     const [commands, setCommands] = useState([]);
@@ -111,11 +113,13 @@ function CommandList() {
                                 </FormControl>
                                 <Button variant="contained" color="primary" startIcon={<QueuePlayNextIcon />}
                                     onClick={() => handleExecute(command.name, false)}>
-                                    Next
+                                    
                                 </Button>
                                 <Button variant="contained" color="primary" startIcon={<PlayArrowIcon />}
                                 onClick={() => handleExecute(command.name, true)}>
-                                    Now
+                                    
+                                </Button>
+                                <Button variant="contained" component={Link} to={"/web/control/" + command.name} color="primary" startIcon={<ControlCameraIcon />}>
                                 </Button>
                             </CardActions>
                         </Card>

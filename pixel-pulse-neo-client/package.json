@@ -2,11 +2,14 @@
   "name": "pixel-pulse-neo-client",
   "proxy": "http://127.0.0.1:5000",
   "allowedHosts": [
-    "127.0.0.1", "lcddriver.local", "0.0.0.0", "192.168.1.177"
+    "127.0.0.1",
+    "lcddriver.local",
+    "0.0.0.0",
+    "192.168.1.177"
   ],
   "version": "0.1.0",
   "private": true,
-  "homepage" : "web",
+  "homepage": "web",
   "dependencies": {
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -19,7 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

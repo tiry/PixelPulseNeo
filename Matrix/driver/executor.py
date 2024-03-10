@@ -17,6 +17,7 @@ from Matrix.config import is_ipc_enabled
 from Matrix.models.Commands import ScheduleModel
 from Matrix.driver import power
 from Matrix.driver.monitor import cpu_governor
+from Matrix.driver.commands.msg_stack import MessageStack, get_message_stack
 from Matrix import config
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
@@ -73,6 +74,9 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
 
         self.audit_log: list[CommandExecutionLog] = []
         self.execution_counter = 0
+        
+        self.current_command: CommandEntry | None = None
+        
         
 
     def _load_commands(self) -> dict:
@@ -153,6 +157,21 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
     def save_schedule(self, schedule_file=None):
         self.scheduler.save(schedule_file=schedule_file)
 
+    @synchronized_method
+    def get_current_command(self) -> str | None:
+        if self.current_command is not None:
+            return self.current_command.command_name
+        return None
+
+  
+    @synchronized_method
+    def send_command_message(self, command_name:str, message:str) -> str | None:
+        
+        msg:dict[str, str] = { "command_name": command_name, "message": message }
+        get_message_stack().push(msg)
+        
+        return None
+    
     def _watchdog_loop(self) -> None:
         
         calendar = power.OnOffCalendar(config.ONOFF_CALENDDAR)
@@ -230,7 +249,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 break
         return self.get_audit_log()[:]
 
-    def _run_command(self, command_entry):
+    def _run_command(self, command_entry:CommandEntry):
         try:
             self.stop_current.clear()
             executable_command: Any | None = self.commands.get(
@@ -241,6 +260,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 print(f"ERROR >> Command {command_entry.command_name} not found")
                 return None
 
+            self.current_command = command_entry
+            
             t0: float = time.time()
             res, err = executable_command.execute(
                 self.stop_current,
@@ -374,12 +395,14 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "ls": self.list_commands,
             "get_commands": self.get_commands,
             "get_command": self.get_command,
+            "get_current_command": self.get_current_command,
             "get_command_screenshot": self.get_command_screenshot,
             "list_schedules": self.list_schedules,
             "get_schedule": self.get_schedule,
             "execute_now": self.execute_now,
             "set_schedule": self.set_schedule,
             "save_schedule": self.save_schedule,
+            "send_command_message": self.send_command_message,
             "stop": self.stop,
             "sleep": self.sleep,
             "wakeup": self.wakeup,

@@ -106,3 +106,11 @@ Available CLI commands:
 
 When running the CommandExecutor as root using `sudo`, we need to reestablish the python `venv` for the root user.
 
+## Execute a command as root
+
+    sudo -E scripts/run_cmd_as_root.sh <command_name> <duration>
+
+## Start the Command Server as root is listen mode
+
+    sudo -E scripts/start_cmd_server.sh
+

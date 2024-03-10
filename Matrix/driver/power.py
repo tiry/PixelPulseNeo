@@ -8,7 +8,7 @@ USE_GPIO:bool = False
 
 power_control:Any | None = None
 try:
-    from gpiozero import LED
+    from gpiozero import LED # type: ignore
     power_control = LED(config.POWER_CONTROL_GPIO_PIN)
     USE_GPIO = True
 except Exception as e:

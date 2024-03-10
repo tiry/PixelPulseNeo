@@ -11,6 +11,9 @@ echo "Starting Cmd Server"
 
 sudo -E scripts/start_cmd_server.sh  &> "cmd_server.log" & echo $! > "cmd_server.pid"
 
+echo "Waiting for Cmd Server to start"
+sleep 1
+
 # Starting Web/API Server
 echo "Starting Web/API Server"
 

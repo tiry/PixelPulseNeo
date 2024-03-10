@@ -138,6 +138,14 @@ class BaseCommandExecutor(ABC, Base):
         pass
 
     @abstractmethod
+    def get_current_command(self) -> str | None:
+        pass
+ 
+    @abstractmethod
+    def send_command_message(self, command_name:str, message:str) -> str | None:
+        pass
+ 
+    @abstractmethod
     def execute_now(
         self,
         command_name: str,

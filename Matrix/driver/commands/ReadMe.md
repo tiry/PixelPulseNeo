@@ -33,6 +33,14 @@ Render Conway's game of life
 
 <img src="screenshots/conway1.gif"/>
 
+## scrolltext
+
+Displays Text on Matrix
+
+<img src="screenshots/scrolltext2.png"/>
+
+<img src="screenshots/scrolltext1.png"/>
+
 ## splash
 
 Simple Splash Screen
@@ -76,4 +84,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 29-02-2024 22:36:37.
+Automatically generated using `python -m Matrix.doc_gen` on 10-03-2024 17:34:15.

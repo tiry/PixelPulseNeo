@@ -44,7 +44,7 @@ starting `pixel-pulse-neo-api.service` will automatically start `pixel-pulse-neo
 
 ## Get logs
 
-    sudo journalctl -u pixel-pulse-neo-api
+    sudo journalctl -u pixel-pulse-neo-api -f
 
-    sudo journalctl -u pixel-pulse-neo
+    sudo journalctl -u pixel-pulse-neo -f
     

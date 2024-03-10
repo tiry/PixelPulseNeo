@@ -42,18 +42,19 @@ class MtaCmd(PictureScrollBaseCmd):
         self.recommended_duration = 30
 
     def update(self, args: list = [], kwargs: dict = {}) -> None:
+        self.logger.info("Get info from MTA")
         next_trains: dict = route.getNextTrainsToward(
             direction=config.MTA_SUBWAY_DIRECTION, routes=config.MTA_SUBWAY_ROUTES, station=config.MTA_SUBWAY_STATION
         )
-        # print(f"Next trains {next_trains}")
+        self.logger.info(f"Next trains {next_trains}")
         self.next_trains = next_trains
         self.next_buses = bus.get_stop_info(config.MTA_BUS_LINE, config.MTA_BUS_STATION)
-        # print(f"Next Buses {self.next_buses}")
+        self.logger.info(f"Next Buses {self.next_buses}")
         super().update(args, kwargs)
 
-        if "pause_frames" in kwargs.keys():
-            self.tempoframes = int(kwargs["pause_frames"])
-            self.pause_duration: int = self.tempoframes
+        #if "pause_frames" in kwargs.keys():
+        #    self.tempoframes = int(kwargs["pause_frames"])
+        #    self.pause_duration: int = self.tempoframes
 
     def generate_image(self, args: list = [], kwargs: dict = {}) -> Image.Image:
         width: int = get_total_matrix_width()

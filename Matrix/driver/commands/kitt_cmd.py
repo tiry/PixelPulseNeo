@@ -18,7 +18,7 @@ class KittCmd(PictureScrollBaseCmd):
         )
         self.scroll:bool = False
         self.refresh:bool = True
-        self.recommended_duration:int = 15
+        self.recommended_duration:int = 20
         
         self.refresh_timer = 1/10
         self.decay=0.85
@@ -28,7 +28,6 @@ class KittCmd(PictureScrollBaseCmd):
         self.lights: list[int]= [0 for _ in range(self.lights_count)]
         self.lights_index=0
         self.lights_dir:int =1
-        
 
     def update(self, args=[], kwargs={}) -> None:
         super().update(args, kwargs)
