@@ -12,6 +12,9 @@ import TextRotationNoneIcon from '@mui/icons-material/TextRotationNone';
 import HeightIcon from '@mui/icons-material/Height';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import ExpandIcon from '@mui/icons-material/Expand';
+
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 //import { ColorPicker } from "@material-ui/color";
 //import { ColorPicker, ColorInput } from "material-ui-color";
 
@@ -51,6 +54,12 @@ const CommandControl = () => {
         console.log("Command " + msg + " sent");
       })
     } 
+
+    const sendCommandText = (text) => {
+      ApiService.sendCommandMessage(commandName, text).then(() => {
+        console.log("Command " + text + " sent");
+      })
+    } 
   
     return (
         <Container maxWidth="lg" >          
@@ -71,6 +80,20 @@ const CommandControl = () => {
                                     onClick={() => handleSendText()} fullWidth>
                   </Button>     
                 </Grid>
+          {(command.name==="arkanoid") ? (
+            <>
+            <Grid item xs={6}>
+              <Button variant="contained" color="primary" startIcon={<KeyboardDoubleArrowLeftIcon />}
+                    onClick={() => sendCommandText('LEFT')} fullWidth>
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button variant="contained" color="primary" startIcon={<KeyboardDoubleArrowRightIcon />}
+                    onClick={() => sendCommandText('RIGHT')} fullWidth>+
+              </Button>
+            </Grid>
+            </>
+          ) : (<></>)}
           {(command.name==="scrolltext") ? (
             <>
             <Grid item xs={2}>

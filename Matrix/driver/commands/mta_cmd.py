@@ -41,6 +41,20 @@ class MtaCmd(PictureScrollBaseCmd):
         self.next_buses: dict | None = None
         self.recommended_duration = 30
 
+    def reset_state(self) -> None:
+        super().reset_state()
+        self.scroll = True
+        self.refresh = False
+        self.speed_x = 0
+        self.speed_y = 0
+        self.tempoframes = PAUSED_FRAMES
+        self.pause_duration = PAUSED_FRAMES
+        self.direction = -1
+        self.next_trains: dict | None = None
+        self.next_buses: dict | None = None
+        self.recommended_duration = 30
+
+    
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         self.logger.info("Get info from MTA")
         next_trains: dict = route.getNextTrainsToward(

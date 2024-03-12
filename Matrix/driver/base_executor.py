@@ -4,7 +4,6 @@ from typing import Any, List, Dict
 from threading import RLock
 from functools import wraps
 import os
-from datetime import datetime, time
 from abc import ABC, abstractmethod
 from Matrix.driver.utilz import configure_log
 from Matrix.models.Commands import ScheduleModel
@@ -207,3 +206,18 @@ class BaseCommandExecutor(ABC, Base):
         """
         pass
 
+    @abstractmethod
+    def get_metrics(self) -> dict[str, Any] | None:
+        """ gather metrics in the context of the executor
+
+        Returns:
+            Dict[str, Any] | None: the metrics from monitor/prob.py
+        """
+        pass
+    
+    @abstractmethod
+    def watchdog(self, expected_state:bool | None = None) -> bool:
+        """
+        get or set the watchdog status
+        """
+        pass

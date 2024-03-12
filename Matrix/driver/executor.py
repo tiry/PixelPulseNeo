@@ -6,7 +6,6 @@ import importlib
 import os
 import argparse
 import traceback
-import datetime 
 from Matrix.models.Commands import CommandEntry
 from Matrix.driver.base_executor import BaseCommandExecutor, synchronized_method
 from Matrix.driver.scheduler import Scheduler
@@ -17,17 +16,18 @@ from Matrix.config import is_ipc_enabled
 from Matrix.models.Commands import ScheduleModel
 from Matrix.driver import power
 from Matrix.driver.monitor import cpu_governor
-from Matrix.driver.commands.msg_stack import MessageStack, get_message_stack
+from Matrix.driver.commands.msg_stack import get_message_stack
+from Matrix.driver.monitor import probe
 from Matrix import config
 MAX_AUDIT_SIZE = 100
 BUSY_WAIT = 0.1
-WATCHDOG_WAIT = 60
+WATCHDOG_WAIT = 120
 
 logger: logging.Logger = logging.getLogger(__name__)
 configure_log(logger, CYAN, "CmdExec")
 
 DISPLAY_SPLASH:bool=True
-WATCHDOG_ON:bool=True
+WATCHDOG_ON:bool=True 
 
 def hide_splash_screen():
     global DISPLAY_SPLASH
@@ -178,6 +178,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         while not self.stop_watchdog.is_set():
             
             time.sleep(WATCHDOG_WAIT)
+            if WATCHDOG_ON is False:
+                continue
             expected_state: bool = calendar.expected_state()
             
             logger.info("WatchDog check in progress")
@@ -388,6 +390,26 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         
         self.sleep_mode_activated=False
 
+    @synchronized_method
+    def watchdog(self, expected_state:bool | None = None) -> bool:
+        """
+        get or set the watchdog status
+        """
+        logger.info(f"setting watchdog state to {expected_state}")
+        global WATCHDOG_ON
+        if expected_state is not None:
+            WATCHDOG_ON = expected_state
+        return WATCHDOG_ON
+
+    @synchronized_method
+    def get_metrics(self) -> dict[str, Any] | None:
+        
+        metrics: dict[str, Any] = probe.all_metrics()
+        
+        metrics["watchdog_on"] = WATCHDOG_ON
+        metrics["sleeping"] = self.sleep_mode_activated
+        
+        return metrics
 
     def get_valid_commands(self) -> dict[str, Callable]:
         # make remote commands list explicit
@@ -406,7 +428,8 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "stop": self.stop,
             "sleep": self.sleep,
             "wakeup": self.wakeup,
-            
+            "get_metrics": self.get_metrics,
+            "watchdog": self.watchdog,
         }
 
     def connected(self) -> bool:

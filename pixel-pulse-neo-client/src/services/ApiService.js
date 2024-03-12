@@ -65,7 +65,7 @@ export default class ApiService {
     }
     
     static getMetrics() {
-        return axios.get(`${BASE_URL}/status`).then(res => res.data);
+        return axios.get(`${BASE_URL}/metrics/all`).then(res => res.data);
     }
 
     static sleep() {
@@ -75,5 +75,11 @@ export default class ApiService {
     static wakeup() {
         return axios.get(`${BASE_URL}/power/wakeup`).then(res => res.data);
     }
+
+    static watchdog(state) {
+        console.log(`${BASE_URL}/watchdog/` + state)
+        return axios.post(`${BASE_URL}/watchdog/` + state).then(res => res.data);
+    }
+
 }
 

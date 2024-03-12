@@ -107,15 +107,18 @@ if __name__ == "__main__":
         cmd.face.load_cmds(kframes)
     
     elif args.emotions:
-        
-        cmd.face.play_emotion("neutral", 5, 10)
-        cmd.face.play_emotion("happy", 30, 20)
-        cmd.face.play_emotion("surprised", 15, 20)
-        cmd.face.play_emotion("neutral", 15, 20)
-        cmd.face.play_emotion("happy", 30, 20)
-        cmd.face.play_emotion("wink_left", 10)
-        cmd.face.play_emotion("happy", 10, 20)
-        cmd.face.play_emotion("suspicious", 15, 20)
+
+        cmd.face.play_emotion("sleeping", 5, 100)
+        #cmd.face.play_emotion("happy", 10, 100)
+        cmd.face.play_emotion("awake", 5, 100)        
+        #cmd.face.play_emotion("neutral", 5, 10)
+        #cmd.face.play_emotion("happy", 30, 20)
+        #cmd.face.play_emotion("surprised", 15, 20)
+        #cmd.face.play_emotion("neutral", 15, 20)
+        #cmd.face.play_emotion("happy", 30, 20)
+        #cmd.face.play_emotion("wink_left", 10)
+        #cmd.face.play_emotion("happy", 10, 20)
+        #cmd.face.play_emotion("suspicious", 15, 20)
     
     else:
 

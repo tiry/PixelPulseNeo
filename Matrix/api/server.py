@@ -321,6 +321,7 @@ class Schedule(Resource):
         return jsonify({"result": "Schedule updated"})
 
 @api.route("/status")
+@api.route("/metrics/api")
 class Status(Resource):
     def get(self):
             """Returns Metrics 
@@ -329,19 +330,27 @@ class Status(Resource):
             metrics: dict[str, Any] = probe.all_metrics()
             return jsonify(metrics)
         
+@api.route("/metrics/all")
+@api.route("/metrics/driver")
+class DriverMetrics(Resource):
+    def get(self):
+            """Returns Metrics 
+            """
+            metrics: dict[str, Any]|None = get_executor().get_metrics()
+            return jsonify(metrics)
         
-
+        
 @api.route("/power/sleep")
 class Sleep(Resource):
     def get(self):
         """Activate the Sleep mode.
 
         """
-        exec = get_executor()
-        if exec is not None:
+        exe = get_executor()
+        if exe is not None:
             logger.info("putting the executor to sleep")
             try:
-                exec.sleep()
+                exe.sleep()
                 logger.info("sleep command executed")
                 return jsonify({"result": "Sleep mode activated"})
             except Exception as e:
@@ -357,11 +366,11 @@ class Wakeup(Resource):
         """Wakeup from the Sleep mode.
 
         """
-        exec = get_executor()
-        if exec is not None:
+        exe = get_executor()
+        if exe is not None:
             logger.info("Waking up the executor to sleep")
             try:
-                exec.wakeup()
+                exe.wakeup()
                 return jsonify({"result": "Sleep mode de-activated"})
             except Exception as e:
                 print(f"Error during wakup")
@@ -409,8 +418,27 @@ def serve_webapp(path=None):
             return make_response({}, 304)
         else:
             return make_response(jsonify({"error": str(e)}), 500)
+
+
+def bool_to_on_off(bvalue:bool):
+    return "on" if bvalue else "off"
+
+@api.route("/watchdog")
+class WatchDogGet(Resource):
+    def get(self, expected_state: bool | None = None):
+        """Returns the watchdog state
+        
+        """
+        return bool_to_on_off(get_executor().watchdog())
     
+@api.route("/watchdog/<expected_state>")
+class WatchDogSet(Resource):
     
+    def post(self, expected_state: str):
+        
+        bool_state: bool = expected_state.lower()=='on'
+        print(f"set watchdog state to {bool_state}")
+        return bool_to_on_off(get_executor().watchdog(bool_state))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

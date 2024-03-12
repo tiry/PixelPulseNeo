@@ -31,7 +31,13 @@ emotion_dictionnary:dict[str, list[dict[str, Any]]] = {
                 { "target":"mouth", "open": 25, "tilt": -10, "radius" : 45 }],
             "look_right" :  [ 
                 { "target":"eyes", "open": 70, "tilt": 100},
-                { "target":"mouth", "open": 25, "tilt": 10, "radius" : 45 }]
+                { "target":"mouth", "open": 25, "tilt": 10, "radius" : 45 }],
+            "sleeping" :  [ 
+                { "target":"eyes", "open": 0, "tilt": 0},
+                { "target":"mouth", "open": 5, "tilt": 0, "radius" : 10 }],
+            "awake" :  [ 
+                { "target":"eyes", "open": 100, "tilt": 0},
+                { "target":"mouth", "open": 20, "tilt": 0, "radius" : 30 }]
 
         }
    

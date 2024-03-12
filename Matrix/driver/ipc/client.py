@@ -205,6 +205,17 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
     def send_command_message(self, command_name:str, message:str) -> str | None:
         return self.send_command("send_command_message", command_name, message)  # type:ignore
  
+    @synchronized_method
+    def get_metrics(self) -> dict[str, Any] | None:
+        return self.send_command("get_metrics")  # type:ignore
+ 
+    @synchronized_method
+    def watchdog(self, expected_state:bool | None = None) -> bool:
+        if expected_state is not None:
+            return self.send_command("watchdog")  # type:ignore
+        else:
+            return self.send_command("watchdog", expected_state)  # type:ignore
+            
 
 class InteractiveRemoteCLI:
     def __init__(self) -> None:

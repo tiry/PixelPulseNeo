@@ -51,6 +51,7 @@ API server (`Matrix.api`)
     pip install RGBMatrixEmulator
     pip install ruff
     pip install pylint
+    
 
     ruff check --fix Matrix/
     ruff format Matrix

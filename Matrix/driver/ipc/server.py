@@ -16,7 +16,6 @@ configure_log(logger, GREEN, "Server")
 
 IPC_PORT = 6000
 
-
 class IPCServer:
     def method_echo(self, *args, **kwargs) -> str:
         return "\n".join(["OK", str(args), str(kwargs)])
