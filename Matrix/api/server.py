@@ -242,7 +242,10 @@ class MsgCommand(Resource):
         message: str| None = request.args.get("message", type=str)
         if message is None:
             message:  str | None = request.get_data() # type:ignore 
-            
+        
+        if type(message) == bytes:
+            message = message.decode("utf-8")
+                    
         logger.info(f"received Posted message for {command_name} with payload {message}")
 
         try:

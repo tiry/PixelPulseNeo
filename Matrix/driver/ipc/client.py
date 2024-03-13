@@ -211,11 +211,10 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
  
     @synchronized_method
     def watchdog(self, expected_state:bool | None = None) -> bool:
-        if expected_state is not None:
+        if expected_state is None:
             return self.send_command("watchdog")  # type:ignore
         else:
             return self.send_command("watchdog", expected_state)  # type:ignore
-            
 
 class InteractiveRemoteCLI:
     def __init__(self) -> None:
