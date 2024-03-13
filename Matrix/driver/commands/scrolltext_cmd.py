@@ -1,8 +1,45 @@
 import math
 from typing import Any, List
-from PIL import Image
+from PIL import Image, ImageOps
 from Matrix.driver.commands.base import TextScrollBaseCmd, get_total_matrix_height, get_total_matrix_width 
 
+
+class WaveDeformer:
+    
+    def __init__(self, shift_amplitude:int, freq:int, phase_step:float=0.3, gridspace:int=20) -> None:
+        self.shift_amplitude: int=shift_amplitude
+        self.freq: int = freq
+        self.gridspace: int = gridspace
+        self.target_grid:list[tuple] = []
+        self.phase:float=0
+        self.phase_step:float=phase_step
+
+    def init_grid(self, img):
+        w, h = img.size
+
+        target_grid = []
+        for x in range(0, w, self.gridspace):
+            for y in range(0, h, self.gridspace):
+                target_grid.append((x, y, x + self.gridspace, y + self.gridspace))
+        self.target_grid = target_grid
+
+    def transform(self, x, y):
+        y = y + self.shift_amplitude*math.sin(x/self.freq + self.phase)
+        return x, y
+
+    def transform_rectangle(self, x0, y0, x1, y1):
+        return (*self.transform(x0, y0),
+                *self.transform(x0, y1),
+                *self.transform(x1, y1),
+                *self.transform(x1, y0),
+                )
+
+    def getmesh(self, img):
+        
+        self.phase+=self.phase_step
+        source_grid = [self.transform_rectangle(*rect) for rect in self.target_grid]
+
+        return [t for t in zip(self.target_grid, source_grid)]
 
 class ScrolltextCmd(TextScrollBaseCmd):
     
@@ -14,9 +51,13 @@ class ScrolltextCmd(TextScrollBaseCmd):
         self.amplitude:int = 4
         self.shift_amplitude:int = 7
         self.text_color = (255,255,255)
-        self.text_speed:int = 2
+        self.text_speed:int = 3
         self.phase:float = 0
         self.phase_step:float = 0.3
+        self.refresh_timer: float = 1/30.0
+        
+        self.wave = WaveDeformer(self.shift_amplitude, int(self.freq/5), self.phase_step, 32)
+        self.wave.init_grid(self._get_background())
   
         
     def get_text(self, args: list = [], kwargs: dict = {}) -> str:
@@ -25,7 +66,6 @@ class ScrolltextCmd(TextScrollBaseCmd):
     def get_text_color(self):
         return self.text_color
    
-    
     def handle_text_payload(self, msg:str):    
         self.logger.info(f"handle_text_payload {msg}")
         self.msg = msg
@@ -75,13 +115,13 @@ class ScrolltextCmd(TextScrollBaseCmd):
     def generate_image(self, args: List = [], kwargs: dict = {}) -> Image.Image|None: 
         
         img:Image.Image|None = super().generate_image()
-        
         if img is not None:
+            #return self.bend_image_oldschool(img)
             return self.bend_image(img)
         return img
         
 
-    def bend_image(self, img:Image.Image) -> Image.Image:
+    def bend_image_oldschool(self, img:Image.Image) -> Image.Image:
         
         self.phase += self.phase_step
         if self.phase > 2*math.pi:
@@ -101,5 +141,21 @@ class ScrolltextCmd(TextScrollBaseCmd):
             
         return img
     
+    def bend_image(self, img:Image.Image) -> Image.Image:
+        
+        result_image = ImageOps.deform(img, self.wave)
+        
+        return result_image
+    
     def _shift_array(self, list:list, shift:int) -> list:
         return list[shift:] + list[:shift]
+    
+    
+if __name__ == "__main__":
+    
+    import threading
+    #import cProfile
+    cmd = ScrolltextCmd()
+    
+    cmd.execute(threading.Event(), timeout=60)
+    #cProfile.run("cmd.execute(threading.Event(), timeout=60)")
