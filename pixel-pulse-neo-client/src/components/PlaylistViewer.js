@@ -1,18 +1,29 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import ApiService from '../services/ApiService';
-import { List, ListItem, TextField, IconButton, Button, ListItemText, InputLabel, Select, MenuItem, Typography, Grid } from '@mui/material';
+import { Chip, IconButton, Button, ListItemText, InputLabel, Select, MenuItem, Typography, Grid,Card,CardHeader,CardContent, CardActions } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import BackspaceIcon from '@mui/icons-material/Backspace';
+import ListIcon from '@mui/icons-material/List';
 
 function PlaylistViewer() {
-    const [playlists, setPlaylists] = useState(["default"]);
+    //const [playlists, setPlaylists] = useState(["default"]);
+    const [playlistsDetailed, setPlaylistsDetailed] = useState([]);
+    
     const [selectedPlaylist, setselectPlaylist] = useState("default");
     const [schedule, setSchedule] = useState({ commands :[], conditions:[]});
     const [commands, setCommands] = useState([]);
     const [needSave, setNeedSave] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     
+    useEffect(() => {
+        ApiService.getPlaylistsDetailed().then(setPlaylistsDetailed)
+    }, []);
+
     useEffect(() => {
         ApiService.getPlaylist(selectedPlaylist).then(data => {
             var commands = data.commands
@@ -33,14 +44,14 @@ function PlaylistViewer() {
         setCommands(commands); })
     }, []);
 
-    useEffect(() => {
-        ApiService.getPlaylists().then(setPlaylists);
-    }, []);
+    //useEffect(() => {
+    //    ApiService.getPlaylists().then(setPlaylists);
+    //}, []);
 
-    const handleSelectedPlaylist = (event) => {
+    //const handleSelectedPlaylist = (event) => {
         //console.log(event.target.value)
-        setselectPlaylist(event.target.value)
-    }
+    //    setselectPlaylist(event.target.value)
+    //}
 
     const handleSelectedCondition = (index, value) => {
         const newSchedule = {}
@@ -81,6 +92,15 @@ function PlaylistViewer() {
         setSchedule(newSchedule);
         setNeedSave(true);
     };
+
+    const handleExecute = (playlist) => {
+        ApiService.playPlaylist(playlist);
+    }
+
+    const handleEditPlaylist = (playlist) => {
+        setselectPlaylist(playlist);
+        setEditMode(true)
+    }
 
     const moveItem = (index, direction) => {
         const newSchedule = {}
@@ -137,38 +157,23 @@ function PlaylistViewer() {
     return (
         <div style={{padding: 10}}>
             <Grid container spacing={2}>
-                <Grid item xs={12}>    
-                    <Typography variant="h4" component="h4"> Edit Playlist: </Typography>
-                </Grid>
-                <Grid item xs={3} md={2} lg={2}>    
-                    <InputLabel id="combo-box-label">Select Playlist: </InputLabel>
-                </Grid>
-                <Grid item xs={9} md={9} lg={6}>         
-                    <Select
-                        labelId="combo-box-label"
-                        id="combo-box"
-                        value={selectedPlaylist}
-                        label="Item"
-                        onChange={handleSelectedPlaylist}
-                        fullWidth
-                    >
-                        {playlists.map((item, index) => (
-                            <MenuItem key={index} value={item}>
-                                {item}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                    </Grid>
 
-                    <Grid item xs={12}>    
-                        <Typography variant="h5" component="h5"> Commands: </Typography>
-                    </Grid>
-            
+            {editMode ? 
+                (
+                    <>
+                <Grid item xs={12}>    
+                    <Typography variant="h6" component="h6"> Edit playlist {selectedPlaylist} </Typography>
+                </Grid>
+                
+                <Grid item xs={12}>    
+                    <Typography variant="h6" component="h6"> Commands: </Typography>
+                </Grid>
+        
                 {schedule.commands.map((item, index) => (
                     <Fragment>
                     <Grid item xs={4}>
                             <>
-                            <ListItemText secondary={`Command Name:`} />
+                            <ListItemText secondary={`Command:`} />
 
                             <Select
                             labelId="combo-box-label"
@@ -177,6 +182,7 @@ function PlaylistViewer() {
                             label="Item"
                             onChange={(e) => handleCommandNameChange(index, e.target.value)}
                             fullWidth
+                            size="small"
                         >
                             {commands.map((item, index) => (
                                 <MenuItem key={index} value={item.name}>
@@ -196,6 +202,7 @@ function PlaylistViewer() {
                                     onChange={(e) => handleDurationChange(index, e.target.value)}
                                     displayEmpty
                                     fullWidth
+                                    size="small"
                                     >
                                     <MenuItem value={5}>5s</MenuItem>
                                     <MenuItem value={10}>10s</MenuItem>
@@ -213,13 +220,13 @@ function PlaylistViewer() {
                     </Grid>
                     <Grid item xs={4}>
                     <ListItemText secondary={`Actions:`} />
-                                <IconButton onClick={() => handleDelete(index)}>
+                                <IconButton onClick={() => handleDelete(index)} size="small">
                                     <DeleteIcon />
                                 </IconButton>
-                                <IconButton onClick={() => moveItem(index, -1)} disabled={index === 0}>
+                                <IconButton onClick={() => moveItem(index, -1)} disabled={index === 0} size="small">
                                     <ArrowUpwardIcon />
                                 </IconButton>
-                                <IconButton onClick={() => moveItem(index, 1)} disabled={index === schedule.length - 1}>
+                                <IconButton onClick={() => moveItem(index, 1)} disabled={index === schedule.length - 1} size="small">
                                     <ArrowDownwardIcon />
                                 </IconButton>
                     </Grid>
@@ -231,12 +238,13 @@ function PlaylistViewer() {
                     variant="contained" 
                     startIcon={<AddCircleOutlineIcon />}
                     onClick={handleAdd}
+                    sx={{margin:"2px"}}
                 >
                     Add Command
                 </Button>
                 </Grid>
                 <Grid item xs={12}>    
-                    <Typography variant="h5" component="h5"> Conditions: </Typography>
+                    <Typography variant="h6" component="h6"> Conditions: </Typography>
                     <Button 
                     variant="contained" 
                     startIcon={<AddCircleOutlineIcon />}
@@ -257,6 +265,7 @@ function PlaylistViewer() {
                             label="Item"
                             onChange={(e) => handleSelectedCondition(index, e.target.value)}
                             fullWidth   
+                            
                             >
                                 <MenuItem value={""}>No Condition</MenuItem>
                                 <MenuItem value={"morning"}>Morning</MenuItem>
@@ -276,10 +285,57 @@ function PlaylistViewer() {
                         color="secondary" 
                         disabled={!needSave}
                         onClick={handleSave}
-                    >
+                        sx={{margin:"2px"}} 
+               >
                         Save Changes
                     </Button>
+                    <Button 
+                    variant="contained" 
+                    startIcon={<BackspaceIcon />}
+                    onClick={() => setEditMode(false)}
+                    sx={{margin:"2px"}}
+                >
+                    Cancel
+                </Button>
+               
                 </Grid>
+            </>
+            ) : (<>
+            
+            {playlistsDetailed.map((playlist, index) => (
+                <Grid item xs={12} md={6} lg={4}>
+                
+                 <Card fullWidth>
+                    <CardHeader avatar={<ListIcon></ListIcon>} 
+                        title={playlist.name}
+                       >
+                    </CardHeader>
+                    <CardContent>
+                    {playlist.commands.map((command, index) => (
+                          <Chip label={command}
+                          size="medium" variant="outlined"  sx={{margin: "1px"}} />) )
+                    }
+
+                    </CardContent>   
+                    <CardActions>
+                    
+                        <Button variant="contained" color="primary" startIcon={<PlayArrowIcon />}
+                                onClick={() => handleExecute(playlist.name)}>         
+                        </Button>
+
+                        <Button variant="contained" color="primary" startIcon={<ModeEditIcon />}
+                                onClick={() => handleEditPlaylist(playlist.name)}>            
+                        </Button>
+
+                    </CardActions>
+                </Card>
+                                    
+                </Grid>            
+                        ))}
+                    
+            
+            </>)}
+
             </Grid>
         </div>
     );

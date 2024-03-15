@@ -158,6 +158,10 @@ class IPCClientExecutor(IPCClient, BaseCommandExecutor):
         return self.send_command("set_schedule", schedule, playlist_name)
 
     @synchronized_method
+    def play_schedule(self, playlist_name: str | None) -> None:
+        return self.send_command("play_schedule", playlist_name)
+   
+    @synchronized_method
     def execute_now(
         self,
         command_name: str,

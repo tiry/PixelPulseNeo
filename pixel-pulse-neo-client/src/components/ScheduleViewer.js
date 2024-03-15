@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import ApiService from '../services/ApiService';
 import {BASE_URL} from '../services/ApiService'
-import { List, ListItem, TextField, IconButton, Button, ListItemText, Typography, Grid, Select, MenuItem } from '@mui/material';
+import { IconButton, Button, ListItemText, Typography, Grid, Select, MenuItem, CardMedia} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import SmartDisplayIcon from '@mui/icons-material/SmartDisplay';
 
 function ScheduleViewer() {
     const [schedule, setSchedule] = useState({ commands :[]});
-    const [editMode, setEditMode] = useState(false);
     const [currentCommand, setCurrentCommand] = useState({});
     const [currentCommandName, setCurrentCommandName ] = useState(null);
     const [commands, setCommands] = useState([]);
@@ -129,21 +129,33 @@ function ScheduleViewer() {
     }
 
     return (
-        <div style={{padding: 10}}>
+        <div style={{padding: 5}}>
             <Grid container spacing={2}>
-                <Grid item xs={12}>    
-                    <Typography variant="h4" component="h4"> Current command {currentCommandName}: </Typography>
+                <Grid item xs={5}>    
+                    <Typography > Currently playing </Typography>
                 </Grid>
-                <Grid item xs={12}>    
+                <Grid item xs={1} >
+                    <SmartDisplayIcon fontSize="large"/>
+                </Grid>
+                <Grid item xs={6} >    
+                    <Typography variant="h4" style={{padding: 0}}> &nbsp;{currentCommandName} </Typography>
+                </Grid>
+                
+                <Grid item xs={12} >    
                     <Typography variant="" component="i"> {currentCommand.description}: </Typography>
                 </Grid>
-                <Grid item xs={12}>        
+                <Grid item xs={12} md={6}>        
                     {currentCommand.screenshots ? (
-                    <img src={`${BASE_URL}/screenshots/${currentCommand.name}/${currentCommand.screenshots[0]}`} width="600 px"/>
+                        <>
+                    <CardMedia
+                        component="img"
+                        image={`${BASE_URL}/screenshots/${currentCommand.name}/${currentCommand.screenshots[0]}`}
+                    />
+                    </>
                     ) : ( "no screenshot" ) }
                 </Grid>
                 <Grid item xs={12}>    
-                    <Typography variant="h4" component="h4"> Queue: </Typography>
+                    <Typography> Next commands: </Typography>
                 </Grid>
 
                 {schedule.commands.map((item, index) => (
@@ -157,6 +169,7 @@ function ScheduleViewer() {
                             label="Item"
                             onChange={(e) => handleCommandNameChange(index, e.target.value)}
                             fullWidth
+                            size="small"
                         >
                             {commands.map((item, index) => (
                                 <MenuItem key={index} value={item.name}>
@@ -174,6 +187,7 @@ function ScheduleViewer() {
                                     onChange={(e) => handleDurationChange(index, e.target.value)}
                                     displayEmpty
                                     fullWidth
+                                    size="small"
                                     >
                                     <MenuItem value={5}>5s</MenuItem>
                                     <MenuItem value={10}>10s</MenuItem>
@@ -190,13 +204,13 @@ function ScheduleViewer() {
                     </Grid>
                     <Grid item xs={4}>
                     <ListItemText secondary={`Actions:`} />
-                                <IconButton onClick={() => handleDelete(index)}>
+                                <IconButton onClick={() => handleDelete(index)} size="small">
                                     <DeleteIcon />
                                 </IconButton>
-                                <IconButton onClick={() => moveItem(index, -1)} disabled={index === 0}>
+                                <IconButton onClick={() => moveItem(index, -1)} disabled={index === 0} size="small">
                                     <ArrowUpwardIcon />
                                 </IconButton>
-                                <IconButton onClick={() => moveItem(index, 1)} disabled={index === schedule.length - 1}>
+                                <IconButton onClick={() => moveItem(index, 1)} disabled={index === schedule.length - 1} size="small">
                                     <ArrowDownwardIcon />
                                 </IconButton>
                     </Grid>
@@ -208,6 +222,7 @@ function ScheduleViewer() {
                 variant="contained" 
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={handleAdd}
+                sx={{margin: "2px"}}
             >
                 Add Command
             </Button>
@@ -216,6 +231,7 @@ function ScheduleViewer() {
                 color="secondary" 
                 disabled={!needSave}
                 onClick={handleSave}
+                sx={{margin: "2px"}}
             >
                 Save Changes
             </Button>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ApiService from '../services/ApiService';
-import { List, ListItem, ListItemText, Button, Grid, Card, CardHeader, CardActions, CardMedia,FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { Button, Grid, Card, CardHeader, CardActions, CardMedia,FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import {BASE_URL} from '../services/ApiService'
-import QueueIcon from '@mui/icons-material/Queue';
 import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ControlCameraIcon from '@mui/icons-material/ControlCamera';
@@ -100,6 +99,7 @@ function CommandList() {
                                     label="Duration"
                                     onChange={(e) => handleDurationChange(command.name, e.target.value)}
                                     displayEmpty
+                                    size="small"
                                     >
                                     <MenuItem value={10}>10s</MenuItem>
                                     <MenuItem value={20}>20s</MenuItem>

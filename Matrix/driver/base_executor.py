@@ -61,7 +61,7 @@ class BaseCommandExecutor(ABC, Base):
     @abstractmethod
     def list_commands(self) -> List[str]:
         """
-        List all registered available commands
+        List names of all registered available commands
 
         Returns:
             List[str]: List of command names
@@ -105,7 +105,7 @@ class BaseCommandExecutor(ABC, Base):
     @abstractmethod
     def list_schedules(self) -> list[str]:
         """
-        List all scheduled playlists
+        List names of all playlists
 
         Returns:
             List[str]: List of playlist names
@@ -139,6 +139,11 @@ class BaseCommandExecutor(ABC, Base):
     @abstractmethod
     def get_current_command(self) -> str | None:
         pass
+
+    @abstractmethod
+    def play_schedule(self, playlist_name: str | None) -> None:
+        pass
+
  
     @abstractmethod
     def send_command_message(self, command_name:str, message:str) -> str | None:

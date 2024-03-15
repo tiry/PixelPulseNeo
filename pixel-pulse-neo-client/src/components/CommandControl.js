@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import {BASE_URL} from '../services/ApiService'
 
 import ApiService from '../services/ApiService';
-import { Container, Grid, TextField, Typography, Button,} from '@mui/material';
+import { Container, Grid, TextField, Typography, Button, CardMedia} from '@mui/material';
 
 import TextIncreaseIcon from '@mui/icons-material/TextIncrease';
 import TextDecreaseIcon from '@mui/icons-material/TextDecrease';
@@ -15,8 +15,6 @@ import ExpandIcon from '@mui/icons-material/Expand';
 
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-//import { ColorPicker } from "@material-ui/color";
-//import { ColorPicker, ColorInput } from "material-ui-color";
 
 const CommandControl = () => {
     const [command, setCommand] = useState({});
@@ -65,14 +63,21 @@ const CommandControl = () => {
         <Container maxWidth="lg" >          
           <Typography variant="h4" component="h4"> Control {commandName}: </Typography>
           <Typography variant="" component="i"> {command.description}: </Typography>
-          {command.screenshots ? (
-          <img src={`${BASE_URL}/screenshots/${command.name}/${command.screenshots[0]}`} width="600 px"/>
-          ) : ( "no" ) }
+          
           <Grid container spacing={2}>
+
+          <Grid item xs={12}>
+          {command.screenshots ? (
+            <CardMedia
+            component="img"
+            image={`${BASE_URL}/screenshots/${command.name}/${command.screenshots[0]}`}
+            />
+          ) : ( "no" ) }
+          </Grid>
                 <Grid item xs={8}>
                   <TextField fullWidth
                       defaultValue={text}
-                      onChange={(e) => setText(e.target.value)}>
+                      onChange={(e) => setText(e.target.value)} size="small">
                   </TextField>
                 </Grid>
                 <Grid item xs={4}>

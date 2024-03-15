@@ -71,16 +71,16 @@ const StatusViewer = () => {
         <Grid container spacing={3}>
           
           <Grid item xs={12}>
-            <Typography variant="h4" component="h4"> Power Management: </Typography>
+            <Typography variant="h6" component="h6"> Power Management: </Typography>
           </Grid>
           
           <Grid item xs={4}>
           &nbsp; 
-            <Button variant="contained" color="primary" startIcon={<BedtimeIcon />} disabled={metrics["sleeping"]==true} fullWidth
+            <Button variant="contained" color="primary" startIcon={<BedtimeIcon />} disabled={metrics["sleeping"]===true} fullWidth
                     onClick={() => handleSleep()}>Sleep
             </Button>
             &nbsp; 
-            <Button variant="contained" color="primary" startIcon={<AlarmOnIcon />} disabled={metrics["sleeping"]==false} fullWidth
+            <Button variant="contained" color="primary" startIcon={<AlarmOnIcon />} disabled={metrics["sleeping"]===false} fullWidth
                     onClick={() => handleWakeup()}>Wake&nbsp;Up
             </Button>            
           </Grid>
@@ -89,8 +89,8 @@ const StatusViewer = () => {
             <Typography align="center">{metrics["sleeping"]? "Matrix is asleep" : "Matrix is on"}</Typography>
             <Typography align="center">
             {metrics["sleeping"]? 
-            (<img src={`${BASE_URL}/../web/pictures/sleep.png`} width="100%"/>) : 
-            (<img src={`${BASE_URL}/../web/pictures/awake.png`} width="100%"/>)}
+            (<img src={`${BASE_URL}/../web/pictures/sleep.png`} width="100%" alt="asleep"/>) : 
+            (<img src={`${BASE_URL}/../web/pictures/awake.png`} width="100%" alt="awake"/>)}
             </Typography>
           </Grid>  
 
@@ -109,7 +109,7 @@ const StatusViewer = () => {
            /></Typography>
           </Grid>  
           <Grid item xs={12}>
-            <Typography variant="h4" component="h4"> Monitoring: </Typography>
+            <Typography variant="h6" component="h6"> Monitoring: </Typography>
           </Grid>
       
           {Object.entries(metrics).map(([key, value]) => (

@@ -119,6 +119,23 @@ class Schedules(Resource):
         return jsonify(result)
 
 
+@api.route("/schedules/detailed")
+class SchedulesDetailed(Resource):
+    def get(self):
+        """Returns a JSON array of the names of all available schedules / playlists."""
+        names: list[str] = get_executor().list_schedules()
+        result = []
+        for name in names:
+            schedule:ScheduleModel = get_executor().get_schedule(name) # type: ignore
+            resItem = {
+                "name" : name,
+                "commands" : [ command.command_name for command in schedule.commands],
+                "conditions" : schedule.conditions
+            }
+            result.append(resItem)
+        return jsonify(result)
+    
+
 @api.route("/screenshots/<command_name>/<screenshot_name>")
 class Screenshot(Resource):
     def get(self, command_name, screenshot_name):
@@ -260,6 +277,14 @@ class MsgCommand(Resource):
 
 rest_schedule = pydantic_to_restx_model(api, ScheduleModel)  # type: ignore
 
+@api.route("/schedule/<playlist_name>/execute")
+class ScheduleExec(Resource):
+    def post(self, playlist_name):
+        """Play the selected playlist
+        - `result`: None
+        """
+        get_executor().play_schedule(playlist_name)
+        return make_response("OK", 200)
 
 @api.route("/schedule", defaults={"playlist_name": None})
 @api.route("/schedule/<playlist_name>")

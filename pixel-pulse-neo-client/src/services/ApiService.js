@@ -38,6 +38,14 @@ export default class ApiService {
         return axios.get(`${BASE_URL}/schedules`).then(res => res.data);
     }
 
+    static playPlaylist(name, duration=10, interupt=false) {
+        return axios.post(`${BASE_URL}/schedule/` + name + "/execute").then(res => res.data);
+    }
+
+    static getPlaylistsDetailed() {
+        return axios.get(`${BASE_URL}/schedules/detailed`).then(res => res.data);
+    }
+    
     static sendCommandMessage(command_name, message) {
         var post= axios.post(`${BASE_URL}/message/` + command_name , message)
         return post.then(response => response.data)

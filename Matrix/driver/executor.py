@@ -154,6 +154,10 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             self.scheduler.update_current_stack(schedule)
 
     @synchronized_method
+    def play_schedule(self, playlist_name: str | None) -> None:
+        self.scheduler.load_playlist(playlist_name)
+    
+    @synchronized_method
     def save_schedule(self, schedule_file=None):
         self.scheduler.save(schedule_file=schedule_file)
 
@@ -423,6 +427,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             "get_schedule": self.get_schedule,
             "execute_now": self.execute_now,
             "set_schedule": self.set_schedule,
+            "play_schedule" : self.play_schedule,
             "save_schedule": self.save_schedule,
             "send_command_message": self.send_command_message,
             "stop": self.stop,
