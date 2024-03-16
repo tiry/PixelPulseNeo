@@ -28,6 +28,8 @@ class PicCmd(PictureScrollBaseCmd):
         self.refresh_timer:float = 1/20
         self.pics_path:list[str] = get_pics_path()
         self.loop_counter:int=0
+        self.recommended_duration = 120
+        self.max_loop:int = 4
     
     def get_random_pic(self) -> str:
         return self.pics_path[random.randint(0, len(self.pics_path)-1)]
@@ -48,7 +50,7 @@ class PicCmd(PictureScrollBaseCmd):
         
     def generate_image(self, args=[], kwargs={}) -> Image.Image | None:
 
-        if self.loop_counter==2:
+        if self.loop_counter==self.max_loop:
             self.update_image()
             self.loop_counter=0
         

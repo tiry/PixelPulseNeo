@@ -127,10 +127,18 @@ class SchedulesDetailed(Resource):
         result = []
         for name in names:
             schedule:ScheduleModel = get_executor().get_schedule(name) # type: ignore
+            commands = []
+            conditions = []
+            try:      
+                commands = [ command.command_name for command in schedule.commands]
+                conditions = schedule.conditions
+            except Exception as e:
+                commands = [ command["command_name"] for command in schedule["commands"]] # type: ignore
+                conditions = schedule["conditions"] # type:ignore
             resItem = {
                 "name" : name,
-                "commands" : [ command.command_name for command in schedule.commands],
-                "conditions" : schedule.conditions
+                "commands" : commands,
+                "conditions" : conditions
             }
             result.append(resItem)
         return jsonify(result)
