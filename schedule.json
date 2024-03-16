@@ -38,7 +38,7 @@
         "evening": {
             "commands": [
                 {
-                    "command_name": "meteo",
+                    "command_name": "mta",
                     "duration": 30.0,
                     "args": [],
                     "kwargs": {}
@@ -50,15 +50,58 @@
                     "kwargs": {}
                 },
                 {
-                    "command_name": "conway",
-                    "duration": 20.0,
+                    "command_name": "spotify",
+                    "duration": 200.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "pic",
+                    "duration": 120.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "scrolltext",
+                    "duration": 60.0,
                     "args": [],
                     "kwargs": {}
                 }
+
             ],
             "conditions": [
                 "evening"
             ]
+        },
+        "geek": {
+            "commands": [
+                {
+                    "command_name": "conway",
+                    "duration": 40.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "eyes",
+                    "duration": 20.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "kitt",
+                    "duration": 20.0,
+                    "args": [],
+                    "kwargs": {}
+                },
+                {
+                    "command_name": "arkanoid",
+                    "duration": 20.0,
+                    "args": [],
+                    "kwargs": {}
+                }
+
+            ],
+            "conditions": [ ]
         },
         "testingschedule": {
             "commands": [
