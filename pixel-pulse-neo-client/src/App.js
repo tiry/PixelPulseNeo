@@ -5,6 +5,7 @@ import ScheduleViewer from './components/ScheduleViewer';
 import PlaylistViewer from './components/PlaylistViewer';
 import StatusViewer from './components/StatusViewer';
 import CommandControl from './components/CommandControl';
+import CameraControl from './components/CameraControl';
 import { AppBar, Toolbar, Button, Tabs, Tab } from '@mui/material';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 import TableRowsIcon from '@mui/icons-material/TableRows';
@@ -26,7 +27,7 @@ function App() {
                     
                     <Tabs   value={currentTab}  
                             onChange={handleTabChange} 
-                            TabIndicatorProps={{style: {color:'red', backgroundColor:'white'}}}
+                            TabIndicatorProps={{style: {backgroundColor:'white'}}}
                             sx={{
                                 flexGrow: 1,
                                 "& a:_hover" : {backgroundColor: 'white'},
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/web/schedule" element={<ScheduleViewer />} />
                 <Route path="/web/playlists" element={<PlaylistViewer />} />
                 <Route path="/web/status" element={<StatusViewer />} />
+                <Route path="/web/camera" element={<CameraControl />} />
                 <Route path="/web/control/:commandName" element={<CommandControl />} />
             </Routes>
         </Router>

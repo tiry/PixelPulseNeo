@@ -1,5 +1,15 @@
 # Commands
 
+## pic
+
+Display an Animated Gif or an Data URI Picture
+
+<img src="screenshots/pic_00480.png"/>
+
+<img src="screenshots/pic1.png"/>
+
+<img src="screenshots/pic2.png"/>
+
 ## mta
 
 Displays next trains and bus arrival time for a given location
@@ -16,6 +26,12 @@ More details and configuration, see [mta/ReadMe.md](mta/ReadMe.md)
 Displays Weather forcast from wttr.in
 
 <img src="screenshots/meteo1.gif"/>
+
+## arkanoid
+
+Block Breaker game
+
+<img src="screenshots/arkanoid1.png"/>
 
 ## eyes
 
@@ -84,4 +100,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 10-03-2024 17:34:15.
+Automatically generated using `python -m Matrix.doc_gen` on 16-03-2024 02:26:18.
