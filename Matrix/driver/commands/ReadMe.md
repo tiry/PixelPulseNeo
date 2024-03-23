@@ -27,6 +27,12 @@ Displays Weather forcast from wttr.in
 
 <img src="screenshots/meteo1.gif"/>
 
+## splitflap
+
+Display text using Split Flap Display
+
+<img src="screenshots/splitflap.gif"/>
+
 ## arkanoid
 
 Block Breaker game
@@ -100,4 +106,4 @@ Displays News from RSS feeds
 <img src="screenshots/news3.png"/>
 <br/><hr/>
 
-Automatically generated using `python -m Matrix.doc_gen` on 16-03-2024 02:26:18.
+Automatically generated using `python -m Matrix.doc_gen` on 23-03-2024 01:25:23.

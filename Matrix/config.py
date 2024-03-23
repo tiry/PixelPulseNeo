@@ -41,7 +41,7 @@ MATRIX_HEIGHT = 64
 MATRIX_CHAINED = 3
 
 # default refresh rate
-DEFAULT_REFRESH = 1 / 60.0
+DEFAULT_REFRESH = 1 / 30.0
 
 ################################################
 # Power Management config

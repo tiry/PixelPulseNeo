@@ -54,7 +54,7 @@ class FeedWrapper:
         if self.scrolling_position is None:
             return None
 
-        self.scrolling_position -= 1.5
+        self.scrolling_position -= 1
         if self.scrolling_position < self.max_scrolling_position:
             # print("Reset position")
             self.scrolling_position = self.max_width

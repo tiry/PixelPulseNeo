@@ -197,14 +197,28 @@ class BaseCommand:
         
         self.logger: logging.Logger=logger
         self.execution_done:bool = False
+        self.t0: float=time.time()
+        self.t_last_render: float=time.time()
         self.reset_state()
+        
 
     def get_recommended_duration(self) -> int:
         return self.recommended_duration
     
     def reset_state(self) -> None:
         self.execution_done=False
-    
+        self.t0=time.time()
+
+    def wait_for_next_frame(self):
+        
+        frame_interval = time.time() - self.t_last_render
+
+        if frame_interval < self.refresh_timer:
+            pause_time = self.refresh_timer - frame_interval
+            #print(f"pausing {pause_time}s")
+            time.sleep(pause_time)
+        return
+        
     def execute(
         self,
         stop_event: threading.Event,
@@ -227,13 +241,22 @@ class BaseCommand:
                 while not self.execution_done and not stop_event.is_set() and not (time.time() - t0) > timeout:
                     res = self.render(args=args, kwargs=kwargs)
                     frame_nb += 1
-                    time.sleep(self.refresh_timer)
+                    t_last_render=time.time()
+                    
+                    self.wait_for_next_frame()
+                    self.t_last_render=t_last_render
+                    
+                    #time.sleep(self.refresh_timer)
                     
                     # hack to generate screenshots
                     if CAPTURE_PYGAME and frame_nb % CAPTURE_FREQ == 0:
                         self.capture_screen(tag=f"{frame_nb:05d}")
                     
                     self.process_message_if_needed()
+                    if frame_nb >0 and frame_nb %500==0:
+                        fps: float = int(frame_nb / (time.time() - t0)) 
+                        logger.info(f"[{self.name}] fps={fps}")
+                        #print(f"[{self.name}] FPS = {fps}")
                 return (res, None)
         except Exception as e:
             tb: str = traceback.format_exc()
@@ -408,7 +431,7 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
                 elif self.ypos > self.image.size[1]:
                     self.ypos = -get_matrix_height()
 
-        self.double_buffer.Clear()
+        #self.double_buffer.Clear()
         if self.image:
             img_width, img_height = self.image.size
             self.double_buffer.SetImage(self.image, self.xpos, self.ypos)
