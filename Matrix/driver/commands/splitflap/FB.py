@@ -12,18 +12,26 @@ def render_letter_flaps(letter:str, font, fg_color=(0,0,0), bg_color=(255,255,25
       
     bb: tuple[int, int, int, int]=font.getbbox("A")
         
-    w:int = bb[2]+2
+    w:int = bb[2]+4
     h:int = font.size
     bg: Image.Image = Image.new("RGB", (w, h), color=(0, 0, 0))    
     draw: ImageDraw.ImageDraw = ImageDraw.Draw(bg)
-    draw.rectangle((1,1,w-1,h-1), fill=bg_color, outline=darker(bg_color, 70))
-    draw.text((2, 0), letter, font=font, fill=fg_color)
-    draw.line((0, int(h/2), h, int(h/2)), fill=fg_color)
+    
+    if letter == " ":
+        draw.rectangle((1,1,w-1,h-1), fill=darker(bg_color,10), outline=darker(bg_color, 5))
         
+        draw.line((0, int(h/2), h, int(h/2)), fill=fg_color)
+    else:
+        if letter == "▓":
+            letter = " "
+        draw.rectangle((1,1,w-1,h-1), fill=bg_color, outline=darker(bg_color, 70))
+        draw.text((2, -1), letter, font=font, fill=fg_color)
+        draw.line((0, int(h/2), h, int(h/2)), fill=fg_color)
+            
     bg.putpixel((1, 1), (0, 0, 0))
-    bg.putpixel((21, 1), (0, 0, 0))
+    bg.putpixel((23, 1), (0, 0, 0))
     bg.putpixel((1, 31), (0, 0, 0))
-    bg.putpixel((21, 31), (0, 0, 0))
+    bg.putpixel((23, 31), (0, 0, 0))
 
     flap1: Image.Image = bg.copy().crop((0,0,w, int(h/2)))
     flap2: Image.Image = bg.crop((0,int(h/2),w, h))
@@ -33,7 +41,7 @@ def render_letter_flaps(letter:str, font, fg_color=(0,0,0), bg_color=(255,255,25
 
 class FlapRoll():
     
-    def __init__(self, letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ?:!()#$%*+=_-{}[]<>", font_name:str="LiberationMono-Regular.ttf", height=32) -> None:
+    def __init__(self, letters = "▓ ABCDEFGHIJKLMNOPQRSTUVWXYZ?:!()#$%*+=_-{}[]<>", font_name:str="LiberationMono-Regular.ttf", height=32) -> None:
         
         flaps: list[Image.Image] = []
         letter_index:dict[str,tuple[int, int]] = {}
@@ -62,7 +70,7 @@ class FlapRoll():
         return (index + 2) % len(self.flaps)
         
 
-DEFAULT_FLAP_ROLL = FlapRoll(" ABCDEFGHIJKLMNOPQRSTUVWXYZ?:!()#*<>-")
+DEFAULT_FLAP_ROLL = FlapRoll("▓ ABCDEFGHIJKLMNOPQRSTUVWXYZ?:!()#*<>-")
 
 class FlapBox():
 
@@ -71,7 +79,10 @@ class FlapBox():
         self.target_pos:int=0
         self.flap_roll: FlapRoll = flap_roll    
         self.angle=0
-        
+    
+    def size(self) -> tuple[int,int]:
+        return (self.flap_roll.width, self.flap_roll.height)
+    
     def render(self) -> Image.Image:
         
         w = self.flap_roll.width
@@ -97,6 +108,8 @@ class FlapBox():
                 flapping = flapping.resize((flapping.width, target_height))        
                 rendered.paste(flapping, (0,16-flapping.height))
             elif self.angle>90:
+                if self.angle>180:
+                    self.angle = 180
                 flapping: Image.Image = self.flap_roll.get_flap_by_index(self.current_pos+3)
                 target_height: int = -int(flapping.height* math.cos(math.radians(self.angle)))
                 flapping = flapping.resize((flapping.width, target_height))        
@@ -110,7 +123,7 @@ class FlapBox():
     def turn(self) -> bool:
         if (self.current_pos != self.target_pos):
             #print("turn")
-            self.angle+=25
+            self.angle+=20
             if self.angle > 180:
                 self.angle = 0
                 self.current_pos = self.flap_roll.turn(self.current_pos)
@@ -126,6 +139,7 @@ class FlapPannel():
         self.messages:list[str] = []
         if message:
             self.append_text(message)
+        self.flapbox_size:tuple[int,int]=(0,0)
         self.init_display()
         
     def init_display(self):
@@ -134,9 +148,10 @@ class FlapPannel():
             box = FlapBox()
             self.flap_boxes.append(box)
         self.update_target_text()
+        self.flapbox_size = self.flap_boxes[0].size()
     
     def append_text(self, text:str) -> None:
-        self.messages.append(text)
+        self.messages.append(text.upper())
     
     def update_target_text(self):
         
@@ -201,13 +216,15 @@ class FlapPannel():
     def render(self, background:Image.Image) -> None:
         changes = False
         
+        w:int = self.flapbox_size[0]
+        h:int = self.flapbox_size[1]
+        
         for i, box in enumerate(self.flap_boxes):
             renered_flaps:Image.Image = box.render()
             if i < self.width:
-                background.paste(renered_flaps, (i*22,0))
+                background.paste(renered_flaps, (i*w,0))
             else:
-                background.paste(renered_flaps, ((i-8)*22,32))
-            #idx+=22
+                background.paste(renered_flaps, ((i-8)*w,h))
             changed: bool = box.turn()
             changes: bool = changes or changed
         

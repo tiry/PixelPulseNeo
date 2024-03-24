@@ -19,8 +19,10 @@ class SplitflapCmd(PictureScrollBaseCmd):
         self.font_height=32
         self.font = None
         
-        self.flap_panel:FlapPannel = FlapPannel(message = "  ?    ?    ")
+        self.flap_panel:FlapPannel = FlapPannel()
         self.flap_panel.append_text("HAVE A NICE DAY")
+        self.flap_panel.append_text("use the app to ")
+        self.flap_panel.append_text("change the text")
                 
     def update_image(self):
         
