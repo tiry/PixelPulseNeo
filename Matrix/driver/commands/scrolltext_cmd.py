@@ -54,8 +54,9 @@ class ScrolltextCmd(TextScrollBaseCmd):
         self.text_speed:int = 3
         self.phase:float = 0
         self.phase_step:float = 0.3
-        self.refresh_timer: float = 1/30.0
-        
+        self.refresh_timer: float = 1/20
+        self.recommended_duration = 60
+
         self.wave = WaveDeformer(self.shift_amplitude, int(self.freq/5), self.phase_step, 32)
         self.wave.init_grid(self._get_background())
   

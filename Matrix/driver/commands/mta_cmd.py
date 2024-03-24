@@ -23,7 +23,7 @@ def truncate(s, length):
     else:
         return s
 
-PAUSED_FRAMES = 60 * 5
+PAUSED_FRAMES = 60 * 8
 
 class MtaCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
@@ -53,7 +53,6 @@ class MtaCmd(PictureScrollBaseCmd):
         self.next_trains: dict | None = None
         self.next_buses: dict | None = None
         self.recommended_duration = 30
-
     
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         self.logger.info("Get info from MTA")

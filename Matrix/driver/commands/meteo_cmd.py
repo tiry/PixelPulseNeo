@@ -16,7 +16,7 @@ from Matrix.driver.commands.wttr.weather import getTodayWeather
 class MeteoCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
         super().__init__("meteo", "Displays Weather forcast from wttr.in")
-        self.refresh_timer = 1 / 60.0
+        self.refresh_timer = 1 / 30.0
         self.scroll = True
         self.refresh = True
         self.background: Image.Image | None = None

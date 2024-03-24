@@ -23,15 +23,30 @@ feeds: list[dict[str, str]] = [
         "logo": "lemonde.jpeg",
     },
     {
-        "url": "http://rss.cnn.com/rss/cnn_topstories.rss",
-        "name": "cnn top stories",
-        "logo": "cnn.png",
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+        "name": "nytimes_world",
+        "logo": "nyt.png",
     },
     {
-        "url": "http://rss.cnn.com/rss/cnn_world.rss	",
-        "name": "cnn world",
-        "logo": "cnn.png",
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
+        "name": "nytimes_us",
+        "logo": "nyt.png",
     },
+    {
+        "url": "https://machinelearningmastery.com/blog/feed/",
+        "name": "mlm",
+        "logo": "mlm.png",
+    },
+    {
+        "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml",
+        "name": "mit",
+        "logo": "MIT-logo.png",
+    },
+    {
+        "url": "https://feeds.feedburner.com/nvidiablog",
+        "name": "nvidia",
+        "logo": "nvidia.png"
+        },
     {
         "url": "https://www.tomshardware.com/feeds/all",
         "name": "tomshardware",
@@ -66,6 +81,7 @@ feeds: list[dict[str, str]] = [
 
 
 def get_feed_definition(name=None) -> dict[str, str]:
+    name = "nvidia"
     if name:
         for item in feeds:
             if item["name"] == name:

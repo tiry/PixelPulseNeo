@@ -97,8 +97,9 @@ def get(url, max_width, max_height, max_items=6) -> FeedWrapper:
         # print("Entry Summary:", entry.summary)
         thumb = entry.get("media_thumbnail", None)
         if thumb is None and "media_content" in entry:
-            thumb = entry.media_content[0]["url"]
-            entry.__setitem__("media_thumbnail", [{"url": thumb}])
+            if "url" in entry.media_content[0].keys():
+                thumb = entry.media_content[0]["url"]
+                entry.__setitem__("media_thumbnail", [{"url": thumb}])
         if thumb is None:
             if "enc_enclosure" in entry.keys():
                 thumb = entry.enc_enclosure["rdf:resource"]
