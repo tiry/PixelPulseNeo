@@ -42,6 +42,7 @@ class PicCmd(PictureScrollBaseCmd):
         self.background:Image.Image =  Image.new("RGB", (width, height), color=(0, 0, 0))    
         self.background.paste(self.gif)
         self.n_frame= self.gif.n_frames
+        self.max_loop = max(4, int(10*20/self.gif.n_frames)) 
         
     
     def update(self, args: list = [], kwargs: dict = {}) -> str:
@@ -50,7 +51,7 @@ class PicCmd(PictureScrollBaseCmd):
         
     def generate_image(self, args=[], kwargs={}) -> Image.Image | None:
 
-        if self.loop_counter==self.max_loop:
+        if self.loop_counter>=self.max_loop:
             self.update_image()
             self.loop_counter=0
         

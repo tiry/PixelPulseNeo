@@ -81,7 +81,7 @@ feeds: list[dict[str, str]] = [
 
 
 def get_feed_definition(name=None) -> dict[str, str]:
-    name = "nvidia"
+    #name = "nvidia"
     if name:
         for item in feeds:
             if item["name"] == name:
