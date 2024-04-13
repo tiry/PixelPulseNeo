@@ -119,6 +119,17 @@ For more details see [README.md](pixel-pulse-neo-client/README.md)
 <img src="pictures/web_ui1.png" width="400px"/>
 <br/>
 <br/>
+<br/>
+<img src="pictures/buttons.png" width="400px"/>
+
+ - Duration: determine how long the command should be run
+ - 1st button (+) : add the command as next in line to be played **after the current command completes**
+ - 2nd Button (play) : **Interrupts the currently executed command** to execute this new commend
+ - 3rd button (joystick) : interact & configure the command (WIP)
+
+<br/>
+
+<br/>
 <img src="pictures/web_ui2.png" width="400px"/>
 
 
