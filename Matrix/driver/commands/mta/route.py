@@ -29,7 +29,7 @@ def getNextTrains(route:str="F", station:str="Carroll") -> dict[str, list[str]]:
     return data
 
 
-def getNextTrainsToward(direction:str="N", routes:list[str]=["F", "G"], station:str="Carroll") -> dict[str, list[str]]:
+def getNextTrainsToward(direction:str="N", routes:list[str]=["F", "G"], station:str="Carroll", max_entries:int=3) -> dict[str, list[str]]:
     result:dict[str, list[str]] = {}
     for route in routes:
         next_trains: dict[str, list[str]] = getNextTrains(route, station)
@@ -41,6 +41,6 @@ def getNextTrainsToward(direction:str="N", routes:list[str]=["F", "G"], station:
                     time_str = time_str.replace("H", "")
                     times.append(time_str)
                 times.sort()
-        result[route] = times[:3]
+        result[route] = times[:max_entries]
 
     return result

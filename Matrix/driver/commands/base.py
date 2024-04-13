@@ -404,10 +404,13 @@ class PictureScrollBaseCmd(MatrixBaseCmd):
             return int((available_width - text_width) / 2)
         return 0
 
-    def update(self, args: list = [], kwargs: dict = {}) -> str:
-        self.image = self.generate_image(args, kwargs)
+    def reset_state(self) -> None:
+        super().reset_state()
         self.double_buffer = get_matrix().CreateFrameCanvas()
 
+    def update(self, args: list = [], kwargs: dict = {}) -> str:
+        self.image = self.generate_image(args, kwargs)
+        
         if self.scroll and self.speed_x != 0:
             self.xpos = get_total_matrix_width()
         else:

@@ -224,7 +224,7 @@ class FlapPannel():
             if i < self.width:
                 background.paste(renered_flaps, (i*w,0))
             else:
-                background.paste(renered_flaps, ((i-8)*w,h))
+                background.paste(renered_flaps, ((i-self.width)*w,h))
             changed: bool = box.turn()
             changes: bool = changes or changed
         

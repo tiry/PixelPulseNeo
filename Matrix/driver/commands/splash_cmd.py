@@ -23,19 +23,20 @@ class SplashCmd(PictureScrollBaseCmd):
         height: int = get_total_matrix_height()
         img:Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
 
-        self.add_logo(img, 2)
+        self.add_logo(img, 3)
         self.pre_rendered = img
         return super().update(args, kwargs)
 
     def add_logo(self, img:Image.Image, variant:int = 0):
 
-        images: list[str] = ["pulse.png", "square.png", "title.png"]
+        images: list[str] = ["pulse.png", "square.png", "title.png", "ppn_wide.png"]
         image_name = images[variant]
         icon: Image.Image = Image.open(
             get_icons_dir(f"splash/{image_name}")
         ).convert("RGB")
         resized_icon = self._resize_icon(icon, max_height=64)
-        img.paste(resized_icon, (0,0))
+        offset = int((get_total_matrix_width() - resized_icon.size[0])/2)
+        img.paste(resized_icon, (offset,0))
         
         font5 = self.getFont("5x7.pil")
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)

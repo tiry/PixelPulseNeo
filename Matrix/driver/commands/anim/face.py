@@ -43,11 +43,12 @@ emotion_dictionnary:dict[str, list[dict[str, Any]]] = {
    
 class Face():
     
-    def __init__(self) -> None:
+    def __init__(self, width=192, height=64) -> None:
         
         self.left = Eye(30, 22, 10, (0, 200, 255))
-        self.right = Eye(192-30, 22, 10, (0, 200, 255))
+        self.right = Eye(width-30, 22, 10, (0, 200, 255))
         self.mouth = Mouth(0,0,30, 40, (0, 200, 255))
+        
 
     def update_and_draw(self, img:Image.Image):
         self.left.update_and_draw(img)

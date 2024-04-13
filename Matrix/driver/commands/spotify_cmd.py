@@ -32,7 +32,8 @@ class SpotifyCmd(PictureScrollBaseCmd):
         self.track_info: dict[str, Any] | None = None
         self.cached_placeholder: Image.Image | None = None
         self.recommended_duration = 15*60
-
+        self.width: int = get_total_matrix_width()
+        
     def update(self, args=[], kwargs={}) -> str:
         self.track_info = client.get_current_track_info()
         print(f"Track info {self.track_info}")
@@ -43,9 +44,8 @@ class SpotifyCmd(PictureScrollBaseCmd):
             font = self.getFont("6x12.pil")
             font5 = self.getFont("5x7.pil")
 
-            width: int = get_total_matrix_width()
             height: int = get_total_matrix_height()
-            img: Image.Image = Image.new("RGB", (width, height), color=(0, 0, 0))
+            img: Image.Image = Image.new("RGB", (self.width, height), color=(0, 0, 0))
 
             icon: Image.Image = Image.open(
                 get_icons_dir("spotify/spotify.png")
@@ -92,28 +92,28 @@ class SpotifyCmd(PictureScrollBaseCmd):
             draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
 
             xoffset: int = 64 + self._compute_text_position(
-                self.track_info["artist_name"], font, 128
+                self.track_info["artist_name"], font, self.width - 64
             )
             draw.text((xoffset, 2), self.track_info["artist_name"], font=font)
 
             xoffset = 64 + self._compute_text_position(
-                self.track_info["track_name"], font5, 128
+                self.track_info["track_name"], font5, self.width - 64
             )
             draw.text((xoffset, 20), self.track_info["track_name"], font=font5)
 
             xoffset = 64 + self._compute_text_position(
-                self.track_info["album_name"], font4, 128
+                self.track_info["album_name"], font4, self.width - 64
             )
             draw.text((xoffset, 40), self.track_info["album_name"], font=font4)
 
-            draw.line((64 + 10, 60, 192 - 10, 60), fill=(255, 255, 255))
+            draw.line((64 + 10, 60, self.width - 10, 60), fill=(255, 255, 255))
 
             end: str = str(
                 datetime.timedelta(
                     seconds=int(self.track_info["track_duration"] / 1000)
                 )
             )[-5:]
-            draw.text((192 - 20, 52), end, font=font4)
+            draw.text((self.width - 20, 52), end, font=font4)
 
             self.cached_image = img
             self.cached_track_id = self.track_info["track_id"]
@@ -126,7 +126,7 @@ class SpotifyCmd(PictureScrollBaseCmd):
         )[-5:]
         draw.text((64 + 2, 52), start, font=font4)
 
-        line_width = 192 - 10 - 64 + 10
+        line_width = self.width - 10 - 64 + 10
         progress = int(
             self.track_info["track_position"]
             / self.track_info["track_duration"]

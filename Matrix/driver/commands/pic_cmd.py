@@ -30,6 +30,7 @@ class PicCmd(PictureScrollBaseCmd):
         self.loop_counter:int=0
         self.recommended_duration = 120
         self.max_loop:int = 4
+        self.offset=0
     
     def get_random_pic(self) -> str:
         return self.pics_path[random.randint(0, len(self.pics_path)-1)]
@@ -40,9 +41,11 @@ class PicCmd(PictureScrollBaseCmd):
         width: int = get_total_matrix_width()
         height: int = get_total_matrix_height()
         self.background:Image.Image =  Image.new("RGB", (width, height), color=(0, 0, 0))    
-        self.background.paste(self.gif)
+        self.offset = int((width - self.gif.size[0])/2)
+        self.background.paste(self.gif, (self.offset,0))
         self.n_frame= self.gif.n_frames
         self.max_loop = max(4, int(10*20/self.gif.n_frames)) 
+        
         
     
     def update(self, args: list = [], kwargs: dict = {}) -> str:
@@ -63,7 +66,7 @@ class PicCmd(PictureScrollBaseCmd):
             self.loop_counter+=1
         
         bg = self.background.copy()
-        bg.paste(self.gif)
+        bg.paste(self.gif, (self.offset,0))
         
         return bg
     

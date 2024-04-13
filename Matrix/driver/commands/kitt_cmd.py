@@ -24,7 +24,7 @@ class KittCmd(PictureScrollBaseCmd):
         self.decay=0.85
         self.lights_count = 15
         self.margin:int = 20
-        self.lights_width:int = int((get_total_matrix_width()-2*self.margin)/self.lights_count)
+        self.lights_width:int = int((192-2*self.margin)/self.lights_count)
         self.lights: list[int]= [0 for _ in range(self.lights_count)]
         self.lights_index=0
         self.lights_dir:int =1
@@ -47,6 +47,7 @@ class KittCmd(PictureScrollBaseCmd):
                     get_icons_dir("kitt/kitt_off2.png")
                 ).convert("RGBA")
         
+        offset:int = int((width - background.size[0])/2)
         draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
         font = self.getFont("7x14.pil")
         
@@ -54,7 +55,7 @@ class KittCmd(PictureScrollBaseCmd):
             
             color: tuple[int, int, int] = (int(255*light/100), 0, 0)
             #if color[0]>128:
-            dx: int = self.margin + idx*self.lights_width
+            dx: int = self.margin + idx*self.lights_width+offset
             draw.rectangle((dx, 24, dx+self.lights_width, 35), fill=color)
         
         self.lights_index+=self.lights_dir
@@ -63,7 +64,7 @@ class KittCmd(PictureScrollBaseCmd):
         elif self.lights_index == 0:
             self.lights_dir = -self.lights_dir
             
-        img.paste(background, (0, 0), mask=background)
+        img.paste(background, (offset, 0), mask=background)
         
         return img
 

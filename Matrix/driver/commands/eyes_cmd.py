@@ -19,8 +19,10 @@ class EyesCmd(PictureScrollBaseCmd):
         super().__init__("eyes", "Simple Eyes rendering")
         self.refresh_timer = 1 / 60.0
         self.scroll = False
-        self.refresh = True 
-        self.face = Face()
+        self.refresh = True
+        width: int = get_total_matrix_width()
+        height: int = get_total_matrix_height() 
+        self.face = Face(width, height)
         self.recommended_duration = 60
 
     def update(self, args=[], kwargs={}):

@@ -146,12 +146,12 @@ class NewsCmd(PictureScrollBaseCmd):
                 get_icons_dir(f"news/{self.feed_definition['logo']}")
             ).convert("RGB")
             resized_icon = self._resize_icon(icon, max_height=target_height)
-            img.paste(resized_icon, (192 - resized_icon.size[0] - margin, margin))
+            img.paste(resized_icon, (width - resized_icon.size[0] - margin, margin))
 
             draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
 
             available_text_width: int = (
-                192 - resized_icon.size[0] - resized_thumb.size[0]
+                width - resized_icon.size[0] - resized_thumb.size[0]
             )
             self.available_text_width: int = available_text_width
 

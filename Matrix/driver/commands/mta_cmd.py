@@ -8,6 +8,7 @@ from Matrix.driver.commands.base import (
     get_icons_dir,
     get_total_matrix_width,
     get_total_matrix_height,
+    get_matrix_chained
 )
 from Matrix import config
 import Matrix.driver.commands.mta.route as route
@@ -57,7 +58,7 @@ class MtaCmd(PictureScrollBaseCmd):
     def update(self, args: list = [], kwargs: dict = {}) -> None:
         self.logger.info("Get info from MTA")
         next_trains: dict = route.getNextTrainsToward(
-            direction=config.MTA_SUBWAY_DIRECTION, routes=config.MTA_SUBWAY_ROUTES, station=config.MTA_SUBWAY_STATION
+            direction=config.MTA_SUBWAY_DIRECTION, routes=config.MTA_SUBWAY_ROUTES, station=config.MTA_SUBWAY_STATION, max_entries=get_matrix_chained()
         )
         self.logger.info(f"Next trains {next_trains}")
         self.next_trains = next_trains
@@ -105,7 +106,7 @@ class MtaCmd(PictureScrollBaseCmd):
             for bus_stop in self.next_buses:
                 direction = truncate(bus_stop, 30)
                 _, _, text_width, text_height = font5.getbbox(direction)
-                xoffset = int((64 * 3 - text_width - 42) / 2)
+                xoffset = int((width - text_width - 42) / 2)
                 draw.text(
                     (42 + xoffset, 64 + 4 + 16 * idx),
                     direction,
@@ -115,7 +116,7 @@ class MtaCmd(PictureScrollBaseCmd):
 
                 times = " ".join(self.next_buses[bus_stop][:4])
                 _, _, text_width, text_height = font6.getbbox(times)
-                xoffset = int((64 * 3 - text_width - 42) / 2)
+                xoffset = int((width - text_width - 42) / 2)
                 draw.text((42 + xoffset, 64 + 16 * (idx + 1)), times, font=font6)
                 idx += 2
 

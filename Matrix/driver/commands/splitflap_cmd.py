@@ -19,7 +19,8 @@ class SplitflapCmd(PictureScrollBaseCmd):
         self.font_height=32
         self.font = None
         
-        self.flap_panel:FlapPannel = FlapPannel()
+        width: int = get_total_matrix_width()
+        self.flap_panel:FlapPannel = FlapPannel(width=int(width/24))
         self.flap_panel.append_text("HAVE A NICE DAY")
         self.flap_panel.append_text("use the app to ")
         self.flap_panel.append_text("change the text")
