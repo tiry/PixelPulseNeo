@@ -28,6 +28,10 @@ class MeteoCmd(PictureScrollBaseCmd):
         # print(f"weather = {self.weather}")
         super().update(args=[], kwargs={})
 
+    def reset_state(self) -> None:
+        super().reset_state()
+        self.background = None
+        
     def getWeatherBackground(self):
         if not self.background:
             width: int = get_total_matrix_width()
