@@ -62,15 +62,31 @@ API server (`Matrix.api`)
 
 ### Installing rpi-rgb-led-matrix on the target system
 
+#### Python Install
+
 On the target system, you want to run the code against the real [rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) lib.
 
 See https://github.com/hzeller/rpi-rgb-led-matrix to install on the target system.
 
-One installed, the `rgbmatrix` will be installed in the "global python" but you still need to make it available inside the `venv`.
+You can either install `rgbmatrix` from the `venv` or global to the system.
+
+If `rgbmatrix` is installed in the "global python" you still need to make it available inside the `venv`.
 
 One approach is:
 
     cp -R /usr/local/lib/python3.11/dist-packages/rgbmatrix-0.0.1-py3.11-linux-aarch64.egg/rgbmatrix venv/lib/python3.11/site-packages/.
+
+#### snd_bcm2835
+
+As explained in the documentation, the `rgbmatrix` will not be able to access the hardware if the `snd_bcm2835` module is loaded.
+
+Depending on the underlying distro, editing the `/boot/config.txt` or `/boot/firmware/config.txt` and adding `dtparam=audio=off` may not work as expected.
+
+Better safe than sorry:
+
+    echo "blacklist snd_bcm2835" > /tmp/snd2-blacklist.conf 
+    
+    sudo cp /tmp/snd2-blacklist.conf /etc/modprobe.d/.
 
 # React App
 

@@ -48,7 +48,7 @@ Thanks to the `refresh_token` you should be able to play the auth flow once and 
 
 Typically, you can generate the `.cache` file from your laptop and simply copy it to the Pi.
 
-To generate the initial authentication, you can run this command line:
+To generate the initial authentication, you can run this command line (after activating the python `venv` !):
 
     python Matrix/driver/commands/spotify/client.py
 

@@ -67,3 +67,9 @@ Then you fill need to edit this file and add the missing entries:
     SPOTIPY_CLIENT_SECRET=
     SPOTIPY_REDIRECT_URI=http://127.0.0.1:3099
 
+
+The command needs root access since it writes into `/etc/`
+
+    sudo system/init-config.sh
+
+

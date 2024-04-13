@@ -23,7 +23,19 @@ The MTA Command expect to find the 2 following env variables.
 
 ## Running as command line
 
-     python -m Matrix.driver.commands.mta_cmd
+To run as command line you first need to be sure to have activate the python virtual env.
+
+If you followed the install instructions, you can use:
+
+    source venv/bin/activate
+
+Your shell should then display: 
+
+    (venv) JeanSe@LEDJeanSe:~/dev/PixelPulseNeo 
+
+From there you should be able to the CLI to configure the `mta_cmd`
+
+     python -m Matrix.driver.commands.mta_config --help
 
 ## Configuring
 
@@ -37,14 +49,14 @@ You can use the Command Line to locate your station:
 
 Query for Station with "Carroll" in their name
 
-    python -m Matrix.driver.commands.mta_cmd  -s Carroll
+    python -m Matrix.driver.commands.mta_config  -s Carroll
 
      stop_name = Carroll St (F21N)
      stop_name = Carroll St (F21S)
 
 Query for Station with "Wash" in their name
 
-    python -m Matrix.driver.commands.mta_cmd -s Wash
+    python -m Matrix.driver.commands.mta_config -s Wash
 
      stop_name = 168 St-Washington Hts (112N)
      stop_name = 168 St-Washington Hts (112S)
@@ -65,7 +77,7 @@ You can add 2 parameters to specify the info you want:
 
 For example, to get the next `D` train direction North on station W 4 St-Wash Sq
 
-    python -m Matrix.driver.commands.mta_cmd -r D -d N  -s Wash
+    python -m Matrix.driver.commands.mta_config -r D -d N  -s Wash
 
       Next trains for D station Wash on direction N
         13:14
@@ -76,13 +88,13 @@ For example, to get the next `D` train direction North on station W 4 St-Wash Sq
 
 Query for bus libe B61
 
-    python -m Matrix.driver.commands.mta_cmd -b B61
+    python -m Matrix.driver.commands.mta_config -b B61
       search bus line
       Found MTA NYCT_B61
 
 Query for Station Carroll on B61
 
-    python -m Matrix.driver.commands.mta_cmd -b B61 -s Carroll
+    python -m Matrix.driver.commands.mta_config -b B61 -s Carroll
       search bus stop line
       PARK SLOPE 20 ST via RED HOOK:
         13:31

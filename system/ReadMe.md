@@ -6,9 +6,20 @@ This folder contains Unit descriptors for SystemD init system.
 
 ## Deployment
 
-    ./deploy.sh
+The `deploy` script must be started from the root directory (as normal user)
 
-This will copy the service files to `/lib/systemd/system/` and call  `systemctl daemon-reload`
+    ./system/deploy.sh
+
+This will :
+
+ - generate the service files from the templates
+ - copy the service files to `/lib/systemd/system/` 
+ - call  `systemctl daemon-reload`
+
+For all this to work, you should have created `/etc/PixelPulseNeo/secrets.conf` and filled it with your configuration.
+
+For that you can use the provided `init-config.sh` as documented in [Config.md](../Config.md).
+
 
 ## Units
 
@@ -40,6 +51,10 @@ starting `pixel-pulse-neo-api.service` will automatically start `pixel-pulse-neo
     sudo systemctl stop pixel-pulse-neo-api
 
     sudo systemctl stop pixel-pulse-neo
+
+## Make the services run automatically on boot
+
+    sudo systemctl enable pixel-pulse-neo-api
 
 
 ## Get logs

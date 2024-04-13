@@ -1,0 +1,13 @@
+[Unit]
+Description=Pixel Pulse Neo Command Server
+Documentation=https://github.com/tiry/PixelPulseNeo/tree/master/Matrix/driver
+# Requires=uuidd.socket
+After=network.target nss-lookup.target
+
+[Service]
+ExecStart=$PPNPATH/scripts/start_cmd_server.sh
+EnvironmentFile=/etc/PixelPulseNeo/secrets.conf
+KillSignal=SIGKILL
+
+[Install]
+WantedBy=multi-user.target

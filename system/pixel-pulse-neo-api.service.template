@@ -1,0 +1,14 @@
+[Unit]
+Description=Pixel Pulse Neo API Server
+Documentation=https://github.com/tiry/PixelPulseNeo/tree/master/Matrix/api
+Requires=pixel-pulse-neo.service
+After=network.target nss-lookup.target
+
+[Service]
+ExecStart=$PPNPATH/scripts/api_server_systemd.sh
+KillSignal=SIGKILL
+User=$OWNER
+Group=$OWNER
+
+[Install]
+WantedBy=multi-user.target
