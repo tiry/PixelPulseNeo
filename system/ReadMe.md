@@ -63,3 +63,5 @@ starting `pixel-pulse-neo-api.service` will automatically start `pixel-pulse-neo
 
     sudo journalctl -u pixel-pulse-neo -f
     
+    sudo journalctl -u pixel-pulse-neo  --since "1 hour ago" > last-hour.log
+    
