@@ -12,26 +12,93 @@ from Matrix.driver.commands.base import (
 from Matrix.driver.commands.news import feed
 
 feeds: list[dict[str, str]] = [
+#    {
+#        "url": "https://www.france24.com/en/rss",
+#        "name": "france24",
+#        "logo": "France_24.png",
+#    },
+#    {
+#        "url": "https://www.lemonde.fr/international/rss_full.xml",
+#        "name": "lemonde",
+#        "logo": "lemonde.jpeg",
+#    },
     {
-        "url": "https://www.france24.com/en/rss",
-        "name": "france24",
-        "logo": "France_24.png",
-    },
-    {
-        "url": "https://www.lemonde.fr/international/rss_full.xml",
-        "name": "lemonde",
-        "logo": "lemonde.jpeg",
-    },
-    {
-        "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-        "name": "nytimes_world",
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/NYRegion.xml",
+        "name": "nytimes_region",
         "logo": "nyt.png",
     },
     {
-        "url": "https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
-        "name": "nytimes_us",
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+        "name": "nytimes_homepage",
         "logo": "nyt.png",
     },
+    {
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml",
+        "name": "nytimes_tech",
+        "logo": "nyt.png",
+    },
+    {
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml",
+        "name": "nytimes_business",
+        "logo": "nyt.png",
+    },
+    {
+        "url": "https://www.wired.com/feed/rss", 
+        "name": "wired", 
+        "logo": "wired.png"
+    },
+    {
+        "url": "https://www.wired.com/feed/category/science/latest/rss",
+        "name": "wired science",
+        "logo": "wired.png",
+    },
+    {
+        "url": "https://feeds.macrumors.com/MacRumors-Front",
+        "name": "macrumors",
+        "logo": "macrumors.png",
+    },
+    {
+        "url": "https://9to5mac.com/feed/",
+        "name": "9to5mac",
+        "logo": "9to5mac.png",
+    },            
+    {
+        "url": "https://nypost.com/feed/",
+        "name": "nypost",
+        "logo": "nypost.png",
+    },
+    {
+        "url": "https://newyorker.com/feed/everything",
+        "name": "newyorker",
+        "logo": "newyorker.png",
+    },    
+    {
+        "url": "https://gothamist.com/feed",
+        "name": "gothamist",
+        "logo": "gothamist.png",
+    },    
+    
+    """
+    {
+        "url": "https://www.reddit.com/.rss",
+        "name": "reddit_frontpage",
+        "logo": "reddit.png",
+    },   
+    {
+        "url": "https://www.reddit.com/r/salesforce/.rss",
+        "name": "reddit_salesforce",
+        "logo": "reddit.png",
+    },   
+    {
+        "url": "https://www.reddit.com/r/visionpro/.rss",
+        "name": "reddit_visionpro",
+        "logo": "reddit.png",
+    },       
+    {
+        "url": "https://www.reddit.com/r/applevisionpro/.rss",
+        "name": "reddit_applevisionpro",
+        "logo": "reddit.png",
+    },   
     {
         "url": "https://machinelearningmastery.com/blog/feed/",
         "name": "mlm",
@@ -58,16 +125,6 @@ feeds: list[dict[str, str]] = [
         "logo": "science.png",
     },
     {
-        "url": "https://www.wired.com/feed/rss", 
-        "name": "wired", 
-        "logo": "wired.png"
-    },
-    {
-        "url": "https://www.wired.com/feed/category/science/latest/rss",
-        "name": "wired science",
-        "logo": "wired.png",
-    },
-    {
         "url": "https://feeds.arstechnica.com/arstechnica/index",
         "name": "ars technica",
         "logo": "ars.png",
@@ -77,6 +134,7 @@ feeds: list[dict[str, str]] = [
         "name": "anandtech",
         "logo": "anandtech.png",
     },
+    """
 ]
 
 

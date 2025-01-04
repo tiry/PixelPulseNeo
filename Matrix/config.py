@@ -2,10 +2,10 @@
 # Configuration Interface to talk to LED Matrix
 
 # Control if we use the emulator or send data to LED Matrix via GPIO
-USE_EMULATOR = True
+USE_EMULATOR = False
 
 # Control if we go through IPC Comunication
-USE_IPC = False
+USE_IPC = True
 
 
 def is_ipc_enabled():
@@ -38,7 +38,7 @@ MATRIX_WIDTH = 64
 MATRIX_HEIGHT = 64
 
 # number of chained matrix
-MATRIX_CHAINED = 3
+MATRIX_CHAINED = 5
 
 # default refresh rate
 DEFAULT_REFRESH = 1 / 30.0
@@ -55,13 +55,13 @@ POWER_ON_TIME = "07:00"
 POWER_OFF_TIME = "23:00"
 
 ONOFF_CALENDDAR: dict[str, tuple[str, str]] = {
-            "Monday": ("8:00", "22:00"),
-            "Tuesday": ("7:00", "23:00"),
-            "Wednesday": ("7:00", "23:00"),
-            "Thursday": ("7:00", "23:00"),
-            "Friday": ("7:00", "1:00"),
-            "Saturday": ("9:00", "02:00"),
-            "Sunday": ("10:00", "23:00"),
+            "Monday": ("6:00", "22:00"),
+            "Tuesday": ("6:00", "22:00"),
+            "Wednesday": ("6:00", "22:00"),
+            "Thursday": ("6:00", "22:00"),
+            "Friday": ("6:00", "23:00"),
+            "Saturday": ("7:00", "23:00"),
+            "Sunday": ("7:00", "22:00"),
         }
 
 ## Test IPC Config
@@ -73,11 +73,11 @@ ONOFF_CALENDDAR: dict[str, tuple[str, str]] = {
 # Commands Confiiguration
 
 
-CITIBIKES: list[str] = ["Columbia", "Carroll"]
+CITIBIKES: list[str] = ["Henry", "Degraw"]
 
 MTA_SUBWAY_STATION:str = "Carroll"
 MTA_SUBWAY_DIRECTION:str = "N"
 MTA_SUBWAY_ROUTES:list[str] = ["F","G"]
 
-MTA_BUS_STATION:str = "Carroll"
-MTA_BUS_LINE:str = "B61"
+MTA_BUS_STATION:str = "Union"
+MTA_BUS_LINE:str = "B57"

@@ -181,4 +181,4 @@ def get_stop_info(route: str | None, stop_name: str) -> dict[str, Any] | None:
 
 
 if __name__ == "__main__":
-    print(get_stop_info("B61", "Carroll"))
+    print(get_stop_info("B57", "Union"))

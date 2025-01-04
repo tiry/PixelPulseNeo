@@ -17,7 +17,7 @@ class MeteoCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
         super().__init__("meteo", "Displays Weather forcast from wttr.in")
         self.refresh_timer = 1 / 30.0
-        self.scroll = True
+        self.scroll = False
         self.refresh = True
         self.background: Image.Image | None = None
         self.weather: dict[Any, Any] | None = None
