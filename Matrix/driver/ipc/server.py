@@ -12,7 +12,7 @@ from Matrix.driver.base_executor import synchronized_method
 from Matrix.driver.utilz import configure_log, GREEN
 
 logger: logging.Logger = logging.getLogger(__name__)
-configure_log(logger, GREEN, "Server")
+configure_log(logger, GREEN, "Server", level=logging.INFO)
 
 IPC_PORT = 6000
 
@@ -88,13 +88,13 @@ class IPCServer:
                     client_socket.close()
                     sys.exit()
                 response_wrapper = self.execute_ipc_request(command, args, kwargs)
-                logger.debug(f"Execution response = {response_wrapper}")
+                logger.error(f"Execution response = {response_wrapper}")
             except Exception as e:
                 response_wrapper["success"] = False
                 response_wrapper[
                     "error"
                 ] = f"Error trying to execute command {command} : {e}"
-                logger.debug(f" while executing command {command} {e}")
+                logger.error(f" while executing command {command} {e}")
 
             json_response: str = json_dumps(response_wrapper)
             logger.debug(f" Send response {json_response}")
@@ -111,7 +111,7 @@ class IPCServer:
         user = "normal user"
         if os.getuid() == 0:
             user = "root"
-        logger.debug(f" IPC Server running as {user} and waiting for commands...")
+        logger.info(f" IPC Server running as {user} and waiting for commands...")
 
         client_id = 0
 
@@ -126,11 +126,11 @@ class IPCServer:
                 target=self.handle_client, args=(client_socket, addr)
             )
             thread.start()
-            print(f"client {client_id} handled by thread {thread}")
+            #print(f"client {client_id} handled by thread {thread}")
             time.sleep(0.1)
 
 
 if __name__ == "__main__":
-    logger.debug("Starting IPC server")
+    logger.info("Starting IPC server")
     server = IPCServer()
     server.serve()

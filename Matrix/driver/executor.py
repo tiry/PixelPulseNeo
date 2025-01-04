@@ -24,7 +24,7 @@ BUSY_WAIT = 0.1
 WATCHDOG_WAIT = 120
 
 logger: logging.Logger = logging.getLogger(__name__)
-configure_log(logger, CYAN, "CmdExec")
+configure_log(logger, CYAN, "CmdExec", level=logging.INFO)
 
 DISPLAY_SPLASH:bool=True
 WATCHDOG_ON:bool=True 
@@ -186,25 +186,25 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 continue
             expected_state: bool = calendar.expected_state()
             
-            logger.info("WatchDog check in progress")
+            logger.debug("WatchDog check in progress")
             if expected_state is True:
                 # we should be on
-                logger.info("Driver should be ON")
+                logger.debug("Driver should be ON")
                 if self.sleep_mode_activated is True:
                     # we should wake up
                     logger.info("Waking up driver")
                     self.wakeup()
                 else:
-                    logger.info("nothing to do: Driver is already running") 
+                    logger.debug("nothing to do: Driver is already running") 
             else:
                 # we should be off
-                logger.info("Driver should be OFF")
+                logger.debug("Driver should be OFF")
                 if self.sleep_mode_activated is False:
                     # we should go sleep
                     logger.info("Putting the driver in sleep mode") 
                     self.sleep()
                 else:
-                    logger.info("nothing to do: Driver is already sleeping")
+                    logger.debug("nothing to do: Driver is already sleeping")
             
         logger.info("WatchDog loop exited")
 
@@ -225,7 +225,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         logger.info("Scheduler Loop exited")
 
     def _add_log(self, log_entry: CommandExecutionLog) -> None:
-        logger.debug(f" [AUDIT] {log_entry}")
+        logger.info(f" [AUDIT] {log_entry}")
         self.audit_log.append(log_entry)
         if len(self.audit_log) > MAX_AUDIT_SIZE:
             try:
@@ -263,7 +263,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
             )
 
             if not executable_command:
-                print(f"ERROR >> Command {command_entry.command_name} not found")
+                logger.error(f"ERROR >> Command {command_entry.command_name} not found")
                 return None
 
             self.current_command = command_entry
@@ -275,7 +275,7 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
                 command_entry.args,
                 command_entry.kwargs,
             )
-            logger.debug(f"run_command executed with result = {res} and error = {err}")
+            logger.error(f"run_command executed with result = {res} and error = {err}")
             error = None
             if err:
                 error = str(err)
@@ -308,13 +308,18 @@ class CommandExecutor(BaseCommandExecutor, IPCServer):
         args: list = [],
         kwargs: dict = {},
     ) -> None:
-        self.scheduler.append_next(
-            CommandEntry(
-                command_name=command_name, duration=duration, args=args, kwargs=kwargs
+        
+        try:
+            self.scheduler.append_next(
+                CommandEntry(
+                    command_name=command_name, duration=duration, args=args, kwargs=kwargs
+                )
             )
-        )
-        if interrupt:
-            self.stop_current.set()
+            if interrupt:
+                self.stop_current.set()
+        except Exception as e:
+            logger.error(f"Error executing {command_name}: {str(e)}")
+            logger.error(traceback.format_exc())
 
     @synchronized_method
     def stop(self, interrupt=False) -> None:

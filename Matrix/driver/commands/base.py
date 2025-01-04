@@ -193,7 +193,7 @@ class BaseCommand:
 
         self.recommended_duration:int=10
         
-        logger.debug(f"Load command with name {name}")
+        logger.info(f"Load command with name {name}")
         
         self.logger: logging.Logger=logger
         self.execution_done:bool = False
@@ -206,6 +206,7 @@ class BaseCommand:
         return self.recommended_duration
     
     def reset_state(self) -> None:
+        logger.info(f"Init / reset_state for command with name {self.name}")
         self.execution_done=False
         self.t0=time.time()
 
@@ -231,7 +232,7 @@ class BaseCommand:
         self.reset_state()
         
         try:
-            logger.debug(
+            logger.info(
                 f"#######################\n Execute command '{self.name}' {args} {kwargs}\n"
             )
             self.update(args, kwargs)
@@ -245,9 +246,7 @@ class BaseCommand:
                     
                     self.wait_for_next_frame()
                     self.t_last_render=t_last_render
-                    
-                    #time.sleep(self.refresh_timer)
-                    
+                                        
                     # hack to generate screenshots
                     if CAPTURE_PYGAME and frame_nb % CAPTURE_FREQ == 0:
                         self.capture_screen(tag=f"{frame_nb:05d}")

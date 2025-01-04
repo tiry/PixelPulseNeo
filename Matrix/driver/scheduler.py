@@ -132,6 +132,11 @@ class Scheduler(Base):
         return self.current_stack
 
     def update_current_stack(self, schedule) -> None:
+        if type(schedule)==dict:
+            # this should not happen
+            # this means marshaling is broken
+            logger.error("schedule is a dict !!!")
+            schedule = ScheduleModel(**schedule)
         self.current_stack = schedule
 
     def append_next(self, command_entry: CommandEntry):
