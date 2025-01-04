@@ -2,7 +2,7 @@
 # Configuration Interface to talk to LED Matrix
 
 # Control if we use the emulator or send data to LED Matrix via GPIO
-USE_EMULATOR = False
+USE_EMULATOR = True
 
 # Control if we go through IPC Comunication
 USE_IPC = True
@@ -81,3 +81,6 @@ MTA_SUBWAY_ROUTES:list[str] = ["F","G"]
 
 MTA_BUS_STATION:str = "Union"
 MTA_BUS_LINE:str = "B57"
+
+WEATHER_SCROLL:bool = False
+WEATHER_TEXT_OFFSET:int = 32

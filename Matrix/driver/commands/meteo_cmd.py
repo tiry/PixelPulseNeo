@@ -12,12 +12,14 @@ from Matrix.driver.commands.base import (
 
 from Matrix.driver.commands.wttr.weather import getTodayWeather
 
+from Matrix import config
+
 
 class MeteoCmd(PictureScrollBaseCmd):
     def __init__(self) -> None:
         super().__init__("meteo", "Displays Weather forcast from wttr.in")
         self.refresh_timer = 1 / 30.0
-        self.scroll = False
+        self.scroll = config.WEATHER_SCROLL
         self.refresh = True
         self.background: Image.Image | None = None
         self.weather: dict[Any, Any] | None = None
@@ -50,13 +52,13 @@ class MeteoCmd(PictureScrollBaseCmd):
                 weatherIcon = weatherIcon.resize((48, 48), Image.Resampling.LANCZOS)
 
                 
-                img.paste(weatherIcon, (8, 8))
+                img.paste(weatherIcon, (8 + config.WEATHER_TEXT_OFFSET, 8))
                 draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
 
                 font5 = self.getFont("5x7.pil")
                 font6 = self.getFont("6x12.pil")
 
-                tempPos: tuple[int, int] = (10 + weatherIcon.size[0], 20)
+                tempPos: tuple[int, int] = (10 + weatherIcon.size[0] + config.WEATHER_TEXT_OFFSET, 20)
                 draw.text(tempPos, temp, font=font6)
 
                 date_str: str = format_date()
@@ -68,8 +70,8 @@ class MeteoCmd(PictureScrollBaseCmd):
                     fill=(150, 150, 150),
                 )
                 _, _, text_width, text_height = font6.getbbox(date_str)
-
-                draw.text((width / 2 - text_width / 2, 5), date_str, font=font6)
+                
+                draw.text((width / 2 - text_width / 2 + config.WEATHER_TEXT_OFFSET , 5), date_str, font=font6)
 
                 self.tempPos: tuple[int, int] = tempPos
                 self.background = img
@@ -104,6 +106,12 @@ class MeteoCmd(PictureScrollBaseCmd):
             draw: ImageDraw.ImageDraw = ImageDraw.Draw(img)
             font = self.getFont("9x18B.pil")
             time_str: str = format_time()
-            draw.text((self.tempPos[0] + 30, 24), time_str, font=font)
-
+            
+            if self.scroll:
+                draw.text((self.tempPos[0] + 30, 24), time_str, font=font)
+            else:
+                _, _, text_width, text_height = font.getbbox(time_str)
+                width: int = get_total_matrix_width()
+                draw.text((width / 2 - text_width / 2 + config.WEATHER_TEXT_OFFSET, 24), time_str, font=font)
+                
         return img
