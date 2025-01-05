@@ -76,67 +76,66 @@ feeds: list[dict[str, str]] = [
         "url": "https://gothamist.com/feed",
         "name": "gothamist",
         "logo": "gothamist.png",
-    },    
-    
-    """
-    {
-        "url": "https://www.reddit.com/.rss",
-        "name": "reddit_frontpage",
-        "logo": "reddit.png",
-    },   
-    {
-        "url": "https://www.reddit.com/r/salesforce/.rss",
-        "name": "reddit_salesforce",
-        "logo": "reddit.png",
-    },   
-    {
-        "url": "https://www.reddit.com/r/visionpro/.rss",
-        "name": "reddit_visionpro",
-        "logo": "reddit.png",
-    },       
-    {
-        "url": "https://www.reddit.com/r/applevisionpro/.rss",
-        "name": "reddit_applevisionpro",
-        "logo": "reddit.png",
-    },   
-    {
-        "url": "https://machinelearningmastery.com/blog/feed/",
-        "name": "mlm",
-        "logo": "mlm.png",
-    },
-    {
-        "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml",
-        "name": "mit",
-        "logo": "MIT-logo.png",
-    },
-    {
-        "url": "https://feeds.feedburner.com/nvidiablog",
-        "name": "nvidia",
-        "logo": "nvidia.png"
-        },
-    {
-        "url": "https://www.tomshardware.com/feeds/all",
-        "name": "tomshardware",
-        "logo": "tomshardware.png",
-    },
-    {
-        "url": "https://www.science.org/rss/news_current.xml",
-        "name": "science.org",
-        "logo": "science.png",
-    },
-    {
-        "url": "https://feeds.arstechnica.com/arstechnica/index",
-        "name": "ars technica",
-        "logo": "ars.png",
-    },
-    {
-        "url": "https://www.anandtech.com/rss",
-        "name": "anandtech",
-        "logo": "anandtech.png",
-    },
-    """
+    }    
 ]
-
+    
+    # """
+    # {
+    #     "url": "https://www.reddit.com/.rss",
+    #     "name": "reddit_frontpage",
+    #     "logo": "reddit.png",
+    # },   
+    # {
+    #     "url": "https://www.reddit.com/r/salesforce/.rss",
+    #     "name": "reddit_salesforce",
+    #     "logo": "reddit.png",
+    # },   
+    # {
+    #     "url": "https://www.reddit.com/r/visionpro/.rss",
+    #     "name": "reddit_visionpro",
+    #     "logo": "reddit.png",
+    # },       
+    # {
+    #     "url": "https://www.reddit.com/r/applevisionpro/.rss",
+    #     "name": "reddit_applevisionpro",
+    #     "logo": "reddit.png",
+    # },   
+    # {
+    #     "url": "https://machinelearningmastery.com/blog/feed/",
+    #     "name": "mlm",
+    #     "logo": "mlm.png",
+    # },
+    # {
+    #     "url": "https://news.mit.edu/topic/mitartificial-intelligence2-rss.xml",
+    #     "name": "mit",
+    #     "logo": "MIT-logo.png",
+    # },
+    # {
+    #     "url": "https://feeds.feedburner.com/nvidiablog",
+    #     "name": "nvidia",
+    #     "logo": "nvidia.png"
+    #     },
+    # {
+    #     "url": "https://www.tomshardware.com/feeds/all",
+    #     "name": "tomshardware",
+    #     "logo": "tomshardware.png",
+    # },
+    # {
+    #     "url": "https://www.science.org/rss/news_current.xml",
+    #     "name": "science.org",
+    #     "logo": "science.png",
+    # },
+    # {
+    #     "url": "https://feeds.arstechnica.com/arstechnica/index",
+    #     "name": "ars technica",
+    #     "logo": "ars.png",
+    # },
+    # {
+    #     "url": "https://www.anandtech.com/rss",
+    #     "name": "anandtech",
+    #     "logo": "anandtech.png",
+    # },
+    
 
 def get_feed_definition(name=None) -> dict[str, str]:
     #name = "nvidia"
@@ -160,11 +159,14 @@ class NewsCmd(PictureScrollBaseCmd):
 
     def update(self, args: list = [], kwargs: dict = {}) -> str:
         self.feed_definition = get_feed_definition()
-        self.feed = feed.get(
-            self.feed_definition["url"],
-            get_total_matrix_width(),
-            get_total_matrix_height(),
-        )
+        try:
+            self.feed = feed.get(
+                self.feed_definition["url"],
+                get_total_matrix_width(),
+                get_total_matrix_height(),
+            )
+        except Exception as e:
+            print(f"Enable to update from feed {e}")
         return super().update(args, kwargs)
 
     def render_news_item(self):
@@ -195,7 +197,7 @@ class NewsCmd(PictureScrollBaseCmd):
                 thumb: Image.Image = feed.getImage(thumb_url)
                 resized_thumb = self._resize_icon(thumb, max_height=50)
                 img.paste(resized_thumb, (0, 0))
-            except AttributeError:
+            except Exception:
                 resized_thumb: Image.Image = Image.new("RGB", (50, 50), color=(0, 0, 0))
 
             target_height = 30

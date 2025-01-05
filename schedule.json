@@ -21,7 +21,7 @@
                     "kwargs": {}
                 },
                 {
-                    "command_name": "spotify",
+                    "command_name": "tides",
                     "duration": 20.0,
                     "args": [],
                     "kwargs": {}
@@ -50,14 +50,14 @@
                     "kwargs": {}
                 },
                 {
-                    "command_name": "spotify",
-                    "duration": 200.0,
+                    "command_name": "pic",
+                    "duration": 120.0,
                     "args": [],
                     "kwargs": {}
                 },
                 {
-                    "command_name": "pic",
-                    "duration": 120.0,
+                    "command_name": "tides",
+                    "duration": 20.0,
                     "args": [],
                     "kwargs": {}
                 },
